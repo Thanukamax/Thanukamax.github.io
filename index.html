@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanuka Sehasna Perera — Portfolio</title>
+  <meta name="description" content="Game Developer & Computer Science undergraduate. GPU architecture, real-time rendering, and creative digital production.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0a;
+      --bg-card: #111113;
+      --bg-card-hover: #18181b;
+      --border: #1e1e22;
+      --text: #e4e4e7;
+      --text-muted: #71717a;
+      --accent: #22d3ee;
+      --accent-dim: rgba(34, 211, 238, 0.12);
+      --accent-green: #34d399;
+      --accent-green-dim: rgba(52, 211, 153, 0.12);
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    html { scroll-behavior: smooth; scrollbar-width: thin; scrollbar-color: #27272a #0a0a0a; }
+    body { font-family: var(--font-sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+    ::selection { background: var(--accent); color: var(--bg); }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow 0.3s;
+    }
+    nav.scrolled { box-shadow: 0 0 30px rgba(34, 211, 238, 0.06); }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      height: 60px;
+    }
+    .nav-logo {
+      font-family: var(--font-mono); font-weight: 700; font-size: 1.1rem; color: var(--text);
+      text-decoration: none; letter-spacing: -0.5px;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 1.8rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-muted); text-decoration: none; font-size: 0.85rem;
+      font-weight: 500; letter-spacing: 0.02em; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-toggle { display: none; background: none; border: none; color: var(--text); cursor: pointer; padding: 0.5rem; }
+    .nav-toggle svg { width: 24px; height: 24px; }
+
+    /* ── SECTIONS ── */
+    section { padding: 5rem 1.5rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
+      color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase;
+      margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem;
+    }
+    .section-label::before {
+      content: ''; display: block; width: 1.5rem; height: 1px; background: var(--accent);
+    }
+    .section-title {
+      font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700;
+      margin-bottom: 2.5rem; letter-spacing: -0.02em;
+    }
+
+    /* ── REVEAL ANIMATION ── */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center;
+      padding-top: 60px; position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -40%; right: -20%;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(34, 211, 238, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: ''; position: absolute; bottom: -20%; left: -10%;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(52, 211, 153, 0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .hero-tag {
+      font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent);
+      margin-bottom: 1.25rem; display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .hero-tag .blink {
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent-green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 700;
+      letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1.25rem;
+    }
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, var(--accent), var(--accent-green));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-desc {
+      font-size: 1.1rem; color: var(--text-muted); max-width: 560px;
+      line-height: 1.7; margin-bottom: 2rem;
+    }
+    .hero-buttons { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1.5rem; border-radius: 8px; font-size: 0.9rem;
+      font-weight: 500; text-decoration: none; transition: all 0.25s;
+      cursor: pointer; border: none;
+    }
+    .btn-primary {
+      background: var(--accent); color: var(--bg);
+    }
+    .btn-primary:hover { background: #06b6d4; box-shadow: 0 0 20px rgba(34, 211, 238, 0.25); }
+    .btn-outline {
+      background: transparent; color: var(--text); border: 1px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+    .btn svg { width: 16px; height: 16px; }
+
+    /* ── ABOUT ── */
+    .about-text {
+      font-size: 1.05rem; color: var(--text-muted); line-height: 1.8;
+      max-width: 720px;
+    }
+    .about-text strong { color: var(--text); font-weight: 600; }
+
+    /* ── EXPERIENCE ── */
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: ''; position: absolute; left: 0; top: 0.5rem; bottom: 0.5rem;
+      width: 1px; background: linear-gradient(180deg, var(--accent), var(--border));
+    }
+    .timeline-item { position: relative; margin-bottom: 2rem; }
+    .timeline-item::before {
+      content: ''; position: absolute; left: -2rem; top: 0.55rem;
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--accent); border: 2px solid var(--bg);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+    .timeline-role { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .timeline-company {
+      font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); margin-bottom: 0.25rem;
+    }
+    .timeline-company a { color: inherit; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.2s; }
+    .timeline-company a:hover { border-bottom-color: var(--accent); }
+    .timeline-date { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem; }
+    .timeline-desc { color: var(--text-muted); font-size: 0.92rem; line-height: 1.7; max-width: 600px; }
+
+    /* ── EDUCATION ── */
+    .edu-grid { display: grid; gap: 1rem; }
+    .edu-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.5rem; transition: border-color 0.3s, transform 0.3s;
+    }
+    .edu-card:hover { border-color: rgba(34, 211, 238, 0.3); transform: translateY(-2px); }
+    .edu-degree { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .edu-school { font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent); margin-bottom: 0.15rem; }
+    .edu-date { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* ── SKILLS ── */
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .skill-group {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.5rem; transition: border-color 0.3s;
+    }
+    .skill-group:hover { border-color: rgba(34, 211, 238, 0.25); }
+    .skill-group-title {
+      font-family: var(--font-mono); font-size: 0.78rem; font-weight: 500;
+      color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .skill-tag {
+      background: var(--accent-dim); color: var(--accent);
+      padding: 0.3rem 0.75rem; border-radius: 6px;
+      font-size: 0.8rem; font-weight: 500; white-space: nowrap;
+      border: 1px solid rgba(34, 211, 238, 0.1);
+    }
+    .skill-tag.green {
+      background: var(--accent-green-dim); color: var(--accent-green);
+      border-color: rgba(52, 211, 153, 0.1);
+    }
+
+    /* ── PROJECTS ── */
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+    .project-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.75rem; transition: all 0.3s; text-decoration: none; color: inherit;
+      display: flex; flex-direction: column; position: relative; overflow: hidden;
+    }
+    .project-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-green));
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .project-card:hover { border-color: rgba(34, 211, 238, 0.3); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+    .project-card:hover::before { opacity: 1; }
+    .project-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+    .project-icon { color: var(--accent); }
+    .project-icon svg { width: 22px; height: 22px; }
+    .project-arrow { color: var(--text-muted); transition: transform 0.3s, color 0.3s; }
+    .project-card:hover .project-arrow { color: var(--accent); transform: translate(3px, -3px); }
+    .project-arrow svg { width: 18px; height: 18px; }
+    .project-name { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .project-desc { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; flex: 1; }
+    .project-tech { display: flex; gap: 0.5rem; margin-top: 1.25rem; flex-wrap: wrap; }
+    .project-tech span {
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);
+      background: rgba(255,255,255,0.04); padding: 0.2rem 0.5rem; border-radius: 4px;
+    }
+
+    /* ── VOLUNTEER ── */
+    .volunteer-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 1.5rem; display: inline-flex; align-items: center; gap: 1rem;
+    }
+    .volunteer-icon {
+      width: 42px; height: 42px; border-radius: 8px;
+      background: var(--accent-dim); display: flex; align-items: center; justify-content: center;
+      color: var(--accent); flex-shrink: 0;
+    }
+    .volunteer-icon svg { width: 20px; height: 20px; }
+    .volunteer-role { font-weight: 600; font-size: 1rem; }
+    .volunteer-org { font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent); }
+    .volunteer-date { font-size: 0.78rem; color: var(--text-muted); }
+
+    /* ── CONTACT ── */
+    .contact-section { text-align: center; padding: 6rem 1.5rem; }
+    .contact-section .section-label { justify-content: center; }
+    .contact-section .section-label::before { display: none; }
+    .contact-title {
+      font-size: clamp(1.5rem, 4vw, 2.5rem); font-weight: 700;
+      margin-bottom: 1rem; letter-spacing: -0.02em;
+    }
+    .contact-desc { color: var(--text-muted); font-size: 1rem; margin-bottom: 2rem; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .contact-links { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border); padding: 2rem 1.5rem;
+      text-align: center; color: var(--text-muted); font-size: 0.8rem;
+    }
+    footer span { font-family: var(--font-mono); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column; position: absolute;
+        top: 60px; left: 0; right: 0; background: rgba(10,10,10,0.95);
+        backdrop-filter: blur(12px); padding: 1.5rem; gap: 1.25rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-toggle { display: block; }
+      section { padding: 3.5rem 1.25rem; }
+      .hero { min-height: 90vh; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .skills-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo"><span>&gt;</span> thanuka</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="container hero-content">
+      <div class="hero-tag"><span class="blink"></span> Open to opportunities</div>
+      <h1>Thanuka Sehasna<br><span class="gradient">Perera</span></h1>
+      <p class="hero-desc">Aspiring Game Developer blending high-performance engineering with creative digital production. GPU architecture, real-time rendering, and reverse engineering — where hardware meets art.</p>
+      <div class="hero-buttons">
+        <a href="https://github.com/Thanukamax" target="_blank" rel="noopener" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58v-2.17c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.08 1.85 1.24 1.85 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6.02 0c2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58A12.01 12.01 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          GitHub
+        </a>
+        <a href="mailto:thanukasehasnaperera@gmail.com" class="btn btn-outline">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          Get in touch
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label">About</div>
+        <h2 class="section-title">Who I am</h2>
+        <p class="about-text">
+          I'm a <strong>Computer Science undergraduate</strong> at the University of Westminster (via IIT) with a deep interest in <strong>game development</strong>, <strong>GPU architecture</strong>, and <strong>real-time rendering</strong>. I work at the intersection of low-level hardware constraints and creative pipelines — building things that are both technically sound and visually compelling.
+        </p>
+        <br>
+        <p class="about-text">
+          Currently, I'm driving growth operations for <strong>BitByBit</strong>, an AI-native OS startup, while sharpening my skills in <strong>C++</strong>, <strong>physics simulation</strong>, and <strong>RDNA architecture</strong>. I'm passionate about reverse engineering, building performant tools, and understanding systems from the ground up.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label">Experience</div>
+        <h2 class="section-title">Where I've worked</h2>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-role">Growth & Content Associate</div>
+            <div class="timeline-company"><a href="https://bbyb.dev" target="_blank" rel="noopener">BitByBit (bbyb.dev)</a></div>
+            <div class="timeline-date">Present</div>
+            <p class="timeline-desc">
+              Strategizing go-to-market deals for an AI-native OS startup (Meta/Shopify Partner). Analyzing user engagement metrics, producing multimedia assets with the Adobe suite, and facilitating client consultations to drive growth.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label">Education</div>
+        <h2 class="section-title">Academic background</h2>
+        <div class="edu-grid">
+          <div class="edu-card">
+            <div class="edu-degree">BSc (Hons) Computer Science</div>
+            <div class="edu-school">University of Westminster (via IIT)</div>
+            <div class="edu-date">Sept 2024 — Sept 2028</div>
+          </div>
+          <div class="edu-card">
+            <div class="edu-degree">Diploma in Information Technology</div>
+            <div class="edu-school">ESOFT Metro Campus</div>
+            <div class="edu-date">Dec 2023 — Dec 2024</div>
+          </div>
+          <div class="edu-card">
+            <div class="edu-degree">Cambridge O/L and A/L</div>
+            <div class="edu-school">Louvre College Pannipitiya</div>
+            <div class="edu-date">2021 — 2023</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label">Skills</div>
+        <h2 class="section-title">Tech stack</h2>
+        <div class="skills-grid">
+          <div class="skill-group">
+            <div class="skill-group-title">Languages</div>
+            <div class="skill-tags">
+              <span class="skill-tag">C++</span>
+              <span class="skill-tag">C# (Unity)</span>
+              <span class="skill-tag">Python</span>
+              <span class="skill-tag">Java</span>
+              <span class="skill-tag">Golang</span>
+              <span class="skill-tag">Lua</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <div class="skill-group-title">Game Engines</div>
+            <div class="skill-tags">
+              <span class="skill-tag green">Unity 3D</span>
+              <span class="skill-tag green">Unreal Engine 5</span>
+              <span class="skill-tag green">Ka3d</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <div class="skill-group-title">Graphics & Hardware</div>
+            <div class="skill-tags">
+              <span class="skill-tag">RDNA Architecture</span>
+              <span class="skill-tag">PhysX</span>
+              <span class="skill-tag">GPU Hardware</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <div class="skill-group-title">Creative Suite</div>
+            <div class="skill-tags">
+              <span class="skill-tag green">Premiere Pro</span>
+              <span class="skill-tag green">After Effects</span>
+              <span class="skill-tag green">Illustrator</span>
+              <span class="skill-tag green">Lightroom</span>
+              <span class="skill-tag green">InDesign</span>
+              <span class="skill-tag green">Dreamweaver</span>
+              <span class="skill-tag green">Audition</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <div class="skill-group-title">3D & Modeling</div>
+            <div class="skill-tags">
+              <span class="skill-tag">Blender</span>
+              <span class="skill-tag">Cinema 4D</span>
+              <span class="skill-tag">3ds Max</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <div class="skill-group-title">Tools & Security</div>
+            <div class="skill-tags">
+              <span class="skill-tag green">Ghidra</span>
+              <span class="skill-tag green">HxD</span>
+              <span class="skill-tag green">Wireshark</span>
+              <span class="skill-tag green">Audacity</span>
+              <span class="skill-tag green">Git</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label">Projects</div>
+        <h2 class="section-title">Things I've built</h2>
+        <div class="projects-grid">
+          <a href="https://github.com/Thanukamax/h-cli" target="_blank" rel="noopener" class="project-card">
+            <div class="project-header">
+              <div class="project-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+              </div>
+              <div class="project-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              </div>
+            </div>
+            <div class="project-name">h-cli</div>
+            <p class="project-desc">Terminal streaming client with themed UI, caching, preloading, and MPV integration. Fast, responsive, and cross-platform.</p>
+            <div class="project-tech">
+              <span>Python</span>
+              <span>MPV</span>
+              <span>Terminal UI</span>
+            </div>
+          </a>
+          <a href="https://github.com/Thanukamax/donghua-cli" target="_blank" rel="noopener" class="project-card">
+            <div class="project-header">
+              <div class="project-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </div>
+              <div class="project-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              </div>
+            </div>
+            <div class="project-name">donghua-cli</div>
+            <p class="project-desc">Chinese Animation streaming and download tool powered by a custom Wuxia-forged engine. Search, pick, play — frictionless.</p>
+            <div class="project-tech">
+              <span>Python</span>
+              <span>Scraping</span>
+              <span>Streaming</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VOLUNTEER -->
+  <section id="volunteer">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label">Community</div>
+        <h2 class="section-title">Volunteering</h2>
+        <div class="volunteer-card">
+          <div class="volunteer-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div>
+            <div class="volunteer-role">GameDev Event Lead</div>
+            <div class="volunteer-org">LEVELSTAIR</div>
+            <div class="volunteer-date">2024 — Present</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact-section" id="contact">
+    <div class="container">
+      <div class="reveal">
+        <div class="section-label">Contact</div>
+        <h2 class="contact-title">Let's build something</h2>
+        <p class="contact-desc">Whether it's game dev, systems engineering, or creative tooling — I'm always interested in ambitious projects.</p>
+        <div class="contact-links">
+          <a href="mailto:thanukasehasnaperera@gmail.com" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            Email me
+          </a>
+          <a href="https://github.com/Thanukamax" target="_blank" rel="noopener" class="btn btn-outline">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.39.6.11.82-.26.82-.58v-2.17c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.08 1.85 1.24 1.85 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6.02 0c2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58A12.01 12.01 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>&copy; 2026 Thanuka Sehasna Perera</span>
+  </footer>
+
+  <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Nav scroll effect
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Mobile nav toggle
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    navToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    // Close mobile nav on link click
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+      });
+    });
+  </script>
+</body>
+</html>
