@@ -1511,7 +1511,7 @@
     </header>
 
     <!-- RDNA toggle — fixed bottom right -->
-    <button class="rdna-fab" id="rdnaToggle" type="button" aria-pressed="false">RDNA mode</button>
+    <button class="rdna-fab" id="rdnaToggle" type="button" aria-pressed="false">UDNA mode</button>
 
     <main id="top">
       <section class="section hero">
@@ -1822,7 +1822,7 @@
             <div class="line">channel <b>open</b></div>
             <div class="line">response <b>&lt; 24h</b></div>
             <div class="line">timezone <b>utc+05:30</b></div>
-            <div class="line">mode <b id="modeLabel">abyssal</b></div>
+            <div class="line">mode <b id="modeLabel">XE</b></div>
           </aside>
         </div>
       </section>
@@ -1858,8 +1858,8 @@
 
       // Mode cycling: abyssal (blue) → rdna (red) → cuda (green) → abyssal ...
       const modes = ['abyssal', 'rdna', 'cuda'];
-      const modeLabels = { abyssal: 'RDNA mode', rdna: 'CUDA mode', cuda: 'Abyssal mode' };
-      const modeNames = { abyssal: 'abyssal', rdna: 'rdna', cuda: 'cuda' };
+      const modeLabels = { abyssal: 'UDNA mode', rdna: 'CUDA mode', cuda: 'XE mode' };
+      const modeNames = { abyssal: 'XE', rdna: 'UDNA', cuda: 'CUDA' };
       let currentMode = 0;
 
       const setMode = (idx) => {
