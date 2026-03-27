@@ -1423,59 +1423,93 @@
       }
     }
 
-    /* ═══ TRAILER OVERLAY ═══ */
-    .trailer-overlay {
+    /* ═══ TRAILER MODAL ═══ */
+    .trailer-modal {
       position: fixed; inset: 0; z-index: 9999;
-      background: #010812;
+      background: rgba(1, 8, 18, 0.95);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       display: flex; align-items: center; justify-content: center;
-      transition: opacity 0.6s ease;
-    }
-    .trailer-overlay.hidden {
+      flex-direction: column; gap: 16px;
       opacity: 0; pointer-events: none;
+      transition: opacity 0.5s ease;
     }
-    .trailer-overlay.gone { display: none; }
-    .trailer-overlay video {
-      width: 100%; height: 100%; object-fit: cover;
+    .trailer-modal.open { opacity: 1; pointer-events: auto; }
+    .trailer-modal video {
+      width: 90vw; max-width: 1280px; aspect-ratio: 16/9;
+      border-radius: 16px; border: 1px solid rgba(88, 197, 255, 0.12);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+      background: #000;
     }
-    .trailer-skip {
-      position: absolute; bottom: 32px; right: 32px;
+    .trailer-controls {
+      display: flex; gap: 12px; align-items: center;
+    }
+    .trailer-btn {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase;
-      color: rgba(255,255,255,0.5);
+      font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
       background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 999px; padding: 10px 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px; padding: 8px 18px;
       cursor: pointer; transition: all 0.25s ease;
-      z-index: 10000;
     }
-    .trailer-skip:hover {
-      color: rgba(255,255,255,0.85);
-      border-color: rgba(255,255,255,0.3);
+    .trailer-btn:hover {
+      color: rgba(255,255,255,0.9);
+      border-color: rgba(255,255,255,0.25);
       background: rgba(255,255,255,0.08);
     }
-    .trailer-replay {
-      position: fixed; bottom: 24px; left: 24px; z-index: 49;
+    .trailer-close {
+      position: absolute; top: 24px; right: 28px;
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.5);
+      font-size: 18px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.25s ease;
+    }
+    .trailer-close:hover {
+      color: #fff; border-color: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.08);
+    }
+    .trailer-label {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.56rem; letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--text-4); background: none;
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 999px; padding: 8px 14px;
-      cursor: pointer; transition: all 0.25s ease;
+      font-size: 0.52rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
     }
-    .trailer-replay:hover {
-      color: var(--accent); border-color: rgba(255,255,255,0.15);
+    /* Hero play button — integrated into hero actions */
+    .hero-trailer-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      min-height: 48px; padding: 0 18px;
+      border-radius: 12px;
+      border: 1px solid var(--border-2);
+      background: rgba(255,255,255,0.02);
+      color: var(--accent);
+      text-decoration: none; font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s ease;
     }
+    .hero-trailer-btn:hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in oklab, var(--accent), transparent 50%);
+      box-shadow: 0 12px 26px rgba(0,0,0,0.24);
+      background: rgba(88, 197, 255, 0.05);
+    }
+    .hero-trailer-btn svg { width: 16px; height: 16px; }
   </style>
 </head>
 <body>
-  <!-- TRAILER INTRO -->
-  <div class="trailer-overlay" id="trailerOverlay">
-    <video id="trailerVideo" playsinline muted autoplay>
+  <!-- TRAILER MODAL -->
+  <div class="trailer-modal" id="trailerModal">
+    <button class="trailer-close" id="trailerClose">&times;</button>
+    <video id="trailerVideo" playsinline controls preload="none">
       <source src="trailer.mp4" type="video/mp4">
     </video>
-    <button class="trailer-skip" id="trailerSkip">Skip intro</button>
+    <div class="trailer-controls">
+      <div class="trailer-label">Portfolio Trailer</div>
+    </div>
   </div>
-  <button class="trailer-replay" id="trailerReplay">Replay trailer</button>
 
   <div class="site-shell">
     <div class="world-backdrop" aria-hidden="true">
@@ -1524,6 +1558,10 @@
               Building at the intersection of low-level hardware, real-time rendering, and creative digital production. I care about the places where silicon, systems, and visual craft collide.
             </p>
             <div class="hero-actions">
+              <button class="hero-trailer-btn" id="trailerPlay" type="button">
+                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Watch Intro
+              </button>
               <a class="btn btn-primary" href="https://github.com/Thanukamax" target="_blank" rel="noopener">GitHub</a>
               <a class="btn btn-secondary" href="mailto:thanukasehasnaperera@gmail.com">Get in touch</a>
             </div>
@@ -1831,26 +1869,38 @@
 
   <script>
     (() => {
-      // ── Trailer ──
-      const overlay = document.getElementById('trailerOverlay');
+      // ── Trailer modal ──
+      const modal = document.getElementById('trailerModal');
       const video = document.getElementById('trailerVideo');
-      const skipBtn = document.getElementById('trailerSkip');
-      const replayBtn = document.getElementById('trailerReplay');
+      const playBtn = document.getElementById('trailerPlay');
+      const closeBtn = document.getElementById('trailerClose');
 
-      const dismissTrailer = () => {
-        overlay.classList.add('hidden');
-        setTimeout(() => overlay.classList.add('gone'), 600);
+      const openTrailer = () => {
+        modal.classList.add('open');
+        video.currentTime = 0;
+        video.play();
+      };
+      const closeTrailer = () => {
+        modal.classList.remove('open');
         video.pause();
       };
 
-      video.addEventListener('ended', dismissTrailer);
-      skipBtn.addEventListener('click', dismissTrailer);
-
-      replayBtn.addEventListener('click', () => {
-        overlay.classList.remove('hidden', 'gone');
-        video.currentTime = 0;
-        video.play();
+      playBtn.addEventListener('click', openTrailer);
+      closeBtn.addEventListener('click', closeTrailer);
+      video.addEventListener('ended', closeTrailer);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeTrailer();
       });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('open')) closeTrailer();
+      });
+
+      // First-visit auto-open (desktop only, once)
+      const isDesktopScreen = window.innerWidth > 900;
+      if (isDesktopScreen && !localStorage.getItem('trailer-seen')) {
+        setTimeout(openTrailer, 800);
+        localStorage.setItem('trailer-seen', '1');
+      }
       const body = document.body;
       const modeLabel = document.getElementById('modeLabel');
       const rdnaToggle = document.getElementById('rdnaToggle');
