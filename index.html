@@ -1340,7 +1340,7 @@
           <a href="#systems">Systems</a>
           <a href="#builds">Builds</a>
           <a href="#signal">Signal</a>
-          <button class="rdna-toggle" id="rdnaToggle" type="button" aria-pressed="false">RDNA mode</button>
+          <button class="rdna-toggle" id="rdnaToggle" type="button" aria-pressed="false" style="color:var(--rdna-red);">RDNA mode</button>
         </nav>
       </div>
     </header>
@@ -1671,6 +1671,8 @@
       const setRdna = (enabled) => {
         body.classList.toggle('rdna', enabled);
         rdnaToggle.setAttribute('aria-pressed', String(enabled));
+        rdnaToggle.textContent = enabled ? 'Abyssal mode' : 'RDNA mode';
+        rdnaToggle.style.color = enabled ? '#58c5ff' : '#ed1c24';
         modeLabel.textContent = enabled ? 'rdna' : 'abyssal';
       };
 
