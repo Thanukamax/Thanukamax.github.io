@@ -65,6 +65,46 @@
     img, svg { display: block; }
     ::selection { background: var(--accent); color: #01060d; }
 
+    /* ═══ CUSTOM CURSOR ═══ */
+    *, *::before, *::after { cursor: none !important; }
+    .cursor-dot {
+      position: fixed; z-index: 9999; pointer-events: none;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px color-mix(in oklab, var(--accent), transparent 40%);
+      transform: translate(-50%, -50%);
+      transition: width 0.2s var(--ease), height 0.2s var(--ease), background 0.2s, box-shadow 0.2s;
+      will-change: left, top;
+    }
+    .cursor-dot.hover {
+      width: 14px; height: 14px;
+      background: transparent;
+      border: 1.5px solid var(--accent);
+      box-shadow: 0 0 16px color-mix(in oklab, var(--accent), transparent 50%);
+    }
+    .cursor-ring {
+      position: fixed; z-index: 9998; pointer-events: none;
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid color-mix(in oklab, var(--accent), transparent 70%);
+      transform: translate(-50%, -50%);
+      transition: width 0.3s var(--ease), height 0.3s var(--ease), border-color 0.3s, opacity 0.3s;
+      will-change: left, top;
+      opacity: 0.6;
+    }
+    .cursor-ring.hover {
+      width: 52px; height: 52px;
+      border-color: color-mix(in oklab, var(--accent), transparent 50%);
+      opacity: 0.4;
+    }
+    @media (max-width: 720px), (pointer: coarse) {
+      *, *::before, *::after { cursor: auto !important; }
+      .cursor-dot, .cursor-ring { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .cursor-dot, .cursor-ring { display: none; }
+      *, *::before, *::after { cursor: auto !important; }
+    }
+
     .site-shell {
       position: relative;
       isolation: isolate;
@@ -1279,6 +1319,10 @@
     </div>
     <div class="world-foreground" aria-hidden="true"></div>
 
+    <!-- CUSTOM CURSOR -->
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
     <!-- FOREGROUND EFFECTS -->
     <div class="fx-canvas" id="fxCanvas" aria-hidden="true"></div>
     <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
@@ -1651,10 +1695,13 @@
         const state = { x: 0, y: 0 };
         const target = { x: 0, y: 0 };
 
-        // Cursor glow
+        // Cursor glow + custom cursor
         const glow = document.getElementById('cursorGlow');
+        const cursorDot = document.getElementById('cursorDot');
+        const cursorRing = document.getElementById('cursorRing');
         const glowPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
         const glowTarget = { x: glowPos.x, y: glowPos.y };
+        const ringPos = { x: glowPos.x, y: glowPos.y };
 
         window.addEventListener('pointermove', (e) => {
           const x = (e.clientX / window.innerWidth) - 0.5;
@@ -1663,7 +1710,25 @@
           target.y = y;
           glowTarget.x = e.clientX;
           glowTarget.y = e.clientY;
+          // Dot follows instantly
+          cursorDot.style.left = e.clientX + 'px';
+          cursorDot.style.top = e.clientY + 'px';
         }, { passive: true });
+
+        // Hover detection for interactive elements
+        const hoverTargets = 'a, button, .btn, .system-tag, .nav-links a, .rdna-toggle, [onclick]';
+        document.addEventListener('mouseover', (e) => {
+          if (e.target.closest(hoverTargets)) {
+            cursorDot.classList.add('hover');
+            cursorRing.classList.add('hover');
+          }
+        });
+        document.addEventListener('mouseout', (e) => {
+          if (e.target.closest(hoverTargets)) {
+            cursorDot.classList.remove('hover');
+            cursorRing.classList.remove('hover');
+          }
+        });
 
         const tick = () => {
           state.x += (target.x - state.x) * 0.08;
@@ -1679,6 +1744,11 @@
           glowPos.y += (glowTarget.y - glowPos.y) * 0.04;
           glow.style.left = glowPos.x + 'px';
           glow.style.top = glowPos.y + 'px';
+          // Cursor ring — medium lag, trails behind dot
+          ringPos.x += (glowTarget.x - ringPos.x) * 0.12;
+          ringPos.y += (glowTarget.y - ringPos.y) * 0.12;
+          cursorRing.style.left = ringPos.x + 'px';
+          cursorRing.style.top = ringPos.y + 'px';
 
           requestAnimationFrame(tick);
         };
