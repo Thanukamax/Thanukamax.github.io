@@ -397,8 +397,7 @@
       flex-wrap: wrap;
       justify-content: center;
     }
-    .nav-links a,
-    .rdna-toggle {
+    .nav-links a {
       border: 1px solid transparent;
       border-radius: 999px;
       padding: 8px 12px;
@@ -411,15 +410,46 @@
       background: rgba(255,255,255,0.01);
       transition: all 0.25s ease;
     }
-    .nav-links a:hover,
-    .rdna-toggle:hover,
-    .rdna-toggle[aria-pressed="true"] {
+    .nav-links a:hover {
       color: var(--accent);
       border-color: var(--border-2);
       background: rgba(88, 197, 255, 0.05);
     }
-    body.rdna .rdna-toggle[aria-pressed="true"] {
-      background: rgba(237, 28, 36, 0.08);
+    /* RDNA toggle — fixed bottom-right FAB */
+    .rdna-fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 50;
+      border: 1px solid rgba(237, 28, 36, 0.25);
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #ed1c24;
+      background: rgba(237, 28, 36, 0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      cursor: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    .rdna-fab:hover {
+      background: rgba(237, 28, 36, 0.12);
+      border-color: rgba(237, 28, 36, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(0, 0, 0, 0.4);
+    }
+    body.rdna .rdna-fab {
+      color: #58c5ff;
+      border-color: rgba(88, 197, 255, 0.25);
+      background: rgba(88, 197, 255, 0.06);
+    }
+    body.rdna .rdna-fab:hover {
+      background: rgba(88, 197, 255, 0.12);
+      border-color: rgba(88, 197, 255, 0.4);
     }
 
     .section {
@@ -1340,10 +1370,12 @@
           <a href="#systems">Systems</a>
           <a href="#builds">Builds</a>
           <a href="#signal">Signal</a>
-          <button class="rdna-toggle" id="rdnaToggle" type="button" aria-pressed="false" style="color:var(--rdna-red);">RDNA mode</button>
         </nav>
       </div>
     </header>
+
+    <!-- RDNA toggle — fixed bottom right -->
+    <button class="rdna-fab" id="rdnaToggle" type="button" aria-pressed="false">RDNA mode</button>
 
     <main id="top">
       <section class="section hero">
@@ -1672,7 +1704,6 @@
         body.classList.toggle('rdna', enabled);
         rdnaToggle.setAttribute('aria-pressed', String(enabled));
         rdnaToggle.textContent = enabled ? 'Abyssal mode' : 'RDNA mode';
-        rdnaToggle.style.color = enabled ? '#58c5ff' : '#ed1c24';
         modeLabel.textContent = enabled ? 'rdna' : 'abyssal';
       };
 
