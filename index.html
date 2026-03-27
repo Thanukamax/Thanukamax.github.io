@@ -61,6 +61,53 @@
         linear-gradient(180deg, #090506 0%, #120809 45%, #070405 100%);
       background-attachment: fixed;
     }
+    body.cuda {
+      --accent: #76b900;
+      --accent-2: #8fd400;
+      --accent-3: #5a8f00;
+      --hero-glow: rgba(118, 185, 0, 0.14);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(40, 80, 10, 0.2) 0, transparent 30%),
+        radial-gradient(circle at 80% 20%, rgba(30, 60, 8, 0.18) 0, transparent 28%),
+        linear-gradient(180deg, #050806 0%, #081208 45%, #040704 100%);
+      background-attachment: fixed;
+    }
+    body.cuda .depth-grid {
+      background-image:
+        linear-gradient(rgba(118, 185, 0, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(118, 185, 0, 0.02) 1px, transparent 1px);
+    }
+    body.cuda .depth-ribs::before,
+    body.cuda .depth-ribs::after {
+      border-color: rgba(118, 185, 0, 0.08);
+    }
+    body.cuda .depth-shards::before,
+    body.cuda .depth-shards::after {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 14%, rgba(118, 185, 0, 0.04) 60%, transparent);
+    }
+    body.cuda .world-foreground::before,
+    body.cuda .world-foreground::after {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 25%, rgba(118, 185, 0, 0.04) 55%, transparent);
+    }
+    body.cuda .scene-far::before,
+    body.cuda .scene-far::after {
+      border-color: rgba(118, 185, 0, 0.11);
+      box-shadow: inset 0 0 50px rgba(118, 185, 0, 0.04);
+    }
+    body.cuda .scene-mid::before,
+    body.cuda .scene-mid::after {
+      border-color: rgba(118, 185, 0, 0.11);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 22%, rgba(118, 185, 0, 0.04) 60%, transparent);
+    }
+    body.cuda .scene-front::before {
+      border-color: rgba(118, 185, 0, 0.14);
+      box-shadow: 0 0 0 26px rgba(118, 185, 0, 0.03), 0 0 0 58px rgba(118, 185, 0, 0.015);
+    }
+    body.cuda .scene-glyph,
+    body.cuda .scene-plate::after {
+      border-color: rgba(118, 185, 0, 0.12);
+      box-shadow: inset 0 0 0 22px rgba(118, 185, 0, 0.03), inset 0 0 0 54px rgba(118, 185, 0, 0.018);
+    }
     a { color: inherit; }
     img, svg { display: block; }
     ::selection { background: var(--accent); color: #01060d; }
@@ -255,6 +302,9 @@
     body.rdna .mote {
       background: radial-gradient(circle, rgba(237,28,36,0.5) 0%, rgba(237,28,36,0) 70%);
     }
+    body.cuda .mote {
+      background: radial-gradient(circle, rgba(118,185,0,0.5) 0%, rgba(118,185,0,0) 70%);
+    }
     @keyframes moteCycle {
       0% { opacity: 0; transform: translate(0, 0); }
       15% { opacity: var(--peak, 0.7); }
@@ -272,6 +322,9 @@
     }
     body.rdna .bokeh {
       background: radial-gradient(circle, rgba(237,28,36,0.1) 0%, rgba(237,28,36,0.02) 50%, transparent 70%);
+    }
+    body.cuda .bokeh {
+      background: radial-gradient(circle, rgba(118,185,0,0.1) 0%, rgba(118,185,0,0.02) 50%, transparent 70%);
     }
     @keyframes bokehDrift {
       0% { opacity: 0; transform: translate(0, 0) scale(0.8); }
@@ -293,6 +346,9 @@
     body.rdna .light-shaft {
       background: linear-gradient(180deg, rgba(237,28,36,0.012) 0%, rgba(237,28,36,0.003) 30%, transparent 60%);
     }
+    body.cuda .light-shaft {
+      background: linear-gradient(180deg, rgba(118,185,0,0.012) 0%, rgba(118,185,0,0.003) 30%, transparent 60%);
+    }
     @keyframes shaftPulse {
       0%, 100% { opacity: 0.3; }
       50% { opacity: 0.8; }
@@ -313,6 +369,9 @@
     body.rdna .cursor-glow {
       background: radial-gradient(circle, rgba(237,28,36,0.035) 0%, transparent 60%);
     }
+    body.cuda .cursor-glow {
+      background: radial-gradient(circle, rgba(118,185,0,0.035) 0%, transparent 60%);
+    }
     /* Scan line — horizontal sweep */
     .scan-sweep {
       position: fixed;
@@ -326,6 +385,9 @@
     }
     body.rdna .scan-sweep {
       background: linear-gradient(90deg, transparent 10%, rgba(237,28,36,0.05) 30%, rgba(237,28,36,0.1) 50%, rgba(237,28,36,0.05) 70%, transparent 90%);
+    }
+    body.cuda .scan-sweep {
+      background: linear-gradient(90deg, transparent 10%, rgba(118,185,0,0.05) 30%, rgba(118,185,0,0.1) 50%, rgba(118,185,0,0.05) 70%, transparent 90%);
     }
     @keyframes scanSweep {
       0% { top: -2px; opacity: 0; }
@@ -346,6 +408,9 @@
     }
     body.rdna .edge-flare {
       background: radial-gradient(circle, rgba(237,28,36,0.05) 0%, transparent 60%);
+    }
+    body.cuda .edge-flare {
+      background: radial-gradient(circle, rgba(118,185,0,0.05) 0%, transparent 60%);
     }
     @keyframes flarePulse {
       0% { opacity: 0.3; transform: scale(0.9); }
@@ -443,11 +508,20 @@
       box-shadow: 0 6px 28px rgba(0, 0, 0, 0.4);
     }
     body.rdna .rdna-fab {
+      color: #76b900;
+      border-color: rgba(118, 185, 0, 0.25);
+      background: rgba(118, 185, 0, 0.06);
+    }
+    body.rdna .rdna-fab:hover {
+      background: rgba(118, 185, 0, 0.12);
+      border-color: rgba(118, 185, 0, 0.4);
+    }
+    body.cuda .rdna-fab {
       color: #58c5ff;
       border-color: rgba(88, 197, 255, 0.25);
       background: rgba(88, 197, 255, 0.06);
     }
-    body.rdna .rdna-fab:hover {
+    body.cuda .rdna-fab:hover {
       background: rgba(88, 197, 255, 0.12);
       border-color: rgba(88, 197, 255, 0.4);
     }
@@ -1153,6 +1227,16 @@
       width: 54px;
       height: 54px;
     }
+    .age-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 8px; border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.56rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: #ff6b6b; border: 1px solid rgba(255, 107, 107, 0.25);
+      background: rgba(255, 107, 107, 0.06);
+      margin-left: 8px; vertical-align: middle;
+    }
 
     .community-card {
       max-width: 480px;
@@ -1423,7 +1507,7 @@
               <div class="eyebrow">Profile</div>
               <h2>Core identity</h2>
             </div>
-            <p>Not a generic portfolio surface. This is a cleaner read on who I am, what I care about technically, and where I sit between rendering, systems, and creative production.</p>
+            <p>Quick rundown on who I actually am, what I'm into, and where my head's at between rendering, systems, and creative work.</p>
           </div>
 
           <div class="about-layout">
@@ -1459,7 +1543,7 @@
               <div class="eyebrow">Deployment log</div>
               <h2>Active station</h2>
             </div>
-            <p>Less résumé theater, more signal: where I’m working, what I influence, and the kind of technical + product-facing work I’m actually involved in.</p>
+            <p>Where I’m currently working and what I’m actually doing there — no fluff.</p>
           </div>
 
           <div class="timeline">
@@ -1491,7 +1575,7 @@
               <div class="eyebrow">Training record</div>
               <h2>Academic background</h2>
             </div>
-            <p>The formal track underneath the portfolio: where the foundation came from and how the path has been stacked so far.</p>
+            <p>The academic side — where the foundation was built and how the stack's been growing.</p>
           </div>
 
           <div class="education-grid">
@@ -1527,7 +1611,7 @@
               <div class="eyebrow">Subsystem map</div>
               <h2>Technical identity</h2>
             </div>
-            <p>This should read like how my brain clusters work, not just a dump of tools. The grouping matters more than the buzzwords.</p>
+            <p>How my brain actually clusters things — grouped by how I think, not just a list of logos.</p>
           </div>
 
           <div class="systems-grid reveal">
@@ -1603,14 +1687,14 @@
               <div class="eyebrow">Build archive</div>
               <h2>Deployed modules</h2>
             </div>
-            <p>The project area should feel like an archive, not a plain card grid. Each build needs a stronger silhouette and a clearer reason to exist.</p>
+            <p>Stuff I've actually shipped. Tools I built because the ones that existed weren't good enough.</p>
           </div>
 
           <div class="projects-stack">
             <a class="project-card reveal" href="https://github.com/Thanukamax/h-cli" target="_blank" rel="noopener">
               <div class="project-info">
                 <div class="module-id">Module 001</div>
-                <div class="project-name">h-cli</div>
+                <div class="project-name">h-cli <span class="age-badge">18+</span></div>
                 <p class="project-copy">Terminal streaming client with themed UI, caching, preloading, and MPV integration. Built for speed-of-thought media consumption instead of bloated playback flow.</p>
                 <div class="chip-row">
                   <span class="chip">Python</span>
@@ -1655,7 +1739,7 @@
               <div class="eyebrow">Community</div>
               <h2>Field operations</h2>
             </div>
-            <p>Smaller, supporting signal — enough to show involvement without bloating the page into a full résumé clone.</p>
+            <p>Things I do outside of work because I genuinely care about the community.</p>
           </div>
 
           <div class="community-card panel reveal">
@@ -1676,7 +1760,7 @@
           <div class="contact-copy reveal">
             <div class="eyebrow">Open channel</div>
             <h2>Let’s build something <em>sharp</em>.</h2>
-            <p>Whether it’s game systems, GPU pipelines, or creative tooling, I’m interested in ambitious projects that push into harder technical territory without losing taste.</p>
+            <p>Game systems, GPU work, creative tooling — if it’s ambitious and technically interesting, I’m down. Let’s talk.</p>
             <div class="hero-actions" style="margin-top: 24px;">
               <a class="btn btn-primary" href="mailto:thanukasehasnaperera@gmail.com">Send signal</a>
               <a class="btn btn-secondary" href="https://github.com/Thanukamax" target="_blank" rel="noopener">GitHub</a>
@@ -1700,18 +1784,28 @@
       const rdnaToggle = document.getElementById('rdnaToggle');
       const rdnaTrigger = document.getElementById('rdnaTrigger');
 
-      const setRdna = (enabled) => {
-        body.classList.toggle('rdna', enabled);
-        rdnaToggle.setAttribute('aria-pressed', String(enabled));
-        rdnaToggle.textContent = enabled ? 'Abyssal mode' : 'RDNA mode';
-        modeLabel.textContent = enabled ? 'rdna' : 'abyssal';
+      // Mode cycling: abyssal (blue) → rdna (red) → cuda (green) → abyssal ...
+      const modes = ['abyssal', 'rdna', 'cuda'];
+      const modeLabels = { abyssal: 'RDNA mode', rdna: 'CUDA mode', cuda: 'Abyssal mode' };
+      const modeNames = { abyssal: 'abyssal', rdna: 'rdna', cuda: 'cuda' };
+      let currentMode = 0;
+
+      const setMode = (idx) => {
+        currentMode = idx;
+        body.classList.remove('rdna', 'cuda');
+        if (modes[idx] !== 'abyssal') body.classList.add(modes[idx]);
+        rdnaToggle.setAttribute('aria-pressed', String(modes[idx] !== 'abyssal'));
+        rdnaToggle.textContent = modeLabels[modes[idx]];
+        modeLabel.textContent = modeNames[modes[idx]];
       };
 
-      rdnaToggle.addEventListener('click', () => {
-        setRdna(!body.classList.contains('rdna'));
-      });
+      const cycleMode = () => setMode((currentMode + 1) % modes.length);
+
+      rdnaToggle.addEventListener('click', cycleMode);
       rdnaTrigger.addEventListener('click', () => {
-        setRdna(!body.classList.contains('rdna'));
+        // RDNA trigger always goes to RDNA mode, or cycles if already there
+        if (currentMode === 1) cycleMode();
+        else setMode(1);
       });
 
       const revealEls = document.querySelectorAll('.reveal');
