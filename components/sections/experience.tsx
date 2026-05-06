@@ -22,11 +22,11 @@ const entries = [
     location: 'Sri Lanka / Remote',
     summary:  'Working across engineering and marketing at BitByBit — a platform where developers create, share, and play custom game content. Built and maintained CLI tooling for the platform, contributed to a CCTV ingest and processing pipeline, and handled marketing operations to drive platform growth and creator engagement.',
     tags: [
-      { t: 'TypeScript',      f: 'font-jetbrains' },
-      { t: 'CLI Tooling',     f: 'font-fira' },
-      { t: 'CCTV Pipeline',   f: 'font-rdna' },
-      { t: 'Node.js',         f: 'font-blender' },
-      { t: 'Marketing',       f: 'font-mono' },
+      { t: 'TypeScript',    f: 'font-jetbrains', color: '#7dd3fc' },
+      { t: 'CLI Tooling',   f: 'font-fira',       color: '#a78bfa' },
+      { t: 'CCTV Pipeline', f: 'font-rdna',       color: '#fb923c' },
+      { t: 'Node.js',       f: 'font-blender',    color: '#34d399' },
+      { t: 'Marketing',     f: 'font-mono',       color: '#fbbf24' },
     ],
   },
 ]
@@ -142,8 +142,11 @@ function Entry({
 
             {/* Tags */}
             <div className="flex flex-wrap gap-1.5">
-              {entry.tags.map(({ t, f }) => (
-                <span key={t} className={`tech-chip ${f}`}>{t}</span>
+              {entry.tags.map(({ t, f, color }) => (
+                <span key={t} className={`tech-chip ${f}`}
+                  style={{ color: `${color}cc`, borderColor: `${color}28`, background: `${color}08` }}>
+                  {t}
+                </span>
               ))}
             </div>
           </div>

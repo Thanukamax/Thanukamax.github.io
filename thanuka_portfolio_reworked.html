@@ -1,0 +1,2062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanuka Sehasna Perera</title>
+  <meta name="description" content="Game Developer, Computer Science undergraduate, and systems-focused builder working across GPU architecture, real-time rendering, and creative tooling.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      color: var(--text-1);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(38, 150, 220, 0.16) 0, transparent 30%),
+        radial-gradient(circle at 80% 20%, rgba(15, 96, 170, 0.14) 0, transparent 28%),
+        linear-gradient(180deg, #020813 0%, #04101d 45%, #030b15 100%);
+      background-attachment: fixed;
+      -webkit-font-smoothing: antialiased;
+    }
+    :root {
+      --bg-0: #020813;
+      --bg-1: rgba(8, 19, 36, 0.72);
+      --bg-2: rgba(10, 24, 44, 0.86);
+      --bg-3: rgba(7, 17, 31, 0.94);
+      --border-1: rgba(87, 182, 255, 0.14);
+      --border-2: rgba(87, 182, 255, 0.24);
+      --shadow-1: 0 12px 40px rgba(0, 0, 0, 0.28);
+      --shadow-2: 0 24px 90px rgba(0, 0, 0, 0.42);
+      --text-1: #e8f0f8;
+      --text-2: #a4bfd7;
+      --text-3: #6f8da9;
+      --text-4: #496780;
+      --accent: #58c5ff;
+      --accent-2: #1eb8da;
+      --accent-3: #0d82d8;
+      --hero-glow: rgba(88, 197, 255, 0.16);
+      --rdna-red: #ed1c24;
+      --rdna-red-2: #ff4a41;
+      --rdna-red-3: #b3161c;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+      --max: 1180px;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    body.rdna {
+      --accent: var(--rdna-red);
+      --accent-2: var(--rdna-red-2);
+      --accent-3: var(--rdna-red-3);
+      --hero-glow: rgba(237, 28, 36, 0.14);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(120, 28, 28, 0.18) 0, transparent 30%),
+        radial-gradient(circle at 80% 20%, rgba(85, 12, 18, 0.18) 0, transparent 28%),
+        linear-gradient(180deg, #090506 0%, #120809 45%, #070405 100%);
+      background-attachment: fixed;
+    }
+    body.cuda {
+      --accent: #76b900;
+      --accent-2: #8fd400;
+      --accent-3: #5a8f00;
+      --hero-glow: rgba(118, 185, 0, 0.14);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(40, 80, 10, 0.2) 0, transparent 30%),
+        radial-gradient(circle at 80% 20%, rgba(30, 60, 8, 0.18) 0, transparent 28%),
+        linear-gradient(180deg, #050806 0%, #081208 45%, #040704 100%);
+      background-attachment: fixed;
+    }
+    body.cuda .depth-grid {
+      background-image:
+        linear-gradient(rgba(118, 185, 0, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(118, 185, 0, 0.02) 1px, transparent 1px);
+    }
+    body.cuda .depth-ribs::before,
+    body.cuda .depth-ribs::after {
+      border-color: rgba(118, 185, 0, 0.08);
+    }
+    body.cuda .depth-shards::before,
+    body.cuda .depth-shards::after {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 14%, rgba(118, 185, 0, 0.04) 60%, transparent);
+    }
+    body.cuda .world-foreground::before,
+    body.cuda .world-foreground::after {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 25%, rgba(118, 185, 0, 0.04) 55%, transparent);
+    }
+    body.cuda .scene-far::before,
+    body.cuda .scene-far::after {
+      border-color: rgba(118, 185, 0, 0.11);
+      box-shadow: inset 0 0 50px rgba(118, 185, 0, 0.04);
+    }
+    body.cuda .scene-mid::before,
+    body.cuda .scene-mid::after {
+      border-color: rgba(118, 185, 0, 0.11);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 22%, rgba(118, 185, 0, 0.04) 60%, transparent);
+    }
+    body.cuda .scene-front::before {
+      border-color: rgba(118, 185, 0, 0.14);
+      box-shadow: 0 0 0 26px rgba(118, 185, 0, 0.03), 0 0 0 58px rgba(118, 185, 0, 0.015);
+    }
+    body.cuda .scene-glyph,
+    body.cuda .scene-plate::after {
+      border-color: rgba(118, 185, 0, 0.12);
+      box-shadow: inset 0 0 0 22px rgba(118, 185, 0, 0.03), inset 0 0 0 54px rgba(118, 185, 0, 0.018);
+    }
+    a { color: inherit; }
+    img, svg { display: block; }
+    ::selection { background: var(--accent); color: #01060d; }
+
+    /* ═══ CUSTOM CURSOR ═══ */
+    *, *::before, *::after { cursor: none !important; }
+    .cursor-dot {
+      position: fixed; z-index: 9999; pointer-events: none;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px color-mix(in oklab, var(--accent), transparent 40%);
+      transform: translate(-50%, -50%);
+      transition: width 0.2s var(--ease), height 0.2s var(--ease), background 0.2s, box-shadow 0.2s;
+      will-change: left, top;
+    }
+    .cursor-dot.hover {
+      width: 14px; height: 14px;
+      background: transparent;
+      border: 1.5px solid var(--accent);
+      box-shadow: 0 0 16px color-mix(in oklab, var(--accent), transparent 50%);
+    }
+    .cursor-ring {
+      position: fixed; z-index: 9998; pointer-events: none;
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid color-mix(in oklab, var(--accent), transparent 70%);
+      transform: translate(-50%, -50%);
+      transition: width 0.3s var(--ease), height 0.3s var(--ease), border-color 0.3s, opacity 0.3s;
+      will-change: left, top;
+      opacity: 0.6;
+    }
+    .cursor-ring.hover {
+      width: 52px; height: 52px;
+      border-color: color-mix(in oklab, var(--accent), transparent 50%);
+      opacity: 0.4;
+    }
+    @media (max-width: 720px), (pointer: coarse) {
+      *, *::before, *::after { cursor: auto !important; }
+      .cursor-dot, .cursor-ring { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .cursor-dot, .cursor-ring { display: none; }
+      *, *::before, *::after { cursor: auto !important; }
+    }
+
+    .site-shell {
+      position: relative;
+      isolation: isolate;
+    }
+    .world-backdrop,
+    .world-foreground {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      overflow: clip;
+    }
+    .world-backdrop::before,
+    .world-backdrop::after {
+      content: "";
+      position: absolute;
+      inset: auto;
+      border-radius: 50%;
+      filter: blur(30px);
+      opacity: 0.6;
+      transition: transform 0.2s linear;
+    }
+    .world-backdrop::before {
+      width: 42vw;
+      height: 42vw;
+      min-width: 420px;
+      min-height: 420px;
+      top: -12vw;
+      left: -8vw;
+      background: radial-gradient(circle, var(--hero-glow) 0%, transparent 65%);
+    }
+    .world-backdrop::after {
+      width: 36vw;
+      height: 36vw;
+      min-width: 300px;
+      min-height: 300px;
+      top: 18vh;
+      right: -10vw;
+      background: radial-gradient(circle, rgba(30, 184, 218, 0.08) 0%, transparent 62%);
+    }
+    .depth-grid,
+    .depth-ribs,
+    .depth-shards {
+      position: absolute;
+      inset: 0;
+      opacity: 0.45;
+      transition: transform 0.18s linear;
+    }
+    .depth-grid {
+      background-image:
+        linear-gradient(rgba(88, 197, 255, 0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(88, 197, 255, 0.018) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(circle at 50% 35%, black, transparent 70%);
+    }
+    body.rdna .depth-grid {
+      background-image:
+        linear-gradient(rgba(237, 28, 36, 0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(237, 28, 36, 0.022) 1px, transparent 1px);
+    }
+    .depth-ribs::before,
+    .depth-ribs::after {
+      content: "";
+      position: absolute;
+      width: 58vw;
+      height: 58vw;
+      min-width: 560px;
+      min-height: 560px;
+      border: 1px solid rgba(88, 197, 255, 0.06);
+      border-radius: 50%;
+      top: 18vh;
+      right: -18vw;
+    }
+    .depth-ribs::after {
+      width: 38vw;
+      height: 38vw;
+      min-width: 360px;
+      min-height: 360px;
+      top: 48vh;
+      left: -12vw;
+      right: auto;
+      border-color: rgba(88, 197, 255, 0.04);
+    }
+    body.rdna .depth-ribs::before,
+    body.rdna .depth-ribs::after {
+      border-color: rgba(237, 28, 36, 0.08);
+    }
+    .depth-shards::before,
+    .depth-shards::after {
+      content: "";
+      position: absolute;
+      width: 24vw;
+      min-width: 220px;
+      height: 120vh;
+      top: -10vh;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 14%, rgba(88, 197, 255, 0.03) 60%, transparent);
+      clip-path: polygon(30% 0, 100% 0, 70% 100%, 0 100%);
+      opacity: 0.3;
+    }
+    .depth-shards::before { left: -4vw; }
+    .depth-shards::after { right: -10vw; transform: scaleX(-1); }
+    body.rdna .depth-shards::before,
+    body.rdna .depth-shards::after {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 14%, rgba(237, 28, 36, 0.04) 60%, transparent);
+    }
+    .world-foreground {
+      z-index: 8;
+      mix-blend-mode: screen;
+      opacity: 0.28;
+    }
+    .world-foreground::before,
+    .world-foreground::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 8vw;
+      min-width: 56px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.035), transparent 25%, rgba(88, 197, 255, 0.03) 55%, transparent);
+    }
+    .world-foreground::before { left: 0; clip-path: polygon(0 0, 80% 0, 40% 100%, 0 100%); }
+    .world-foreground::after { right: 0; clip-path: polygon(20% 0, 100% 0, 100% 100%, 60% 100%); }
+    body.rdna .world-foreground::before,
+    body.rdna .world-foreground::after {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 25%, rgba(237, 28, 36, 0.04) 55%, transparent);
+    }
+
+    /* ═══════════════════════════════════════
+       FOREGROUND EFFECTS — PARTICLE SYSTEM
+       ═══════════════════════════════════════ */
+    .fx-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 9;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    /* Floating motes — tiny luminous particles that drift slowly */
+    .mote {
+      position: absolute;
+      width: var(--sz, 3px);
+      height: var(--sz, 3px);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(88,197,255,0.6) 0%, rgba(88,197,255,0) 70%);
+      opacity: 0;
+      animation: moteCycle var(--dur, 12s) var(--del, 0s) ease-in-out infinite;
+    }
+    body.rdna .mote {
+      background: radial-gradient(circle, rgba(237,28,36,0.5) 0%, rgba(237,28,36,0) 70%);
+    }
+    body.cuda .mote {
+      background: radial-gradient(circle, rgba(118,185,0,0.5) 0%, rgba(118,185,0,0) 70%);
+    }
+    @keyframes moteCycle {
+      0% { opacity: 0; transform: translate(0, 0); }
+      15% { opacity: var(--peak, 0.7); }
+      85% { opacity: var(--peak, 0.7); }
+      100% { opacity: 0; transform: translate(var(--dx, -20px), var(--dy, -40px)); }
+    }
+    /* Depth-of-field bokeh — larger, softer, slower */
+    .bokeh {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(88,197,255,0.12) 0%, rgba(88,197,255,0.02) 50%, transparent 70%);
+      filter: blur(1px);
+      opacity: 0;
+      animation: bokehDrift var(--dur, 20s) var(--del, 0s) ease-in-out infinite;
+    }
+    body.rdna .bokeh {
+      background: radial-gradient(circle, rgba(237,28,36,0.1) 0%, rgba(237,28,36,0.02) 50%, transparent 70%);
+    }
+    body.cuda .bokeh {
+      background: radial-gradient(circle, rgba(118,185,0,0.1) 0%, rgba(118,185,0,0.02) 50%, transparent 70%);
+    }
+    @keyframes bokehDrift {
+      0% { opacity: 0; transform: translate(0, 0) scale(0.8); }
+      20% { opacity: var(--peak, 0.4); }
+      80% { opacity: var(--peak, 0.4); }
+      100% { opacity: 0; transform: translate(var(--dx, 15px), var(--dy, -30px)) scale(1.1); }
+    }
+    /* Light shaft — angled volumetric ray */
+    .light-shaft {
+      position: absolute;
+      width: var(--w, 120px);
+      height: 120vh;
+      top: -10vh;
+      background: linear-gradient(180deg, rgba(88,197,255,0.015) 0%, rgba(88,197,255,0.004) 30%, transparent 60%);
+      transform: rotate(var(--rot, -8deg)) translateX(var(--tx, 0));
+      opacity: 0;
+      animation: shaftPulse var(--dur, 10s) var(--del, 0s) ease-in-out infinite;
+    }
+    body.rdna .light-shaft {
+      background: linear-gradient(180deg, rgba(237,28,36,0.012) 0%, rgba(237,28,36,0.003) 30%, transparent 60%);
+    }
+    body.cuda .light-shaft {
+      background: linear-gradient(180deg, rgba(118,185,0,0.012) 0%, rgba(118,185,0,0.003) 30%, transparent 60%);
+    }
+    @keyframes shaftPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.8; }
+    }
+    /* Mouse-reactive glow — follows cursor with heavy lag */
+    .cursor-glow {
+      position: fixed;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(88,197,255,0.04) 0%, transparent 60%);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 7;
+      transition: opacity 0.6s ease;
+      will-change: left, top;
+    }
+    body.rdna .cursor-glow {
+      background: radial-gradient(circle, rgba(237,28,36,0.035) 0%, transparent 60%);
+    }
+    body.cuda .cursor-glow {
+      background: radial-gradient(circle, rgba(118,185,0,0.035) 0%, transparent 60%);
+    }
+    /* Scan line — horizontal sweep */
+    .scan-sweep {
+      position: fixed;
+      left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 10%, rgba(88,197,255,0.06) 30%, rgba(88,197,255,0.12) 50%, rgba(88,197,255,0.06) 70%, transparent 90%);
+      z-index: 9;
+      pointer-events: none;
+      opacity: 0;
+      animation: scanSweep 8s ease-in-out infinite;
+    }
+    body.rdna .scan-sweep {
+      background: linear-gradient(90deg, transparent 10%, rgba(237,28,36,0.05) 30%, rgba(237,28,36,0.1) 50%, rgba(237,28,36,0.05) 70%, transparent 90%);
+    }
+    body.cuda .scan-sweep {
+      background: linear-gradient(90deg, transparent 10%, rgba(118,185,0,0.05) 30%, rgba(118,185,0,0.1) 50%, rgba(118,185,0,0.05) 70%, transparent 90%);
+    }
+    @keyframes scanSweep {
+      0% { top: -2px; opacity: 0; }
+      5% { opacity: 0.6; }
+      95% { opacity: 0.6; }
+      100% { top: 100vh; opacity: 0; }
+    }
+    /* Edge light flares — subtle corner accents */
+    .edge-flare {
+      position: fixed;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(88,197,255,0.06) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 6;
+      animation: flarePulse var(--dur, 6s) var(--del, 0s) ease-in-out infinite alternate;
+    }
+    body.rdna .edge-flare {
+      background: radial-gradient(circle, rgba(237,28,36,0.05) 0%, transparent 60%);
+    }
+    body.cuda .edge-flare {
+      background: radial-gradient(circle, rgba(118,185,0,0.05) 0%, transparent 60%);
+    }
+    @keyframes flarePulse {
+      0% { opacity: 0.3; transform: scale(0.9); }
+      100% { opacity: 0.7; transform: scale(1.1); }
+    }
+
+    @media (max-width: 720px) {
+      .fx-canvas { display: none; }
+      .cursor-glow { display: none; }
+      .scan-sweep { display: none; }
+      .edge-flare { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .fx-canvas, .cursor-glow, .scan-sweep, .edge-flare { display: none !important; }
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: rgba(2, 10, 20, 0.62);
+      border-bottom: 1px solid var(--border-1);
+    }
+    .nav-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      min-height: 66px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .brand {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-1);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+    .brand b { color: var(--accent); }
+    .nav-links {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .nav-links a {
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.64rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      text-decoration: none;
+      background: rgba(255,255,255,0.01);
+      transition: all 0.25s ease;
+    }
+    .nav-links a:hover {
+      color: var(--accent);
+      border-color: var(--border-2);
+      background: rgba(88, 197, 255, 0.05);
+    }
+    /* RDNA toggle — fixed bottom-right FAB */
+    .rdna-fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 50;
+      border: 1px solid rgba(237, 28, 36, 0.25);
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #ed1c24;
+      background: rgba(237, 28, 36, 0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      cursor: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    .rdna-fab:hover {
+      background: rgba(237, 28, 36, 0.12);
+      border-color: rgba(237, 28, 36, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(0, 0, 0, 0.4);
+    }
+    body.rdna .rdna-fab {
+      color: #76b900;
+      border-color: rgba(118, 185, 0, 0.25);
+      background: rgba(118, 185, 0, 0.06);
+    }
+    body.rdna .rdna-fab:hover {
+      background: rgba(118, 185, 0, 0.12);
+      border-color: rgba(118, 185, 0, 0.4);
+    }
+    body.cuda .rdna-fab {
+      color: #58c5ff;
+      border-color: rgba(88, 197, 255, 0.25);
+      background: rgba(88, 197, 255, 0.06);
+    }
+    body.cuda .rdna-fab:hover {
+      background: rgba(88, 197, 255, 0.12);
+      border-color: rgba(88, 197, 255, 0.4);
+    }
+
+    .section {
+      position: relative;
+      padding: clamp(5rem, 12vw, 8rem) 24px;
+    }
+    .section::before {
+      content: "";
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      top: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(88, 197, 255, 0.09), transparent);
+      pointer-events: none;
+    }
+    .wrap {
+      position: relative;
+      max-width: var(--max);
+      margin: 0 auto;
+      z-index: 2;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.64rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 28px;
+      height: 1px;
+      background: currentColor;
+    }
+    h1, h2, h3, p { margin: 0; }
+    .hero {
+      min-height: calc(100vh - 66px);
+      display: grid;
+      align-items: center;
+      padding-top: clamp(3rem, 8vw, 5rem);
+      overflow: clip;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 620px) minmax(320px, 1fr);
+      gap: clamp(2rem, 5vw, 5rem);
+      align-items: center;
+    }
+    .hero-copy {
+      position: relative;
+      z-index: 3;
+    }
+    .signal {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .signal-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent-2);
+      box-shadow: 0 0 14px color-mix(in oklab, var(--accent-2), transparent 30%);
+      animation: pulse 2.8s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.85)} }
+    .hero-title {
+      font-size: clamp(3.25rem, 8vw, 6.2rem);
+      line-height: 0.94;
+      letter-spacing: -0.055em;
+      font-weight: 700;
+      max-width: 10ch;
+    }
+    .hero-title .accent {
+      display: block;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2), var(--accent-3));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-kicker {
+      margin-top: 14px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-3);
+      text-transform: uppercase;
+      font-size: 0.73rem;
+      letter-spacing: 0.08em;
+    }
+    .hero-desc {
+      margin-top: 24px;
+      max-width: 58ch;
+      font-size: clamp(1rem, 1.8vw, 1.12rem);
+      line-height: 1.85;
+      color: var(--text-2);
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 30px;
+      align-items: center;
+    }
+    .hero-meta {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 32px;
+      max-width: 720px;
+    }
+    .meta-chip {
+      padding: 12px 14px;
+      border: 1px solid var(--border-1);
+      border-radius: 12px;
+      background: rgba(6, 15, 29, 0.58);
+      box-shadow: var(--shadow-1);
+      min-width: 0;
+    }
+    .meta-chip .k {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-4);
+      margin-bottom: 5px;
+    }
+    .meta-chip .v {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-1);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 12px;
+      border: 1px solid var(--border-2);
+      background: rgba(255,255,255,0.02);
+      color: var(--text-1);
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in oklab, var(--accent), transparent 60%);
+      box-shadow: 0 12px 26px rgba(0,0,0,0.24);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-3));
+      color: #02101a;
+      border-color: transparent;
+      box-shadow: 0 12px 26px color-mix(in oklab, var(--accent), transparent 76%);
+    }
+    .btn-secondary {
+      background: rgba(5, 14, 27, 0.72);
+      color: var(--text-1);
+    }
+
+    .hero-scene {
+      position: relative;
+      min-height: 560px;
+      display: grid;
+      place-items: center;
+      isolation: isolate;
+    }
+    .scene-layer {
+      position: absolute;
+      inset: 0;
+      transition: transform 0.16s linear;
+      will-change: transform;
+    }
+    .scene-far::before,
+    .scene-far::after,
+    .scene-mid::before,
+    .scene-mid::after,
+    .scene-front::before,
+    .scene-front::after {
+      content: "";
+      position: absolute;
+      inset: auto;
+    }
+    .scene-far::before {
+      width: 92%;
+      height: 88%;
+      left: 4%;
+      top: 6%;
+      border-radius: 46% 54% 42% 58% / 48% 41% 59% 52%;
+      border: 1px solid rgba(88, 197, 255, 0.08);
+      opacity: 0.8;
+    }
+    .scene-far::after {
+      width: 70%;
+      height: 70%;
+      left: 15%;
+      top: 15%;
+      border-radius: 50%;
+      border: 1px solid rgba(88, 197, 255, 0.05);
+      box-shadow: inset 0 0 50px rgba(88, 197, 255, 0.02);
+    }
+    body.rdna .scene-far::before,
+    body.rdna .scene-far::after {
+      border-color: rgba(237, 28, 36, 0.11);
+      box-shadow: inset 0 0 50px rgba(237, 28, 36, 0.04);
+    }
+    .scene-mid::before,
+    .scene-mid::after {
+      top: 7%;
+      bottom: 7%;
+      width: 28%;
+      border: 1px solid rgba(88, 197, 255, 0.09);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 22%, rgba(88, 197, 255, 0.03) 60%, transparent);
+      filter: blur(0.2px);
+    }
+    .scene-mid::before {
+      left: 5%;
+      clip-path: polygon(20% 0, 100% 0, 68% 100%, 0 100%);
+    }
+    .scene-mid::after {
+      right: 5%;
+      clip-path: polygon(0 0, 80% 0, 100% 100%, 32% 100%);
+    }
+    body.rdna .scene-mid::before,
+    body.rdna .scene-mid::after {
+      border-color: rgba(237, 28, 36, 0.11);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 22%, rgba(237, 28, 36, 0.04) 60%, transparent);
+    }
+    .scene-front::before {
+      width: 72%;
+      height: 72%;
+      left: 14%;
+      top: 14%;
+      border-radius: 50%;
+      border: 1px solid rgba(88, 197, 255, 0.12);
+      box-shadow:
+        0 0 0 26px rgba(88, 197, 255, 0.03),
+        0 0 0 58px rgba(88, 197, 255, 0.015);
+      animation: rotateSlow 70s linear infinite;
+    }
+    .scene-front::after {
+      width: 12px;
+      height: 12px;
+      left: calc(50% - 6px);
+      top: calc(50% - 6px);
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 26px color-mix(in oklab, var(--accent), transparent 35%), 0 0 90px color-mix(in oklab, var(--accent), transparent 80%);
+      animation: pulse 2.8s ease-in-out infinite;
+    }
+    body.rdna .scene-front::before {
+      border-color: rgba(237, 28, 36, 0.14);
+      box-shadow:
+        0 0 0 26px rgba(237, 28, 36, 0.03),
+        0 0 0 58px rgba(237, 28, 36, 0.015);
+    }
+    @keyframes rotateSlow { to { transform: rotate(360deg); } }
+    .scene-plate {
+      position: relative;
+      z-index: 2;
+      width: min(420px, 92%);
+      aspect-ratio: 1;
+      border-radius: 42px;
+      border: 1px solid var(--border-1);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.005)),
+        radial-gradient(circle at 50% 35%, color-mix(in oklab, var(--accent), transparent 86%), transparent 40%),
+        rgba(5, 12, 24, 0.62);
+      box-shadow: var(--shadow-2);
+      backdrop-filter: blur(20px);
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+    }
+    .scene-plate::before,
+    .scene-plate::after {
+      content: "";
+      position: absolute;
+      inset: 16px;
+      border-radius: 32px;
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+    .scene-plate::after {
+      inset: 34px;
+      border-radius: 24px;
+      border-color: rgba(88, 197, 255, 0.08);
+    }
+    .scene-glyph {
+      position: relative;
+      width: 62%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 1px solid rgba(88, 197, 255, 0.12);
+      box-shadow:
+        inset 0 0 0 22px rgba(88, 197, 255, 0.03),
+        inset 0 0 0 54px rgba(88, 197, 255, 0.018);
+      display: grid;
+      place-items: center;
+    }
+    body.rdna .scene-glyph,
+    body.rdna .scene-plate::after {
+      border-color: rgba(237, 28, 36, 0.12);
+      box-shadow:
+        inset 0 0 0 22px rgba(237, 28, 36, 0.03),
+        inset 0 0 0 54px rgba(237, 28, 36, 0.018);
+    }
+    .scene-glyph::before,
+    .scene-glyph::after {
+      content: "";
+      position: absolute;
+      background: rgba(255,255,255,0.06);
+    }
+    .scene-glyph::before {
+      width: 1px;
+      height: 88%;
+    }
+    .scene-glyph::after {
+      width: 88%;
+      height: 1px;
+    }
+    .scene-core {
+      width: 22%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-3));
+      box-shadow: 0 0 28px color-mix(in oklab, var(--accent), transparent 42%), 0 0 100px color-mix(in oklab, var(--accent), transparent 84%);
+    }
+    .scene-data {
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      display: grid;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.56rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-4);
+      text-align: right;
+    }
+    .scene-data span b { color: var(--text-2); font-weight: 500; }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+      gap: clamp(1.4rem, 4vw, 3rem);
+      align-items: end;
+      margin-bottom: 2.5rem;
+    }
+    .section-head h2 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.04;
+      letter-spacing: -0.04em;
+      font-weight: 650;
+    }
+    .section-head p {
+      color: var(--text-2);
+      font-size: 1rem;
+      line-height: 1.85;
+      max-width: 60ch;
+    }
+
+    .panel,
+    .strip,
+    .module,
+    .timeline-item,
+    .project-card,
+    .signal-panel {
+      border: 1px solid var(--border-1);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.012)), var(--bg-1);
+      backdrop-filter: blur(16px);
+      box-shadow: var(--shadow-1);
+    }
+
+    .about-layout {
+      display: grid;
+      grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+      gap: clamp(1.5rem, 4vw, 3rem);
+      align-items: start;
+    }
+    .profile-panel {
+      border-radius: 20px;
+      padding: 22px;
+      position: sticky;
+      top: 92px;
+    }
+    .profile-name {
+      font-size: 1.18rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+    .profile-sub {
+      margin-top: 6px;
+      color: var(--text-3);
+      font-size: 0.96rem;
+      line-height: 1.65;
+    }
+    .profile-stats {
+      display: grid;
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: baseline;
+    }
+    .stat-row .k,
+    .timeline-meta,
+    .module-id,
+    .chip-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.56rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-4);
+    }
+    .stat-row .v {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-1);
+      text-align: right;
+    }
+    .about-content {
+      display: grid;
+      gap: 14px;
+    }
+    .strip {
+      border-radius: 20px;
+      padding: 22px 22px 24px;
+    }
+    .strip-title {
+      margin-bottom: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-4);
+    }
+    .strip p {
+      color: var(--text-2);
+      font-size: 1rem;
+      line-height: 1.88;
+    }
+    .strip strong { color: var(--text-1); }
+
+    .timeline {
+      display: grid;
+      gap: 16px;
+    }
+    .timeline-item {
+      display: grid;
+      grid-template-columns: minmax(180px, 220px) minmax(0, 1fr);
+      gap: 22px;
+      border-radius: 20px;
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+    }
+    .timeline-item::after {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--accent), transparent 82%);
+      opacity: 0.8;
+    }
+    .timeline-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .timeline-status::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent-2);
+      box-shadow: 0 0 10px color-mix(in oklab, var(--accent-2), transparent 38%);
+    }
+    .timeline-role {
+      font-size: 1.08rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+    .timeline-org {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent);
+      font-size: 0.8rem;
+      text-decoration: none;
+    }
+    .timeline-org:hover { text-decoration: underline; }
+    .timeline-body p {
+      font-size: 0.98rem;
+      color: var(--text-2);
+      line-height: 1.82;
+    }
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .chip {
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--text-3);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .education-grid {
+      display: grid;
+      gap: 14px;
+    }
+    .module {
+      border-radius: 18px;
+      padding: 18px 20px;
+      display: grid;
+      grid-template-columns: minmax(100px, 140px) minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .module-year {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-4);
+      padding-top: 2px;
+    }
+    .module-title {
+      font-size: 1.02rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      margin-bottom: 5px;
+    }
+    .module-sub {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent);
+      font-size: 0.78rem;
+    }
+
+    .systems-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      border: 1px solid var(--border-1);
+      border-radius: 24px;
+      overflow: hidden;
+      background: rgba(6, 15, 28, 0.56);
+      box-shadow: var(--shadow-1);
+    }
+    .system-cell {
+      padding: 22px;
+      border-right: 1px solid rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      transition: background 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+      min-height: 180px;
+    }
+    .system-cell:nth-child(3n) { border-right: none; }
+    .system-cell:hover {
+      background: rgba(255,255,255,0.025);
+      transform: translateY(-3px);
+      position: relative;
+      z-index: 1;
+    }
+    .system-name {
+      font-size: 1rem;
+      font-weight: 650;
+      margin: 12px 0 14px;
+      letter-spacing: -0.02em;
+    }
+    .system-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .system-tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.64rem;
+      color: var(--text-2);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .system-tag:hover {
+      border-color: color-mix(in oklab, var(--accent), transparent 60%);
+      color: var(--accent);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .projects-stack {
+      display: grid;
+      gap: 18px;
+    }
+    .project-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
+      text-decoration: none;
+      color: inherit;
+      border-radius: 22px;
+      overflow: hidden;
+      transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+    }
+    .project-card:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in oklab, var(--accent), transparent 60%);
+      box-shadow: var(--shadow-2);
+    }
+    .project-info {
+      padding: 24px;
+    }
+    .project-name {
+      margin: 12px 0 10px;
+      font-size: 1.14rem;
+      font-weight: 650;
+      letter-spacing: -0.025em;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .project-copy {
+      color: var(--text-2);
+      font-size: 0.96rem;
+      line-height: 1.82;
+    }
+    .project-visual {
+      position: relative;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01)),
+        radial-gradient(circle at 50% 34%, color-mix(in oklab, var(--accent), transparent 84%), transparent 36%),
+        rgba(8, 20, 37, 0.82);
+      display: grid;
+      place-items: center;
+      border-left: 1px solid rgba(255,255,255,0.04);
+      overflow: hidden;
+    }
+    .project-visual::before,
+    .project-visual::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.05);
+      animation: rotateSlow 40s linear infinite;
+    }
+    .project-visual::before {
+      width: 180px;
+      height: 180px;
+    }
+    .project-visual::after {
+      width: 110px;
+      height: 110px;
+      animation-direction: reverse;
+    }
+    .project-icon {
+      position: relative;
+      z-index: 2;
+      color: var(--accent);
+      opacity: 0.28;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .project-card:hover .project-icon {
+      opacity: 0.52;
+      transform: scale(1.05);
+    }
+    .project-icon svg {
+      width: 54px;
+      height: 54px;
+    }
+    .age-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 8px; border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.56rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: #ff6b6b; border: 1px solid rgba(255, 107, 107, 0.25);
+      background: rgba(255, 107, 107, 0.06);
+      margin-left: 8px; vertical-align: middle;
+    }
+
+    .community-card {
+      max-width: 480px;
+      border-radius: 20px;
+      padding: 22px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .community-icon {
+      width: 48px;
+      aspect-ratio: 1;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.025);
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .community-icon svg { width: 18px; height: 18px; }
+    .community-title { font-size: 1rem; font-weight: 650; }
+    .community-sub {
+      margin-top: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem;
+      color: var(--accent-2);
+    }
+    .community-date {
+      margin-top: 4px;
+      font-size: 0.72rem;
+      color: var(--text-4);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
+      gap: clamp(1.5rem, 4vw, 3rem);
+      align-items: end;
+    }
+    .contact-copy h2 {
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      max-width: 12ch;
+    }
+    .contact-copy h2 em {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+    }
+    .contact-copy p {
+      margin-top: 18px;
+      max-width: 56ch;
+      font-size: 1rem;
+      line-height: 1.88;
+      color: var(--text-2);
+    }
+    .signal-panel {
+      border-radius: 22px;
+      padding: 24px;
+      display: grid;
+      gap: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    .signal-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 3px;
+      background: linear-gradient(180deg, var(--accent), transparent);
+    }
+    .signal-panel .line {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.64rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-4);
+    }
+    .signal-panel .line b { color: var(--text-2); }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    @media (max-width: 1080px) {
+      .hero-grid,
+      .about-layout,
+      .section-head,
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-scene {
+        min-height: 420px;
+        order: -1;
+      }
+      .profile-panel {
+        position: static;
+      }
+      .hero-meta {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .systems-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .system-cell:nth-child(3n) { border-right: 1px solid rgba(255,255,255,0.04); }
+      .system-cell:nth-child(2n) { border-right: none; }
+      .project-card {
+        grid-template-columns: 1fr;
+      }
+      .project-visual {
+        min-height: 180px;
+        border-left: none;
+        border-top: 1px solid rgba(255,255,255,0.04);
+      }
+      .timeline-item,
+      .module {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav-inner {
+        padding: 12px 16px;
+        align-items: flex-start;
+        flex-direction: column;
+        min-height: auto;
+      }
+      .nav-links {
+        justify-content: flex-start;
+      }
+      .hero,
+      .section {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      .section::before {
+        left: 16px;
+        right: 16px;
+      }
+      .hero-meta {
+        grid-template-columns: 1fr;
+      }
+      .systems-grid {
+        grid-template-columns: 1fr;
+      }
+      .system-cell,
+      .project-info,
+      .signal-panel,
+      .profile-panel,
+      .strip,
+      .timeline-item,
+      .module,
+      .community-card {
+        padding: 18px;
+      }
+      .scene-plate {
+        width: min(320px, 100%);
+        border-radius: 32px;
+      }
+      .scene-plate::before { inset: 12px; border-radius: 24px; }
+      .scene-plate::after { inset: 24px; border-radius: 18px; }
+      .world-foreground::before,
+      .world-foreground::after {
+        display: none;
+      }
+    }
+
+    /* ═══ TRAILER MODAL ═══ */
+    .trailer-modal {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(1, 8, 18, 0.95);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 16px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    .trailer-modal.open { opacity: 1; pointer-events: auto; }
+    .trailer-modal video {
+      width: 90vw; max-width: 1280px; aspect-ratio: 16/9;
+      border-radius: 16px; border: 1px solid rgba(88, 197, 255, 0.12);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+      background: #000;
+    }
+    .trailer-controls {
+      display: flex; gap: 12px; align-items: center;
+    }
+    .trailer-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px; padding: 8px 18px;
+      cursor: pointer; transition: all 0.25s ease;
+    }
+    .trailer-btn:hover {
+      color: rgba(255,255,255,0.9);
+      border-color: rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.08);
+    }
+    .trailer-close {
+      position: absolute; top: 24px; right: 28px;
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.5);
+      font-size: 18px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.25s ease;
+    }
+    .trailer-close:hover {
+      color: #fff; border-color: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.08);
+    }
+    .trailer-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.52rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+    }
+    /* Hero play button — integrated into hero actions */
+    .hero-trailer-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      min-height: 48px; padding: 0 18px;
+      border-radius: 12px;
+      border: 1px solid var(--border-2);
+      background: rgba(255,255,255,0.02);
+      color: var(--accent);
+      text-decoration: none; font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .hero-trailer-btn:hover {
+      transform: translateY(-2px);
+      border-color: color-mix(in oklab, var(--accent), transparent 50%);
+      box-shadow: 0 12px 26px rgba(0,0,0,0.24);
+      background: rgba(88, 197, 255, 0.05);
+    }
+    .hero-trailer-btn svg { width: 16px; height: 16px; }
+  </style>
+</head>
+<body>
+  <!-- TRAILER MODAL -->
+  <div class="trailer-modal" id="trailerModal">
+    <button class="trailer-close" id="trailerClose">&times;</button>
+    <video id="trailerVideo" playsinline controls preload="none">
+      <source src="trailer.mp4" type="video/mp4">
+    </video>
+    <div class="trailer-controls">
+      <div class="trailer-label">Portfolio Trailer</div>
+    </div>
+  </div>
+
+  <div class="site-shell">
+    <div class="world-backdrop" aria-hidden="true">
+      <div class="depth-grid" data-depth="0.35"></div>
+      <div class="depth-ribs" data-depth="0.7"></div>
+      <div class="depth-shards" data-depth="1.1"></div>
+    </div>
+    <div class="world-foreground" aria-hidden="true"></div>
+
+    <!-- CUSTOM CURSOR -->
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <!-- FOREGROUND EFFECTS -->
+    <div class="fx-canvas" id="fxCanvas" aria-hidden="true"></div>
+    <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+    <div class="scan-sweep" aria-hidden="true"></div>
+    <div class="edge-flare" style="top:-60px;left:-60px;--dur:7s;--del:0s;" aria-hidden="true"></div>
+    <div class="edge-flare" style="bottom:-60px;right:-60px;--dur:9s;--del:2s;" aria-hidden="true"></div>
+
+    <header class="nav">
+      <div class="nav-inner">
+        <a class="brand" href="#top"><b>&gt;</b> thanuka.dev</a>
+        <nav class="nav-links" aria-label="Sections">
+          <a href="#about">Profile</a>
+          <a href="#experience">Experience</a>
+          <a href="#education">Education</a>
+          <a href="#systems">Systems</a>
+          <a href="#builds">Builds</a>
+          <a href="#signal">Signal</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- RDNA toggle — fixed bottom right -->
+    <button class="rdna-fab" id="rdnaToggle" type="button" aria-pressed="false">UDNA mode</button>
+
+    <main id="top">
+      <section class="section hero">
+        <div class="wrap hero-grid">
+          <div class="hero-copy reveal visible">
+            <div class="signal"><span class="signal-dot"></span> available for new projects</div>
+            <h1 class="hero-title">Thanuka <span class="accent">Perera</span></h1>
+            <div class="hero-kicker">Game Developer · GPU Architecture · Systems Engineer</div>
+            <p class="hero-desc">
+              Building at the intersection of low-level hardware, real-time rendering, and creative digital production. I care about the places where silicon, systems, and visual craft collide.
+            </p>
+            <div class="hero-actions">
+              <button class="hero-trailer-btn" id="trailerPlay" type="button">
+                <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Watch Intro
+              </button>
+              <a class="btn btn-primary" href="https://github.com/Thanukamax" target="_blank" rel="noopener">GitHub</a>
+              <a class="btn btn-secondary" href="mailto:thanukasehasnaperera@gmail.com">Get in touch</a>
+            </div>
+            <div class="hero-meta">
+              <div class="meta-chip"><span class="k">Focus</span><span class="v">GPU / Rendering</span></div>
+              <div class="meta-chip"><span class="k">Location</span><span class="v">Sri Lanka</span></div>
+              <div class="meta-chip"><span class="k">Stack</span><span class="v">C++ / Unity / UE5</span></div>
+              <div class="meta-chip"><span class="k">Status</span><span class="v">Open</span></div>
+            </div>
+          </div>
+          <div class="hero-scene" aria-hidden="true">
+            <div class="scene-layer scene-far" data-depth="0.8"></div>
+            <div class="scene-layer scene-mid" data-depth="1.4"></div>
+            <div class="scene-layer scene-front" data-depth="2.2"></div>
+            <div class="scene-plate">
+              <div class="scene-glyph">
+                <div class="scene-core"></div>
+              </div>
+              <div class="scene-data">
+                <span>timezone <b>utc+05:30</b></span>
+                <span>build <b>2026.03</b></span>
+                <span>mode <b>abyssal</b></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="about">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <div>
+              <div class="eyebrow">Profile</div>
+              <h2>Core identity</h2>
+            </div>
+            <p>Quick rundown on who I actually am, what I'm into, and where my head's at between rendering, systems, and creative work.</p>
+          </div>
+
+          <div class="about-layout">
+            <aside class="profile-panel panel reveal">
+              <div class="profile-name">Thanuka Sehasna Perera</div>
+              <div class="profile-sub">Computer Science undergraduate. Game developer. Hardware-curious systems builder.</div>
+              <div class="profile-stats">
+                <div class="stat-row"><span class="k">Focus</span><span class="v">GPU / Rendering</span></div>
+                <div class="stat-row"><span class="k">Current</span><span class="v">BitByBit</span></div>
+                <div class="stat-row"><span class="k">Engines</span><span class="v">Unity · UE5</span></div>
+                <div class="stat-row"><span class="k">Open</span><span class="v" style="color: var(--accent);">Yes</span></div>
+              </div>
+            </aside>
+
+            <div class="about-content">
+              <article class="strip reveal">
+                <div class="strip-title">Background</div>
+                <p>I'm a <strong>Computer Science undergraduate</strong> at the University of Westminster with a deep interest in <strong>game development</strong>, <strong>GPU architecture</strong>, and <strong>real-time rendering</strong>. I care about how low-level constraints shape higher-level experience, and I like building where systems thinking and visual craft meet.</p>
+              </article>
+              <article class="strip reveal">
+                <div class="strip-title">Current operations</div>
+                <p>Currently driving growth for <strong>BitByBit</strong>, an AI-native OS startup, while sharpening depth in <strong>C++</strong>, <strong>physics simulation</strong>, and <strong>RDNA architecture</strong>. I’m especially drawn to reverse engineering, runtime behavior, and the engineering choices that make software feel sharp instead of bloated.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="experience">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <div>
+              <div class="eyebrow">Deployment log</div>
+              <h2>Active station</h2>
+            </div>
+            <p>Where I’m currently working and what I’m actually doing there — no fluff.</p>
+          </div>
+
+          <div class="timeline">
+            <article class="timeline-item reveal">
+              <div class="timeline-side">
+                <div class="timeline-status">Active</div>
+                <div class="timeline-role">Growth & Content Associate</div>
+                <a class="timeline-org" href="https://bbyb.dev" target="_blank" rel="noopener">BitByBit</a>
+                <div class="timeline-meta" style="margin-top: 10px;">Present</div>
+              </div>
+              <div class="timeline-body">
+                <p>Strategizing go-to-market for an AI-native OS startup, analyzing engagement, producing multimedia assets across the Adobe suite, and supporting client-facing growth work. It sits in an interesting zone between creative execution, systems thinking, and product communication.</p>
+                <div class="chip-row">
+                  <span class="chip">Go-to-market</span>
+                  <span class="chip">Analytics</span>
+                  <span class="chip">Creative pipeline</span>
+                  <span class="chip">Client strategy</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="education">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <div>
+              <div class="eyebrow">Training record</div>
+              <h2>Academic background</h2>
+            </div>
+            <p>The academic side — where the foundation was built and how the stack's been growing.</p>
+          </div>
+
+          <div class="education-grid">
+            <article class="module reveal">
+              <div class="module-year">2024 — 2028</div>
+              <div>
+                <div class="module-title">BSc (Hons) Computer Science</div>
+                <div class="module-sub">University of Westminster (via IIT)</div>
+              </div>
+            </article>
+            <article class="module reveal">
+              <div class="module-year">2023 — 2024</div>
+              <div>
+                <div class="module-title">Diploma in Information Technology</div>
+                <div class="module-sub">ESOFT Metro Campus</div>
+              </div>
+            </article>
+            <article class="module reveal">
+              <div class="module-year">2021 — 2023</div>
+              <div>
+                <div class="module-title">Cambridge O/L and A/L</div>
+                <div class="module-sub">Louvre College Pannipitiya</div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="systems">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <div>
+              <div class="eyebrow">Subsystem map</div>
+              <h2>Technical identity</h2>
+            </div>
+            <p>How my brain actually clusters things — grouped by how I think, not just a list of logos.</p>
+          </div>
+
+          <div class="systems-grid reveal">
+            <div class="system-cell">
+              <div class="chip-label">SYS.01</div>
+              <div class="system-name">Core languages</div>
+              <div class="system-tags">
+                <a class="system-tag" href="https://isocpp.org/" target="_blank">C++</a>
+                <a class="system-tag" href="https://learn.microsoft.com/en-us/dotnet/csharp/" target="_blank">C#</a>
+                <a class="system-tag" href="https://www.python.org/" target="_blank">Python</a>
+                <a class="system-tag" href="https://dev.java/" target="_blank">Java</a>
+                <a class="system-tag" href="https://go.dev/" target="_blank">Go</a>
+                <a class="system-tag" href="https://www.lua.org/" target="_blank">Lua</a>
+              </div>
+            </div>
+            <div class="system-cell">
+              <div class="chip-label">SYS.02</div>
+              <div class="system-name">Runtime engines</div>
+              <div class="system-tags">
+                <a class="system-tag" href="https://unity.com/" target="_blank">Unity 3D</a>
+                <a class="system-tag" href="https://www.unrealengine.com/" target="_blank">Unreal Engine 5</a>
+                <a class="system-tag" href="https://ka3d.com/" target="_blank">Ka3d</a>
+              </div>
+            </div>
+            <div class="system-cell">
+              <div class="chip-label">SYS.03</div>
+              <div class="system-name">Graphics & hardware</div>
+              <div class="system-tags">
+                <button class="system-tag" id="rdnaTrigger" type="button">RDNA Architecture</button>
+                <a class="system-tag" href="https://developer.nvidia.com/physx-sdk" target="_blank">PhysX</a>
+                <a class="system-tag" href="https://www.techpowerup.com/gpu-specs/" target="_blank">GPU Hardware</a>
+              </div>
+            </div>
+            <div class="system-cell">
+              <div class="chip-label">SYS.04</div>
+              <div class="system-name">Creative pipeline</div>
+              <div class="system-tags">
+                <a class="system-tag" href="https://www.adobe.com/products/premiere.html" target="_blank">Premiere Pro</a>
+                <a class="system-tag" href="https://www.adobe.com/products/aftereffects.html" target="_blank">After Effects</a>
+                <a class="system-tag" href="https://www.adobe.com/products/illustrator.html" target="_blank">Illustrator</a>
+                <a class="system-tag" href="https://www.adobe.com/products/photoshop-lightroom.html" target="_blank">Lightroom</a>
+                <a class="system-tag" href="https://www.adobe.com/products/indesign.html" target="_blank">InDesign</a>
+                <a class="system-tag" href="https://www.adobe.com/products/audition.html" target="_blank">Audition</a>
+              </div>
+            </div>
+            <div class="system-cell">
+              <div class="chip-label">SYS.05</div>
+              <div class="system-name">3D & modeling</div>
+              <div class="system-tags">
+                <a class="system-tag" href="https://www.blender.org/" target="_blank">Blender</a>
+                <a class="system-tag" href="https://www.maxon.net/en/cinema-4d" target="_blank">Cinema 4D</a>
+                <a class="system-tag" href="https://www.autodesk.com/products/3ds-max/" target="_blank">3ds Max</a>
+              </div>
+            </div>
+            <div class="system-cell">
+              <div class="chip-label">SYS.06</div>
+              <div class="system-name">Security & tooling</div>
+              <div class="system-tags">
+                <a class="system-tag" href="https://ghidra-sre.org/" target="_blank">Ghidra</a>
+                <a class="system-tag" href="https://mh-nexus.de/en/hxd/" target="_blank">HxD</a>
+                <a class="system-tag" href="https://www.wireshark.org/" target="_blank">Wireshark</a>
+                <a class="system-tag" href="https://git-scm.com/" target="_blank">Git</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="builds">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <div>
+              <div class="eyebrow">Build archive</div>
+              <h2>Deployed modules</h2>
+            </div>
+            <p>Stuff I've actually shipped. Tools I built because the ones that existed weren't good enough.</p>
+          </div>
+
+          <div class="projects-stack">
+            <a class="project-card reveal" href="https://github.com/Thanukamax/h-cli" target="_blank" rel="noopener">
+              <div class="project-info">
+                <div class="module-id">Module 001</div>
+                <div class="project-name">h-cli <span class="age-badge">18+</span></div>
+                <p class="project-copy">Terminal streaming client with themed UI, caching, preloading, and MPV integration. Built for speed-of-thought media consumption instead of bloated playback flow.</p>
+                <div class="chip-row">
+                  <span class="chip">Python</span>
+                  <span class="chip">MPV</span>
+                  <span class="chip">Terminal UI</span>
+                  <span class="chip">Caching</span>
+                </div>
+              </div>
+              <div class="project-visual" aria-hidden="true">
+                <div class="project-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                </div>
+              </div>
+            </a>
+
+            <a class="project-card reveal" href="https://github.com/Thanukamax/donghua-cli" target="_blank" rel="noopener">
+              <div class="project-info">
+                <div class="module-id">Module 002</div>
+                <div class="project-name">donghua-cli</div>
+                <p class="project-copy">Chinese animation streaming and download tool powered by a custom Wuxia-forged engine. Search, pick, play — one command, one authored world, one clean interface.</p>
+                <div class="chip-row">
+                  <span class="chip">Python</span>
+                  <span class="chip">Scraping</span>
+                  <span class="chip">Streaming</span>
+                  <span class="chip">Custom engine</span>
+                </div>
+              </div>
+              <div class="project-visual" aria-hidden="true">
+                <div class="project-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="community">
+        <div class="wrap">
+          <div class="section-head reveal">
+            <div>
+              <div class="eyebrow">Community</div>
+              <h2>Field operations</h2>
+            </div>
+            <p>Things I do outside of work because I genuinely care about the community.</p>
+          </div>
+
+          <div class="community-card panel reveal">
+            <div class="community-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div>
+              <div class="community-title">GameDev Event Lead</div>
+              <div class="community-sub">LEVELSTAIR</div>
+              <div class="community-date">2024 — Present</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="signal">
+        <div class="wrap contact-grid">
+          <div class="contact-copy reveal">
+            <div class="eyebrow">Open channel</div>
+            <h2>Let’s build something <em>sharp</em>.</h2>
+            <p>Game systems, GPU work, creative tooling — if it’s ambitious and technically interesting, I’m down. Let’s talk.</p>
+            <div class="hero-actions" style="margin-top: 24px;">
+              <a class="btn btn-primary" href="mailto:thanukasehasnaperera@gmail.com">Send signal</a>
+              <a class="btn btn-secondary" href="https://github.com/Thanukamax" target="_blank" rel="noopener">GitHub</a>
+            </div>
+          </div>
+          <aside class="signal-panel reveal">
+            <div class="line">channel <b>open</b></div>
+            <div class="line">response <b>&lt; 24h</b></div>
+            <div class="line">timezone <b>utc+05:30</b></div>
+            <div class="line">mode <b id="modeLabel">XE</b></div>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      // ── Trailer modal ──
+      const modal = document.getElementById('trailerModal');
+      const video = document.getElementById('trailerVideo');
+      const playBtn = document.getElementById('trailerPlay');
+      const closeBtn = document.getElementById('trailerClose');
+
+      const openTrailer = () => {
+        modal.classList.add('open');
+        video.currentTime = 0;
+        video.play();
+      };
+      const closeTrailer = () => {
+        modal.classList.remove('open');
+        video.pause();
+      };
+
+      playBtn.addEventListener('click', openTrailer);
+      closeBtn.addEventListener('click', closeTrailer);
+      video.addEventListener('ended', closeTrailer);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeTrailer();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('open')) closeTrailer();
+      });
+
+      // First-visit auto-open (desktop only, once)
+      const isDesktopScreen = window.innerWidth > 900;
+      if (isDesktopScreen && !localStorage.getItem('trailer-seen')) {
+        setTimeout(openTrailer, 800);
+        localStorage.setItem('trailer-seen', '1');
+      }
+      const body = document.body;
+      const modeLabel = document.getElementById('modeLabel');
+      const rdnaToggle = document.getElementById('rdnaToggle');
+      const rdnaTrigger = document.getElementById('rdnaTrigger');
+
+      // Mode cycling: abyssal (blue) → rdna (red) → cuda (green) → abyssal ...
+      const modes = ['abyssal', 'rdna', 'cuda'];
+      const modeLabels = { abyssal: 'UDNA mode', rdna: 'CUDA mode', cuda: 'XE mode' };
+      const modeNames = { abyssal: 'XE', rdna: 'UDNA', cuda: 'CUDA' };
+      let currentMode = 0;
+
+      const setMode = (idx) => {
+        currentMode = idx;
+        body.classList.remove('rdna', 'cuda');
+        if (modes[idx] !== 'abyssal') body.classList.add(modes[idx]);
+        rdnaToggle.setAttribute('aria-pressed', String(modes[idx] !== 'abyssal'));
+        rdnaToggle.textContent = modeLabels[modes[idx]];
+        modeLabel.textContent = modeNames[modes[idx]];
+      };
+
+      const cycleMode = () => setMode((currentMode + 1) % modes.length);
+
+      rdnaToggle.addEventListener('click', cycleMode);
+      rdnaTrigger.addEventListener('click', () => {
+        // RDNA trigger always goes to RDNA mode, or cycles if already there
+        if (currentMode === 1) cycleMode();
+        else setMode(1);
+      });
+
+      const revealEls = document.querySelectorAll('.reveal');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
+      revealEls.forEach(el => observer.observe(el));
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduceMotion) {
+        const layers = document.querySelectorAll('[data-depth]');
+        const state = { x: 0, y: 0 };
+        const target = { x: 0, y: 0 };
+
+        // Cursor glow + custom cursor
+        const glow = document.getElementById('cursorGlow');
+        const cursorDot = document.getElementById('cursorDot');
+        const cursorRing = document.getElementById('cursorRing');
+        const glowPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+        const glowTarget = { x: glowPos.x, y: glowPos.y };
+        const ringPos = { x: glowPos.x, y: glowPos.y };
+
+        window.addEventListener('pointermove', (e) => {
+          const x = (e.clientX / window.innerWidth) - 0.5;
+          const y = (e.clientY / window.innerHeight) - 0.5;
+          target.x = x;
+          target.y = y;
+          glowTarget.x = e.clientX;
+          glowTarget.y = e.clientY;
+          // Dot follows instantly
+          cursorDot.style.left = e.clientX + 'px';
+          cursorDot.style.top = e.clientY + 'px';
+        }, { passive: true });
+
+        // Hover detection for interactive elements
+        const hoverTargets = 'a, button, .btn, .system-tag, .nav-links a, .rdna-toggle, [onclick]';
+        document.addEventListener('mouseover', (e) => {
+          if (e.target.closest(hoverTargets)) {
+            cursorDot.classList.add('hover');
+            cursorRing.classList.add('hover');
+          }
+        });
+        document.addEventListener('mouseout', (e) => {
+          if (e.target.closest(hoverTargets)) {
+            cursorDot.classList.remove('hover');
+            cursorRing.classList.remove('hover');
+          }
+        });
+
+        const tick = () => {
+          state.x += (target.x - state.x) * 0.08;
+          state.y += (target.y - state.y) * 0.08;
+          layers.forEach(layer => {
+            const depth = Number(layer.dataset.depth || 1);
+            const moveX = state.x * depth * 18;
+            const moveY = state.y * depth * 16;
+            layer.style.transform = `translate3d(${moveX}px, ${moveY}px, 0)`;
+          });
+          // Cursor glow — heavy lag for smooth trailing
+          glowPos.x += (glowTarget.x - glowPos.x) * 0.04;
+          glowPos.y += (glowTarget.y - glowPos.y) * 0.04;
+          glow.style.left = glowPos.x + 'px';
+          glow.style.top = glowPos.y + 'px';
+          // Cursor ring — medium lag, trails behind dot
+          ringPos.x += (glowTarget.x - ringPos.x) * 0.12;
+          ringPos.y += (glowTarget.y - ringPos.y) * 0.12;
+          cursorRing.style.left = ringPos.x + 'px';
+          cursorRing.style.top = ringPos.y + 'px';
+
+          requestAnimationFrame(tick);
+        };
+        tick();
+
+        // ── Particle spawner ──
+        const fxCanvas = document.getElementById('fxCanvas');
+        const isWide = window.innerWidth > 720;
+        if (fxCanvas && isWide) {
+          // Spawn floating motes
+          for (let i = 0; i < 18; i++) {
+            const m = document.createElement('div');
+            m.className = 'mote';
+            const sz = 2 + Math.random() * 3;
+            m.style.setProperty('--sz', sz + 'px');
+            m.style.setProperty('--dur', (10 + Math.random() * 14) + 's');
+            m.style.setProperty('--del', (Math.random() * 12) + 's');
+            m.style.setProperty('--dx', (-30 + Math.random() * 60) + 'px');
+            m.style.setProperty('--dy', (-50 + Math.random() * 30) + 'px');
+            m.style.setProperty('--peak', (0.3 + Math.random() * 0.5).toFixed(2));
+            m.style.left = (Math.random() * 100) + 'vw';
+            m.style.top = (Math.random() * 100) + 'vh';
+            fxCanvas.appendChild(m);
+          }
+          // Spawn bokeh
+          for (let i = 0; i < 6; i++) {
+            const b = document.createElement('div');
+            b.className = 'bokeh';
+            const sz = 20 + Math.random() * 40;
+            b.style.width = sz + 'px';
+            b.style.height = sz + 'px';
+            b.style.setProperty('--dur', (16 + Math.random() * 12) + 's');
+            b.style.setProperty('--del', (Math.random() * 10) + 's');
+            b.style.setProperty('--dx', (-20 + Math.random() * 40) + 'px');
+            b.style.setProperty('--dy', (-25 + Math.random() * 15) + 'px');
+            b.style.setProperty('--peak', (0.2 + Math.random() * 0.3).toFixed(2));
+            b.style.left = (10 + Math.random() * 80) + 'vw';
+            b.style.top = (5 + Math.random() * 90) + 'vh';
+            fxCanvas.appendChild(b);
+          }
+          // Spawn light shafts
+          const shaftConfigs = [
+            { left: '15%', rot: '-12deg', w: '100px', dur: '9s', del: '0s' },
+            { left: '55%', rot: '6deg', w: '80px', dur: '11s', del: '3s' },
+            { left: '80%', rot: '-5deg', w: '140px', dur: '13s', del: '6s' },
+          ];
+          shaftConfigs.forEach(cfg => {
+            const s = document.createElement('div');
+            s.className = 'light-shaft';
+            s.style.left = cfg.left;
+            s.style.setProperty('--rot', cfg.rot);
+            s.style.setProperty('--w', cfg.w);
+            s.style.setProperty('--dur', cfg.dur);
+            s.style.setProperty('--del', cfg.del);
+            fxCanvas.appendChild(s);
+          });
+        }
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -120,9 +120,9 @@ export default function Hero() {
         >
           {/* Role chips with distinct fonts */}
           <div className="flex flex-wrap gap-2">
-            <span className="tech-chip font-rdna"    style={{ color: 'var(--accent)', borderColor: 'rgba(var(--accent-rgb),0.25)' }}>GPU Architecture</span>
-            <span className="tech-chip font-blender" style={{ color: 'rgba(232,232,240,0.6)' }}>Game Development</span>
-            <span className="tech-chip font-systems" style={{ color: 'rgba(232,232,240,0.6)' }}>Systems Engineering</span>
+            <span className="tech-chip font-rdna"    style={{ color: '#7dd3fc', borderColor: 'rgba(125,211,252,0.25)', background: 'rgba(125,211,252,0.06)' }}>GPU Architecture</span>
+            <span className="tech-chip font-blender" style={{ color: '#fb7185', borderColor: 'rgba(251,113,133,0.25)', background: 'rgba(251,113,133,0.06)' }}>Game Development</span>
+            <span className="tech-chip font-systems" style={{ color: '#34d399', borderColor: 'rgba(52,211,153,0.25)',  background: 'rgba(52,211,153,0.06)'  }}>Systems Engineering</span>
           </div>
 
           {/* CTAs */}

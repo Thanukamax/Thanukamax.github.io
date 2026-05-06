@@ -14,17 +14,17 @@ const fadeUp: Variants = {
 }
 
 const stats = [
-  { value: '3+',  label: 'Years building' },
-  { value: '3K+', label: 'Commits shipped' },
-  { value: '2',   label: 'Active clients' },
-  { value: '6',   label: 'Team @ CROW' },
+  { value: '3+',  label: 'Years building',  color: '#a78bfa' },
+  { value: '3K+', label: 'Commits shipped', color: '#7dd3fc' },
+  { value: '2',   label: 'Active clients',  color: '#34d399' },
+  { value: '6',   label: 'Team @ CROW',     color: '#fbbf24' },
 ]
 
 const profile = [
-  { label: 'FOCUS',   value: 'GPU / Game Dev / Systems' },
-  { label: 'ENGINES', value: 'Unity · UE5 · Ka3d' },
-  { label: 'STATION', value: 'BitByBit (Part-time)' },
-  { label: 'STATUS',  value: 'Open — new contracts' },
+  { label: 'FOCUS',   value: 'GPU / Game Dev / Systems', color: '#7dd3fc' },
+  { label: 'ENGINES', value: 'Unity · UE5 · Ka3d',       color: '#fb7185' },
+  { label: 'STATION', value: 'BitByBit (Part-time)',      color: '#fbbf24' },
+  { label: 'STATUS',  value: 'Open — new contracts',     color: '#34d399' },
 ]
 
 export default function About() {
@@ -74,13 +74,14 @@ export default function About() {
                 Game Developer · GPU Architecture · Systems Builder
               </p>
             </div>
-            <div className="space-y-4">
-              {profile.map(({ label, value }) => (
-                <div key={label}>
-                  <p className="font-rdna text-[0.5rem] tracking-[0.25em] uppercase text-white/30 mb-0.5">
+            <div className="space-y-3">
+              {profile.map(({ label, value, color }) => (
+                <div key={label} className="pl-3 border-l" style={{ borderColor: `${color}55` }}>
+                  <p className="font-rdna text-[0.48rem] tracking-[0.25em] uppercase mb-0.5"
+                     style={{ color: `${color}99` }}>
                     {label}
                   </p>
-                  <p className="font-body text-sm text-white/70">{value}</p>
+                  <p className="font-body text-sm" style={{ color: `${color}dd` }}>{value}</p>
                 </div>
               ))}
             </div>
@@ -111,8 +112,8 @@ export default function About() {
             custom={3} variants={fadeUp}>
             {stats.map((s) => (
               <div key={s.label} className="rounded-sm p-4"
-                   style={{ border: '1px solid var(--border)', background: 'var(--bg-surface)' }}>
-                <p className="font-signal leading-none" style={{ fontSize: '2.2rem', color: 'var(--accent)' }}>
+                   style={{ border: `1px solid ${s.color}22`, background: `${s.color}08` }}>
+                <p className="font-signal leading-none" style={{ fontSize: '2.2rem', color: s.color }}>
                   {s.value}
                 </p>
                 <p className="font-mono text-[0.6rem] text-white/40 mt-1.5 leading-snug tracking-wide">

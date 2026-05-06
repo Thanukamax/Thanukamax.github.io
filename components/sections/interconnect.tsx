@@ -42,17 +42,23 @@ const EDGES: { id: string; from: string; to: string }[] = [
 
 const NODE_MAP = Object.fromEntries(NODES.map(n => [n.id, n]))
 
+const TIER_COLOR: Record<Tier, string> = {
+  core:       '#7dd3fc',  // sky   — hardware / silicon
+  bridge:     '#fbbf24',  // amber — engines / tools
+  peripheral: '#a78bfa',  // violet — web / creative
+}
+
 function tierFill(tier: Tier, active: boolean) {
-  const base = { core: 0.09, bridge: 0.055, peripheral: 0.035 }[tier]
-  return active ? base * 3 : base
+  const base = { core: 0.1, bridge: 0.065, peripheral: 0.04 }[tier]
+  return active ? base * 3.5 : base
 }
 function tierStroke(tier: Tier, active: boolean) {
-  const base = { core: 0.75, bridge: 0.42, peripheral: 0.2 }[tier]
+  const base = { core: 0.8, bridge: 0.5, peripheral: 0.28 }[tier]
   return active ? 1 : base
 }
 function tierStrokeW(tier: Tier, active: boolean) {
   const base = { core: 1.6, bridge: 1.2, peripheral: 0.9 }[tier]
-  return active ? base * 1.5 : base
+  return active ? base * 1.6 : base
 }
 function labelSize(tier: Tier) {
   return { core: 11, bridge: 9.5, peripheral: 8 }[tier]
@@ -123,12 +129,12 @@ export default function Interconnect() {
             <div
               className="w-1.5 h-1.5 rounded-full flex-shrink-0"
               style={{
-                background: 'var(--accent)',
-                opacity: tier === 'core' ? 0.9 : tier === 'bridge' ? 0.5 : 0.25,
-                boxShadow: tier === 'core' ? '0 0 6px var(--accent)' : 'none',
+                background: TIER_COLOR[tier],
+                boxShadow: `0 0 6px ${TIER_COLOR[tier]}88`,
               }}
             />
-            <span className="font-jetbrains text-[0.46rem] tracking-[0.2em] uppercase text-white/35">
+            <span className="font-jetbrains text-[0.46rem] tracking-[0.2em] uppercase"
+              style={{ color: `${TIER_COLOR[tier]}88` }}>
               {tier}
             </span>
           </div>
@@ -219,10 +225,10 @@ export default function Interconnect() {
                 {/* Outer glow ring */}
                 {(active || connected) && (
                   <motion.circle
-                    cx={node.x} cy={node.y} r={node.r + 10}
-                    fill="var(--accent)"
+                    cx={node.x} cy={node.y} r={node.r + 12}
+                    fill={TIER_COLOR[node.tier]}
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: [0.06, 0.16, 0.06] }}
+                    animate={{ opacity: [0.07, 0.18, 0.07] }}
                     transition={{ duration: 1.2, repeat: Infinity }}
                   />
                 )}
@@ -230,8 +236,8 @@ export default function Interconnect() {
                 <circle
                   cx={node.x} cy={node.y} r={node.r}
                   style={{
-                    fill: 'var(--accent)',
-                    stroke: 'var(--accent)',
+                    fill: TIER_COLOR[node.tier],
+                    stroke: TIER_COLOR[node.tier],
                     fillOpacity: tierFill(node.tier, active),
                     strokeOpacity: tierStroke(node.tier, active),
                     strokeWidth: tierStrokeW(node.tier, active),
@@ -245,7 +251,7 @@ export default function Interconnect() {
                   textAnchor="middle"
                   fontSize={labelSize(node.tier)}
                   fontFamily={node.font}
-                  fill={active ? 'rgba(232,232,240,0.95)' : 'rgba(232,232,240,0.55)'}
+                  fill={active ? TIER_COLOR[node.tier] : `${TIER_COLOR[node.tier]}88`}
                   letterSpacing="0.08em"
                   style={{ userSelect: 'none', transition: 'fill 0.2s' }}
                 >
@@ -258,7 +264,7 @@ export default function Interconnect() {
                     textAnchor="middle"
                     fontSize={6.5}
                     fontFamily="var(--font-orbitron)"
-                    fill="rgba(232,232,240,0.25)"
+                    fill={`${TIER_COLOR[node.tier]}44`}
                     letterSpacing="0.18em"
                     style={{ userSelect: 'none' }}
                   >

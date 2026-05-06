@@ -6,48 +6,48 @@ import { motion, useMotionValue, useSpring, useTransform, useInView, type Varian
 const E: [number,number,number,number] = [0.16, 1, 0.3, 1]
 
 /* ── Cloud layout: (x%, y%, font-class, size, depth 0-3, opacity) ── */
-interface Skill { text: string; font: string; size: string; depth: number; x: number; y: number; op: number }
+interface Skill { text: string; font: string; size: string; depth: number; x: number; y: number; op: number; color: string }
 
 const CLOUD: Skill[] = [
   /* Layer 0 — closest, moves most */
-  { text: 'C++',          font: 'font-fira',      size: '2.8rem', depth: 0, x: 14,  y: 24, op: 0.90 },
-  { text: 'RDNA',         font: 'font-rdna',       size: '2rem',   depth: 0, x: 70,  y: 14, op: 0.85 },
-  { text: 'Ghidra',       font: 'font-ghidra',     size: '3.2rem', depth: 0, x: 46,  y: 52, op: 0.80 },
-  { text: 'Arch Linux',   font: 'font-rdna',       size: '1.6rem', depth: 0, x: 82,  y: 68, op: 0.85 },
+  { text: 'C++',          font: 'font-fira',      size: '2.8rem', depth: 0, x: 14,  y: 24, op: 0.90, color: '#fb923c' },
+  { text: 'RDNA',         font: 'font-rdna',       size: '2rem',   depth: 0, x: 70,  y: 14, op: 0.85, color: '#7dd3fc' },
+  { text: 'Ghidra',       font: 'font-ghidra',     size: '3.2rem', depth: 0, x: 46,  y: 52, op: 0.80, color: '#fbbf24' },
+  { text: 'Arch Linux',   font: 'font-rdna',       size: '1.6rem', depth: 0, x: 82,  y: 68, op: 0.85, color: '#fb7185' },
 
   /* Layer 1 */
-  { text: 'Unity',        font: 'font-blender',    size: '1.9rem', depth: 1, x: 30,  y: 12, op: 0.72 },
-  { text: 'TypeScript',   font: 'font-jetbrains',  size: '1.4rem', depth: 1, x: 61,  y: 32, op: 0.68 },
-  { text: 'Python',       font: 'font-rust',       size: '1.7rem', depth: 1, x: 6,   y: 58, op: 0.70 },
-  { text: 'Rust',         font: 'font-rust',       size: '2.2rem', depth: 1, x: 79,  y: 44, op: 0.72 },
-  { text: 'Nobara KDE',   font: 'font-systems',    size: '1.1rem', depth: 1, x: 5,   y: 35, op: 0.60 },
+  { text: 'Unity',        font: 'font-blender',    size: '1.9rem', depth: 1, x: 30,  y: 12, op: 0.72, color: '#fb7185' },
+  { text: 'TypeScript',   font: 'font-jetbrains',  size: '1.4rem', depth: 1, x: 61,  y: 32, op: 0.68, color: '#7dd3fc' },
+  { text: 'Python',       font: 'font-rust',       size: '1.7rem', depth: 1, x: 6,   y: 58, op: 0.70, color: '#fbbf24' },
+  { text: 'Rust',         font: 'font-rust',       size: '2.2rem', depth: 1, x: 79,  y: 44, op: 0.72, color: '#a78bfa' },
+  { text: 'Nobara KDE',   font: 'font-systems',    size: '1.1rem', depth: 1, x: 5,   y: 35, op: 0.60, color: '#34d399' },
 
   /* Layer 2 */
-  { text: 'Blender',      font: 'font-blender',    size: '1.3rem', depth: 2, x: 52,  y: 72, op: 0.55 },
-  { text: 'HLSL',         font: 'font-fira',       size: '1.1rem', depth: 2, x: 22,  y: 43, op: 0.52 },
-  { text: 'Cloudflare',   font: 'font-mono',       size: '0.95rem',depth: 2, x: 38,  y: 22, op: 0.50 },
-  { text: 'Tauri v2',     font: 'font-mono',       size: '1.05rem',depth: 2, x: 87,  y: 32, op: 0.52 },
-  { text: 'Ubuntu',       font: 'font-mono',       size: '0.9rem', depth: 2, x: 28,  y: 68, op: 0.48 },
-  { text: 'PhysX',        font: 'font-physics',    size: '1.2rem', depth: 2, x: 57,  y: 88, op: 0.50 },
+  { text: 'Blender',      font: 'font-blender',    size: '1.3rem', depth: 2, x: 52,  y: 72, op: 0.55, color: '#e879f9' },
+  { text: 'HLSL',         font: 'font-fira',       size: '1.1rem', depth: 2, x: 22,  y: 43, op: 0.52, color: '#7dd3fc' },
+  { text: 'Cloudflare',   font: 'font-mono',       size: '0.95rem',depth: 2, x: 38,  y: 22, op: 0.50, color: '#fb923c' },
+  { text: 'Tauri v2',     font: 'font-mono',       size: '1.05rem',depth: 2, x: 87,  y: 32, op: 0.52, color: '#a78bfa' },
+  { text: 'Ubuntu',       font: 'font-mono',       size: '0.9rem', depth: 2, x: 28,  y: 68, op: 0.48, color: '#34d399' },
+  { text: 'PhysX',        font: 'font-physics',    size: '1.2rem', depth: 2, x: 57,  y: 88, op: 0.50, color: '#7dd3fc' },
 
   /* Layer 3 — furthest, barely moves */
-  { text: 'UE5',          font: 'font-blender',    size: '0.9rem', depth: 3, x: 18,  y: 80, op: 0.38 },
-  { text: 'Wireshark',    font: 'font-mono',       size: '0.8rem', depth: 3, x: 73,  y: 82, op: 0.35 },
-  { text: 'After FX',     font: 'font-craft',      size: '0.82rem',depth: 3, x: 44,  y: 8,  op: 0.32 },
-  { text: 'Garuda',       font: 'font-rdna',       size: '0.78rem',depth: 3, x: 90,  y: 56, op: 0.30 },
-  { text: 'Compute Shaders',font:'font-fira',      size: '0.72rem',depth: 3, x: 3,   y: 15, op: 0.28 },
+  { text: 'UE5',          font: 'font-blender',    size: '0.9rem', depth: 3, x: 18,  y: 80, op: 0.38, color: '#fb7185' },
+  { text: 'Wireshark',    font: 'font-mono',       size: '0.8rem', depth: 3, x: 73,  y: 82, op: 0.35, color: '#fbbf24' },
+  { text: 'After FX',     font: 'font-craft',      size: '0.82rem',depth: 3, x: 44,  y: 8,  op: 0.32, color: '#e879f9' },
+  { text: 'Garuda',       font: 'font-rdna',       size: '0.78rem',depth: 3, x: 90,  y: 56, op: 0.30, color: '#fb923c' },
+  { text: 'Compute Shaders',font:'font-fira',      size: '0.72rem',depth: 3, x: 3,   y: 15, op: 0.28, color: '#7dd3fc' },
 ]
 
 const STRENGTH = [60, 36, 16, 6] // px of travel per layer at max deflection
 
 const mobileGroups = [
-  { id: 'SYS.01', label: 'Languages',    skills: ['TypeScript', 'C++', 'C#', 'Python', 'Rust', 'Lua'], font: 'font-mono' },
-  { id: 'SYS.02', label: 'Game Engines', skills: ['Unity', 'UE5', 'Ka3d'],                              font: 'font-blender' },
-  { id: 'SYS.03', label: 'Graphics/GPU', skills: ['RDNA', 'HLSL', 'Compute Shaders', 'PhysX'],         font: 'font-rdna' },
-  { id: 'SYS.04', label: 'Creative',     skills: ['Blender', 'After FX', 'Cinema 4D'],                 font: 'font-craft' },
-  { id: 'SYS.05', label: 'Tooling',      skills: ['Ghidra', 'Wireshark', 'HxD', 'Tauri v2'],          font: 'font-ghidra' },
-  { id: 'SYS.06', label: 'Infra',        skills: ['Cloudflare', 'Git', 'GitHub CI'],                   font: 'font-mono' },
-  { id: 'SYS.07', label: 'Linux',        skills: ['Nobara KDE (Fedora)', 'Arch (Garuda)', 'Ubuntu'],   font: 'font-systems' },
+  { id: 'SYS.01', label: 'Languages',    skills: ['TypeScript', 'C++', 'C#', 'Python', 'Rust', 'Lua'], font: 'font-mono',     color: '#a78bfa' },
+  { id: 'SYS.02', label: 'Game Engines', skills: ['Unity', 'UE5', 'Ka3d'],                              font: 'font-blender', color: '#fb7185' },
+  { id: 'SYS.03', label: 'Graphics/GPU', skills: ['RDNA', 'HLSL', 'Compute Shaders', 'PhysX'],         font: 'font-rdna',    color: '#7dd3fc' },
+  { id: 'SYS.04', label: 'Creative',     skills: ['Blender', 'After FX', 'Cinema 4D'],                 font: 'font-craft',   color: '#e879f9' },
+  { id: 'SYS.05', label: 'Tooling',      skills: ['Ghidra', 'Wireshark', 'HxD', 'Tauri v2'],          font: 'font-ghidra',  color: '#fbbf24' },
+  { id: 'SYS.06', label: 'Infra',        skills: ['Cloudflare', 'Git', 'GitHub CI'],                   font: 'font-mono',    color: '#fb923c' },
+  { id: 'SYS.07', label: 'Linux',        skills: ['Nobara KDE (Fedora)', 'Arch (Garuda)', 'Ubuntu'],   font: 'font-systems', color: '#34d399' },
 ]
 
 const fadeUp: Variants = {
@@ -113,10 +113,11 @@ export default function Systems() {
             return (
               <motion.div
                 key={skill.text}
-                className={`absolute ${skill.font} text-chalk hover:text-[var(--accent)] transition-colors duration-300 leading-none whitespace-nowrap`}
-                style={{ x, y, left: `${skill.x}%`, top: `${skill.y}%`, fontSize: skill.size }}
+                className={`absolute ${skill.font} leading-none whitespace-nowrap cursor-default`}
+                style={{ x, y, left: `${skill.x}%`, top: `${skill.y}%`, fontSize: skill.size, color: skill.color }}
                 initial={{ opacity: 0 }}
                 animate={inView ? { opacity: skill.op } : { opacity: 0 }}
+                whileHover={{ opacity: 1, scale: 1.06 }}
                 transition={{ delay: i * 0.04 + 0.1, duration: 0.7, ease: E }}
               >
                 {skill.text}
@@ -143,14 +144,17 @@ export default function Systems() {
             {mobileGroups.map((g, i) => (
               <motion.div key={g.id} custom={i} variants={fadeUp}
                 initial="hidden" whileInView="visible" viewport={{ once: true }}
-                className="p-5 hover:bg-white/[0.02] transition-colors"
-                style={{ background: 'var(--bg)' }}>
+                className="p-5 transition-colors"
+                style={{ background: 'var(--bg)', borderLeft: `2px solid ${g.color}44` }}>
                 <p className="font-rdna text-[0.48rem] tracking-[0.28em] uppercase mb-1.5"
-                   style={{ color: 'var(--accent)' }}>{g.id}</p>
-                <p className={`${g.font} text-sm text-chalk mb-3`}>{g.label}</p>
+                   style={{ color: g.color }}>{g.id}</p>
+                <p className={`${g.font} text-sm mb-3`} style={{ color: `${g.color}cc` }}>{g.label}</p>
                 <div className="flex flex-wrap gap-1.5">
                   {g.skills.map(s => (
-                    <span key={s} className={`tech-chip ${g.font}`}>{s}</span>
+                    <span key={s} className={`tech-chip ${g.font}`}
+                      style={{ color: `${g.color}99`, borderColor: `${g.color}22`, background: `${g.color}08` }}>
+                      {s}
+                    </span>
                   ))}
                 </div>
               </motion.div>

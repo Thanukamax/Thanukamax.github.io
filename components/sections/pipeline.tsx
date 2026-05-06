@@ -43,6 +43,22 @@ const projects = [
 
 const SEGS = 22
 
+const STACK_COLOR: Record<string, string> = {
+  'Tauri v2':     '#a78bfa',
+  'Rust':         '#a78bfa',
+  'React':        '#7dd3fc',
+  'TypeScript':   '#7dd3fc',
+  'C++':          '#fb923c',
+  'Vulkan':       '#fb923c',
+  'GLSL':         '#fbbf24',
+  'VMA':          '#fbbf24',
+  'WGPU':         '#34d399',
+  'WGSL':         '#34d399',
+  'Compute':      '#7dd3fc',
+  'LLVM':         '#e879f9',
+  'Android SDK':  '#bef264',
+}
+
 const STATE_COLOR: Record<string, string> = {
   PLANNING:    'rgba(255, 210, 80, 0.9)',
   COMPILING:   'rgba(var(--accent-rgb), 0.9)',
@@ -127,19 +143,18 @@ function Row({ proj, idx }: { proj: (typeof projects)[number]; idx: number }) {
             {proj.desc}
           </p>
           <div className="flex flex-wrap gap-1.5 mt-3">
-            {proj.stack.map((s) => (
-              <span
-                key={s}
-                className="font-jetbrains text-[0.46rem] tracking-widest px-2 py-0.5 rounded-[2px]"
-                style={{
-                  color: 'rgba(var(--accent-rgb),0.6)',
-                  border: '1px solid rgba(var(--accent-rgb),0.15)',
-                  background: 'rgba(var(--accent-rgb),0.04)',
-                }}
-              >
-                {s}
-              </span>
-            ))}
+            {proj.stack.map((s) => {
+              const c = STACK_COLOR[s] ?? '#ffffff'
+              return (
+                <span
+                  key={s}
+                  className="font-jetbrains text-[0.46rem] tracking-widest px-2 py-0.5 rounded-[2px]"
+                  style={{ color: `${c}bb`, border: `1px solid ${c}22`, background: `${c}08` }}
+                >
+                  {s}
+                </span>
+              )
+            })}
           </div>
         </div>
 
