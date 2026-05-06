@@ -1330,6 +1330,118 @@
       transform: translateY(0);
     }
 
+    /* ═══════════════════════════════════════════════════════
+       DESIGN-MOTION-PRINCIPLES — Emil Kowalski lens
+       Hero entrance: each element enters in sequence.
+       Fast spring easing, purposeful stagger, no decorative chaos.
+       ═══════════════════════════════════════════════════════ */
+    @keyframes heroEnter {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: none; }
+    }
+    @keyframes heroSceneReveal {
+      from { opacity: 0; transform: translateY(32px) scale(0.96); }
+      to   { opacity: 1; transform: none; }
+    }
+    .hero-copy .signal       { animation: heroEnter 0.65s var(--ease) 0.05s both; }
+    .hero-copy .hero-title   { animation: heroEnter 0.85s var(--ease) 0.14s both; }
+    .hero-copy .hero-kicker  { animation: heroEnter 0.65s var(--ease) 0.27s both; }
+    .hero-copy .hero-desc    { animation: heroEnter 0.65s var(--ease) 0.39s both; }
+    .hero-copy .hero-actions { animation: heroEnter 0.65s var(--ease) 0.51s both; }
+    .hero-copy .hero-meta    { animation: heroEnter 0.65s var(--ease) 0.63s both; }
+    .hero-scene              { animation: heroSceneReveal 1s var(--ease) 0.18s both; }
+
+    /* GRID STAGGER — 55ms interval: fluid but distinct.
+       Each child reveals in reading order, not simultaneously. */
+    .systems-grid .system-cell.reveal:nth-child(2) { transition-delay: 55ms; }
+    .systems-grid .system-cell.reveal:nth-child(3) { transition-delay: 110ms; }
+    .systems-grid .system-cell.reveal:nth-child(4) { transition-delay: 165ms; }
+    .systems-grid .system-cell.reveal:nth-child(5) { transition-delay: 220ms; }
+    .systems-grid .system-cell.reveal:nth-child(6) { transition-delay: 275ms; }
+    .education-grid .module.reveal:nth-child(2) { transition-delay: 70ms; }
+    .education-grid .module.reveal:nth-child(3) { transition-delay: 140ms; }
+    .projects-stack .project-card.reveal:nth-child(2) { transition-delay: 90ms; }
+    .projects-stack .project-card.reveal:nth-child(3) { transition-delay: 180ms; }
+
+    /* ═══════════════════════════════════════════════════════
+       IMPECCABLE — Decorative elements should animate on reveal,
+       hover borders need a base border, active state feedback
+       ═══════════════════════════════════════════════════════ */
+
+    /* Eyebrow line animates width on section reveal */
+    @keyframes eyebrowExpand {
+      from { width: 0; opacity: 0; }
+      to   { width: 28px; opacity: 1; }
+    }
+    .reveal.visible .eyebrow::before {
+      animation: eyebrowExpand 0.5s var(--ease) 0.06s both;
+    }
+
+    /* Scroll progress — orientation feedback for long pages */
+    .scroll-progress {
+      position: fixed; top: 0; left: 0;
+      height: 2px; width: 0%;
+      background: linear-gradient(90deg, var(--accent-3), var(--accent), var(--accent-2));
+      z-index: 200; pointer-events: none;
+      transition: width 0.08s linear;
+      box-shadow: 0 0 8px color-mix(in oklab, var(--accent), transparent 55%);
+    }
+
+    /* Nav active state — current section clearly signalled */
+    .nav-links a.active {
+      color: var(--accent);
+      border-color: var(--border-2);
+      background: color-mix(in oklab, var(--accent), transparent 92%);
+    }
+
+    /* Project card base border — hover border-color needs a base to work from */
+    .project-card {
+      border: 1px solid var(--border-1);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       FRONTEND-DESIGN — Per-project accent system.
+       Each card has a unique identity; no two cards look the same.
+       ═══════════════════════════════════════════════════════ */
+    .project-card:nth-child(1) { --card-accent: #58c5ff; }   /* h-cli: cyan  */
+    .project-card:nth-child(2) { --card-accent: #ffaa44; }   /* donghua: amber */
+    .project-card:nth-child(3) { --card-accent: #a78bfa; }   /* CROW: violet  */
+
+    .project-visual {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01)),
+        radial-gradient(circle at 50% 34%, color-mix(in oklab, var(--card-accent, var(--accent)), transparent 84%), transparent 36%),
+        rgba(8, 20, 37, 0.82);
+    }
+    .project-card:hover {
+      border-color: color-mix(in oklab, var(--card-accent, var(--accent)), transparent 55%);
+      box-shadow:
+        0 0 48px color-mix(in oklab, var(--card-accent, var(--accent)), transparent 88%),
+        var(--shadow-2);
+    }
+    .project-card:hover .project-icon {
+      color: var(--card-accent, var(--accent));
+      opacity: 0.62;
+    }
+    .project-visual::before,
+    .project-visual::after {
+      border-color: color-mix(in oklab, var(--card-accent, var(--accent)), transparent 74%) !important;
+    }
+
+    /* CROW badge */
+    .project-badge {
+      display: inline-flex; align-items: center;
+      padding: 3px 8px; border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.56rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: #a78bfa;
+      border: 1px solid rgba(167, 139, 250, 0.3);
+      background: rgba(167, 139, 250, 0.08);
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       *, *::before, *::after {
@@ -1529,6 +1641,7 @@
     <div class="scan-sweep" aria-hidden="true"></div>
     <div class="edge-flare" style="top:-60px;left:-60px;--dur:7s;--del:0s;" aria-hidden="true"></div>
     <div class="edge-flare" style="bottom:-60px;right:-60px;--dur:9s;--del:2s;" aria-hidden="true"></div>
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
     <header class="nav">
       <div class="nav-inner">
@@ -1563,6 +1676,7 @@
                 Watch Intro
               </button>
               <a class="btn btn-primary" href="https://github.com/Thanukamax" target="_blank" rel="noopener">GitHub</a>
+              <a class="btn btn-secondary" href="https://linkedin.com/in/thanukamax" target="_blank" rel="noopener">LinkedIn</a>
               <a class="btn btn-secondary" href="mailto:thanukasehasnaperera@gmail.com">Get in touch</a>
             </div>
             <div class="hero-meta">
@@ -1582,8 +1696,8 @@
               </div>
               <div class="scene-data">
                 <span>timezone <b>utc+05:30</b></span>
-                <span>build <b>2026.03</b></span>
-                <span>mode <b>Active</b></span>
+                <span>build <b>2026.05</b></span>
+                <span>mode <b>abyssal</b></span>
               </div>
             </div>
           </div>
@@ -1709,6 +1823,8 @@
               <div class="chip-label">SYS.01</div>
               <div class="system-name">Core languages</div>
               <div class="system-tags">
+                <a class="system-tag" href="https://www.typescriptlang.org/" target="_blank">TypeScript</a>
+                <a class="system-tag" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">JavaScript</a>
                 <a class="system-tag" href="https://isocpp.org/" target="_blank">C++</a>
                 <a class="system-tag" href="https://learn.microsoft.com/en-us/dotnet/csharp/" target="_blank">C#</a>
                 <a class="system-tag" href="https://www.python.org/" target="_blank">Python</a>
@@ -1818,6 +1934,25 @@
                 </div>
               </div>
             </a>
+
+            <a class="project-card reveal" href="https://github.com/Thanukamax" target="_blank" rel="noopener">
+              <div class="project-info">
+                <div class="module-id">Module 003</div>
+                <div class="project-name">CROW <span class="project-badge">SDGP</span></div>
+                <p class="project-copy">Unified customer interaction intelligence platform. Real-time CCTV analytics, AI-powered behavioural insights, and microservice architecture across Cloudflare Workers. 6-person team, 2 production clients, 3000+ commits.</p>
+                <div class="chip-row">
+                  <span class="chip">TypeScript</span>
+                  <span class="chip">Cloudflare Workers</span>
+                  <span class="chip">Computer Vision</span>
+                  <span class="chip">Microservices</span>
+                </div>
+              </div>
+              <div class="project-visual" aria-hidden="true">
+                <div class="project-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                </div>
+              </div>
+            </a>
           </div>
         </div>
       </section>
@@ -1854,6 +1989,7 @@
             <div class="hero-actions" style="margin-top: 24px;">
               <a class="btn btn-primary" href="mailto:thanukasehasnaperera@gmail.com">Send signal</a>
               <a class="btn btn-secondary" href="https://github.com/Thanukamax" target="_blank" rel="noopener">GitHub</a>
+              <a class="btn btn-secondary" href="https://linkedin.com/in/thanukamax" target="_blank" rel="noopener">LinkedIn</a>
             </div>
           </div>
           <aside class="signal-panel reveal">
@@ -1937,6 +2073,29 @@
         });
       }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
       revealEls.forEach(el => observer.observe(el));
+
+      // ── Scroll progress bar ──
+      const progressBar = document.getElementById('scrollProgress');
+      const updateProgress = () => {
+        const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+        progressBar.style.width = Math.min(pct, 100) + '%';
+      };
+      window.addEventListener('scroll', updateProgress, { passive: true });
+
+      // ── Nav active section tracking ──
+      const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+      const sectionIds = ['about', 'experience', 'education', 'systems', 'builds', 'signal'];
+      const sectionEls = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+      const navObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            navLinks.forEach(l => l.classList.remove('active'));
+            const lnk = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+            if (lnk) lnk.classList.add('active');
+          }
+        });
+      }, { rootMargin: '-25% 0px -65% 0px' });
+      sectionEls.forEach(el => navObserver.observe(el));
 
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!reduceMotion) {
