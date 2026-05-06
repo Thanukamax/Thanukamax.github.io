@@ -1,0 +1,196 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── GPU Theme System ─────────────────────────────────────────── */
+:root {
+  --accent: #22d3ee;
+  --accent-rgb: 34, 211, 238;
+  --bg: #06070e;
+  --bg-surface: rgba(255, 255, 255, 0.025);
+  --bg-surface-hover: rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 255, 255, 0.08);
+  --text-primary: #f0f2f7;
+  --text-muted: rgba(240, 242, 247, 0.5);
+  --transition-theme: color 0.4s ease, background-color 0.4s ease,
+    border-color 0.4s ease, fill 0.4s ease, stroke 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+[data-theme="udna"] {
+  --accent: #e11d48;
+  --accent-rgb: 225, 29, 72;
+}
+
+[data-theme="cuda"] {
+  --accent: #76b900;
+  --accent-rgb: 118, 185, 0;
+}
+
+/* ─── Global Resets ────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  cursor: none !important;
+}
+
+@media (pointer: coarse) {
+  *,
+  *::before,
+  *::after {
+    cursor: auto !important;
+  }
+}
+
+html {
+  scroll-behavior: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #06070e;
+  color: #f0f2f7;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ─── Grain Texture ────────────────────────────────────────────── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: -200%;
+  width: 400%;
+  height: 400%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  animation: grain 8s steps(1) infinite;
+}
+
+@keyframes grain {
+  0%,
+  100% {
+    transform: translate(0%, 0%);
+  }
+  10% {
+    transform: translate(-5%, -10%);
+  }
+  20% {
+    transform: translate(-15%, 5%);
+  }
+  30% {
+    transform: translate(7%, -25%);
+  }
+  40% {
+    transform: translate(-5%, 25%);
+  }
+  50% {
+    transform: translate(-15%, 10%);
+  }
+  60% {
+    transform: translate(15%, 0%);
+  }
+  70% {
+    transform: translate(0%, 15%);
+  }
+  80% {
+    transform: translate(3%, 35%);
+  }
+  90% {
+    transform: translate(-10%, 10%);
+  }
+}
+
+/* ─── Selection ────────────────────────────────────────────────── */
+::selection {
+  background: var(--accent);
+  color: #010508;
+}
+
+/* ─── Scrollbar ────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #06070e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 2px;
+  transition: var(--transition-theme);
+}
+
+/* ─── Utility Classes ──────────────────────────────────────────── */
+.text-accent {
+  color: var(--accent);
+  transition: var(--transition-theme);
+}
+
+.bg-accent {
+  background-color: var(--accent);
+  transition: var(--transition-theme);
+}
+
+.border-accent {
+  border-color: var(--accent);
+  transition: var(--transition-theme);
+}
+
+.outlined {
+  -webkit-text-stroke: 1px var(--accent);
+  -webkit-text-fill-color: transparent;
+  transition: var(--transition-theme);
+}
+
+.section-label {
+  font-family: var(--font-fragment-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  transition: var(--transition-theme);
+}
+
+.tech-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--font-fragment-mono);
+  font-size: 0.7rem;
+  color: rgba(240, 242, 247, 0.6);
+  background: rgba(255, 255, 255, 0.03);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+/* ─── Animated Grid Background ─────────────────────────────────── */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+      rgba(var(--accent-rgb), 0.04) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(var(--accent-rgb), 0.04) 1px,
+      transparent 1px
+    );
+  background-size: 60px 60px;
+  mask-image: radial-gradient(
+    ellipse 80% 80% at 50% 50%,
+    black 0%,
+    transparent 100%
+  );
+  transition: var(--transition-theme);
+}
