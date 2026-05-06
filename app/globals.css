@@ -2,47 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── GPU Theme System ─────────────────────────────────────────── */
+/* ── Silicon Grimoire: Theme System ─────────────────────────────── */
 :root {
-  --accent: #22d3ee;
-  --accent-rgb: 34, 211, 238;
-  --bg: #06070e;
-  --bg-surface: rgba(255, 255, 255, 0.025);
-  --bg-surface-hover: rgba(255, 255, 255, 0.05);
-  --border: rgba(255, 255, 255, 0.08);
-  --text-primary: #f0f2f7;
-  --text-muted: rgba(240, 242, 247, 0.5);
-  --transition-theme: color 0.4s ease, background-color 0.4s ease,
-    border-color 0.4s ease, fill 0.4s ease, stroke 0.4s ease,
-    box-shadow 0.4s ease;
+  --accent:       #b4ff00;
+  --accent-rgb:   180, 255, 0;
+  --accent-dim:   rgba(180, 255, 0, 0.1);
+  --accent-glow:  0 0 40px rgba(180,255,0,0.22), 0 0 100px rgba(180,255,0,0.07);
+
+  --bg:           #030304;
+  --bg-surface:   rgba(255, 255, 255, 0.028);
+  --bg-lift:      rgba(255, 255, 255, 0.055);
+  --border:       rgba(255, 255, 255, 0.07);
+  --border-accent:rgba(180, 255, 0, 0.2);
+
+  --chalk:        #e8e8f0;
+  --muted:        rgba(232, 232, 240, 0.45);
+  --ghost:        rgba(232, 232, 240, 0.14);
+
+  --ease-expo:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-expo: cubic-bezier(0.87, 0, 0.13, 1);
+  --transition-theme:
+    color 0.5s ease, background-color 0.5s ease,
+    border-color 0.5s ease, fill 0.5s ease,
+    stroke 0.5s ease, box-shadow 0.5s ease, filter 0.5s ease;
 }
 
 [data-theme="udna"] {
-  --accent: #e11d48;
-  --accent-rgb: 225, 29, 72;
+  --accent:        #9b30ff;
+  --accent-rgb:    155, 48, 255;
+  --accent-dim:    rgba(155, 48, 255, 0.1);
+  --accent-glow:   0 0 40px rgba(155,48,255,0.28), 0 0 100px rgba(155,48,255,0.09);
+  --border-accent: rgba(155, 48, 255, 0.25);
 }
 
 [data-theme="cuda"] {
-  --accent: #76b900;
-  --accent-rgb: 118, 185, 0;
+  --accent:        #76b900;
+  --accent-rgb:    118, 185, 0;
+  --accent-dim:    rgba(118, 185, 0, 0.1);
+  --accent-glow:   0 0 40px rgba(118,185,0,0.22), 0 0 100px rgba(118,185,0,0.07);
+  --border-accent: rgba(118, 185, 0, 0.2);
 }
 
-/* ─── Global Resets ────────────────────────────────────────────── */
-*,
-*::before,
-*::after {
+/* ── Resets ──────────────────────────────────────────────────────── */
+*, *::before, *::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  margin: 0; padding: 0;
   cursor: none !important;
 }
-
 @media (pointer: coarse) {
-  *,
-  *::before,
-  *::after {
-    cursor: auto !important;
-  }
+  *, *::before, *::after { cursor: auto !important; }
 }
 
 html {
@@ -52,231 +60,180 @@ html {
 }
 
 body {
-  background-color: #06070e;
-  color: #f0f2f7;
+  background: var(--bg);
+  color: var(--chalk);
   overflow-x: hidden;
-  position: relative;
 }
 
-/* ─── Grain Texture ────────────────────────────────────────────── */
+::selection { background: var(--accent); color: #000; }
+
+/* ── Scrollbar ───────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 1.5px;
+  transition: var(--transition-theme);
+}
+
+/* ── Grain overlay ───────────────────────────────────────────────── */
 body::after {
   content: '';
   position: fixed;
   inset: -200%;
-  width: 400%;
-  height: 400%;
+  width: 400%; height: 400%;
   pointer-events: none;
-  z-index: 9999;
-  opacity: 0.032;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
-  animation: grain 8s steps(1) infinite;
+  z-index: 9998;
+  opacity: 0.038;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  animation: grain 6s steps(1) infinite;
 }
 
 @keyframes grain {
-  0%,
-  100% {
-    transform: translate(0%, 0%);
-  }
-  10% {
-    transform: translate(-5%, -10%);
-  }
-  20% {
-    transform: translate(-15%, 5%);
-  }
-  30% {
-    transform: translate(7%, -25%);
-  }
-  40% {
-    transform: translate(-5%, 25%);
-  }
-  50% {
-    transform: translate(-15%, 10%);
-  }
-  60% {
-    transform: translate(15%, 0%);
-  }
-  70% {
-    transform: translate(0%, 15%);
-  }
-  80% {
-    transform: translate(3%, 35%);
-  }
-  90% {
-    transform: translate(-10%, 10%);
-  }
+  0%,100%{ transform:translate(0%,0%) }
+  10%    { transform:translate(-5%,-10%) }
+  20%    { transform:translate(-15%,5%) }
+  30%    { transform:translate(7%,-25%) }
+  40%    { transform:translate(-5%,25%) }
+  50%    { transform:translate(-15%,10%) }
+  60%    { transform:translate(15%,0%) }
+  70%    { transform:translate(0%,15%) }
+  80%    { transform:translate(3%,35%) }
+  90%    { transform:translate(-10%,10%) }
 }
 
-/* ─── Selection ────────────────────────────────────────────────── */
-::selection {
-  background: var(--accent);
-  color: #010508;
+/* ── Scanlines ───────────────────────────────────────────────────── */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9997;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px, transparent 3px,
+    rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px
+  );
 }
 
-/* ─── Scrollbar ────────────────────────────────────────────────── */
-::-webkit-scrollbar {
-  width: 4px;
-}
+/* ── Typography map utilities ────────────────────────────────────── */
+.font-signal    { font-family: var(--font-bebas);      letter-spacing: 0.04em; }
+.font-editorial { font-family: var(--font-playfair); }
+.font-systems   { font-family: var(--font-ibm-serif); }
+.font-gpu       { font-family: var(--font-jetbrains); }
+.font-code-cpp  { font-family: var(--font-fira); }
+.font-rdna      { font-family: var(--font-orbitron); }
+.font-craft     { font-family: var(--font-audiowide); }
+.font-abyssal   { font-family: var(--font-fraunces);   font-style: italic; }
+.font-rust      { font-family: var(--font-courier); }
+.font-ghidra    { font-family: var(--font-vt323); }
+.font-blender   { font-family: var(--font-space); }
+.font-physics   { font-family: var(--font-bodoni); }
 
-::-webkit-scrollbar-track {
-  background: #06070e;
-}
+/* ── Accent utilities ────────────────────────────────────────────── */
+.text-accent   { color: var(--accent);            transition: var(--transition-theme); }
+.bg-accent     { background-color: var(--accent); transition: var(--transition-theme); }
+.border-accent { border-color: var(--accent);     transition: var(--transition-theme); }
 
-::-webkit-scrollbar-thumb {
-  background: var(--accent);
-  border-radius: 2px;
-  transition: var(--transition-theme);
-}
-
-/* ─── Utility Classes ──────────────────────────────────────────── */
-.text-accent {
-  color: var(--accent);
-  transition: var(--transition-theme);
-}
-
-.bg-accent {
-  background-color: var(--accent);
-  transition: var(--transition-theme);
-}
-
-.border-accent {
-  border-color: var(--accent);
-  transition: var(--transition-theme);
-}
-
+/* ── Outlined text ───────────────────────────────────────────────── */
 .outlined {
   -webkit-text-stroke: 1px var(--accent);
   -webkit-text-fill-color: transparent;
-  transition: var(--transition-theme);
+  transition: -webkit-text-stroke-color 0.5s ease;
+}
+.outlined-chalk {
+  -webkit-text-stroke: 1px rgba(232,232,240,0.35);
+  -webkit-text-fill-color: transparent;
 }
 
-.section-label {
-  font-family: var(--font-orbitron);
-  font-size: 0.6rem;
-  font-weight: 500;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--accent);
-  transition: var(--transition-theme);
-}
-
-.tech-chip {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  font-family: var(--font-fragment-mono);
-  font-size: 0.7rem;
-  color: rgba(240, 242, 247, 0.6);
-  background: rgba(255, 255, 255, 0.03);
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-}
-
-/* ─── Text Effects ──────────────────────────────────────────────── */
-
-/* Animated gradient sweep on text */
-.text-gradient-accent {
+/* ── Animated shimmer text ───────────────────────────────────────── */
+.text-shimmer {
   background: linear-gradient(
     90deg,
     var(--accent) 0%,
-    color-mix(in oklab, var(--accent), white 45%) 40%,
-    var(--accent) 80%,
-    color-mix(in oklab, var(--accent), white 30%) 100%
+    color-mix(in oklab, var(--accent), white 50%) 45%,
+    var(--accent) 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: gradient-sweep 3s linear infinite;
-  transition: background 0.4s ease;
+  animation: shimmer 3s linear infinite;
+  transition: background 0.5s ease;
 }
-
-@keyframes gradient-sweep {
+@keyframes shimmer {
   from { background-position: 0% center; }
   to   { background-position: 200% center; }
 }
 
-/* Luminous glow */
-.text-glow {
-  text-shadow:
-    0 0 24px rgba(var(--accent-rgb), 0.55),
-    0 0 72px rgba(var(--accent-rgb), 0.2);
-  transition: text-shadow 0.4s ease;
-}
-
-/* Glitch hover — requires data-text="..." attribute on element */
-.text-glitch {
-  position: relative;
-}
-
+/* ── Glitch hover ────────────────────────────────────────────────── */
+.text-glitch { position: relative; }
 .text-glitch::before,
 .text-glitch::after {
   content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  opacity: 0;
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; opacity: 0;
 }
-
-.text-glitch::before {
-  color: var(--accent);
-  -webkit-text-fill-color: var(--accent);
-}
-
-.text-glitch::after {
-  color: var(--accent);
-  -webkit-text-fill-color: var(--accent);
-  opacity: 0;
-}
-
-.text-glitch:hover::before {
-  opacity: 1;
-  animation: glitch-a 0.45s steps(1) infinite;
-}
-
-.text-glitch:hover::after {
-  opacity: 1;
-  animation: glitch-b 0.45s steps(1) 0.12s infinite;
-}
+.text-glitch::before { -webkit-text-fill-color: var(--accent); }
+.text-glitch::after  { -webkit-text-fill-color: var(--accent); }
+.text-glitch:hover::before { opacity:1; animation: glitch-a 0.45s steps(1) infinite; }
+.text-glitch:hover::after  { opacity:1; animation: glitch-b 0.45s steps(1) 0.12s infinite; }
 
 @keyframes glitch-a {
-  0%,  100% { clip-path: polygon(0  8%, 100%  8%, 100% 18%, 0 18%); transform: translateX(-4px); }
-  20%       { clip-path: polygon(0 42%, 100% 42%, 100% 52%, 0 52%); transform: translateX( 3px); }
-  40%       { clip-path: polygon(0 22%, 100% 22%, 100% 28%, 0 28%); transform: translateX(-2px); }
-  60%       { clip-path: polygon(0 68%, 100% 68%, 100% 78%, 0 78%); transform: translateX( 4px); }
-  80%       { clip-path: polygon(0  5%, 100%  5%, 100% 12%, 0 12%); transform: translateX(-3px); }
+  0%,100%{ clip-path:polygon(0 8%,100% 8%,100% 18%,0 18%);  transform:translateX(-4px) }
+  20%    { clip-path:polygon(0 42%,100% 42%,100% 52%,0 52%); transform:translateX(3px) }
+  40%    { clip-path:polygon(0 22%,100% 22%,100% 28%,0 28%); transform:translateX(-2px) }
+  60%    { clip-path:polygon(0 68%,100% 68%,100% 78%,0 78%); transform:translateX(4px) }
+  80%    { clip-path:polygon(0 5%,100% 5%,100% 12%,0 12%);   transform:translateX(-3px) }
 }
-
 @keyframes glitch-b {
-  0%,  100% { clip-path: polygon(0 62%, 100% 62%, 100% 75%, 0 75%); transform: translateX( 3px); }
-  25%       { clip-path: polygon(0 85%, 100% 85%, 100% 95%, 0 95%); transform: translateX(-4px); }
-  50%       { clip-path: polygon(0 48%, 100% 48%, 100% 56%, 0 56%); transform: translateX( 2px); }
-  75%       { clip-path: polygon(0 30%, 100% 30%, 100% 38%, 0 38%); transform: translateX(-2px); }
+  0%,100%{ clip-path:polygon(0 62%,100% 62%,100% 75%,0 75%); transform:translateX(3px) }
+  25%    { clip-path:polygon(0 85%,100% 85%,100% 95%,0 95%); transform:translateX(-4px) }
+  50%    { clip-path:polygon(0 48%,100% 48%,100% 56%,0 56%); transform:translateX(2px) }
+  75%    { clip-path:polygon(0 30%,100% 30%,100% 38%,0 38%); transform:translateX(-2px) }
 }
 
-/* ─── Animated Grid Background ─────────────────────────────────── */
+/* ── Hero grid ───────────────────────────────────────────────────── */
 .hero-grid {
-  position: absolute;
-  inset: 0;
-  background-image: linear-gradient(
-      rgba(var(--accent-rgb), 0.04) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      90deg,
-      rgba(var(--accent-rgb), 0.04) 1px,
-      transparent 1px
-    );
-  background-size: 60px 60px;
-  mask-image: radial-gradient(
-    ellipse 80% 80% at 50% 50%,
-    black 0%,
-    transparent 100%
-  );
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(var(--accent-rgb), 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--accent-rgb), 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 50%, black 0%, transparent 100%);
   transition: var(--transition-theme);
+}
+
+/* ── Section label ───────────────────────────────────────────────── */
+.section-label {
+  font-family: var(--font-orbitron);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent);
+  transition: var(--transition-theme);
+}
+
+/* ── Tech chip ───────────────────────────────────────────────────── */
+.tech-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.6rem;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--muted);
+  background: var(--bg-surface);
+  letter-spacing: 0.03em;
+  transition: var(--transition-theme);
+}
+
+/* ── Horizontal scroll section reset ────────────────────────────── */
+.h-scroll-track {
+  display: flex;
+  height: 100vh;
+  will-change: transform;
 }

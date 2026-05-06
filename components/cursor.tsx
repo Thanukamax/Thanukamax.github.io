@@ -3,86 +3,95 @@
 import { useEffect, useState } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 
+const FAST   = { stiffness: 850, damping: 45 }
+const SLOW_R = { stiffness: 260, damping: 30 }
+const SLOW_B = { stiffness: 190, damping: 26 }
+
 export default function Cursor() {
-  const [isTouch, setIsTouch] = useState(false)
+  const [isTouch,    setIsTouch]    = useState(false)
   const [isHovering, setIsHovering] = useState(false)
 
-  const mouseX = useMotionValue(-100)
-  const mouseY = useMotionValue(-100)
+  const mx = useMotionValue(-200)
+  const my = useMotionValue(-200)
 
-  // Dot — tracks exactly
-  const dotX = useSpring(mouseX, { stiffness: 800, damping: 42 })
-  const dotY = useSpring(mouseY, { stiffness: 800, damping: 42 })
-
-  // Ring — lags behind
-  const ringX = useSpring(mouseX, { stiffness: 160, damping: 26 })
-  const ringY = useSpring(mouseY, { stiffness: 160, damping: 26 })
+  const dotX = useSpring(mx, FAST)
+  const dotY = useSpring(my, FAST)
+  const rx    = useSpring(mx, SLOW_R)
+  const ry    = useSpring(my, SLOW_R)
+  const bx    = useSpring(mx, SLOW_B)
+  const by    = useSpring(my, SLOW_B)
 
   useEffect(() => {
-    // Use pointer media query only — maxTouchPoints is unreliable (reports > 0 on trackpad laptops)
-    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches
+    if (window.matchMedia('(pointer: coarse)').matches) { setIsTouch(true); return }
 
-    setIsTouch(isTouchDevice)
-
-    if (isTouchDevice) return
-
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX)
-      mouseY.set(e.clientY)
+    const onMove = (e: MouseEvent) => { mx.set(e.clientX); my.set(e.clientY) }
+    const onOver = (e: MouseEvent) => {
+      const t = e.target as HTMLElement
+      setIsHovering(!!t.closest('a, button, [data-cursor-hover]'))
     }
 
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement
-      if (
-        target.closest('a') ||
-        target.closest('button') ||
-        target.closest('[data-cursor-hover]')
-      ) {
-        setIsHovering(true)
-      } else {
-        setIsHovering(false)
-      }
-    }
-
-    window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('mouseover', handleMouseOver)
-
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseover', onOver)
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('mouseover', handleMouseOver)
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseover', onOver)
     }
-  }, [mouseX, mouseY])
+  }, [mx, my])
 
   if (isTouch) return null
 
+  const ring = isHovering ? 54 : 36
+  const dot  = isHovering ? 4  : 6
+
   return (
     <>
-      {/* Ring */}
+      {/* Red channel — lags, offset right */}
       <motion.div
-        className="pointer-events-none fixed top-0 left-0 z-[10000] rounded-full mix-blend-exclusion"
+        className="pointer-events-none fixed top-0 left-0 z-[9996] rounded-full"
         style={{
-          x: ringX,
-          y: ringY,
-          translateX: '-50%',
-          translateY: '-50%',
-          width: isHovering ? 48 : 32,
-          height: isHovering ? 48 : 32,
-          border: '1px solid rgba(var(--accent-rgb, 34, 211, 238), 0.5)',
-          transition: 'width 0.2s cubic-bezier(0.16,1,0.3,1), height 0.2s cubic-bezier(0.16,1,0.3,1)',
+          x: rx, y: ry,
+          translateX: 'calc(-50% + 4px)',
+          translateY: 'calc(-50% - 2px)',
+          width: 7, height: 7,
+          background: 'rgba(255,35,35,0.5)',
+          mixBlendMode: 'screen',
         }}
       />
+
+      {/* Blue channel — lags more, offset left */}
+      <motion.div
+        className="pointer-events-none fixed top-0 left-0 z-[9996] rounded-full"
+        style={{
+          x: bx, y: by,
+          translateX: 'calc(-50% - 4px)',
+          translateY: 'calc(-50% + 2px)',
+          width: 7, height: 7,
+          background: 'rgba(35,35,255,0.5)',
+          mixBlendMode: 'screen',
+        }}
+      />
+
+      {/* Ring */}
+      <motion.div
+        className="pointer-events-none fixed top-0 left-0 z-[9998] rounded-full"
+        style={{
+          x: dotX, y: dotY,
+          translateX: '-50%', translateY: '-50%',
+          width: ring, height: ring,
+          border: '1px solid rgba(var(--accent-rgb),0.4)',
+          transition: 'width 0.22s var(--ease-expo), height 0.22s var(--ease-expo)',
+        }}
+      />
+
       {/* Dot */}
       <motion.div
-        className="pointer-events-none fixed top-0 left-0 z-[10001] rounded-full"
+        className="pointer-events-none fixed top-0 left-0 z-[9999] rounded-full"
         style={{
-          x: dotX,
-          y: dotY,
-          translateX: '-50%',
-          translateY: '-50%',
-          width: 6,
-          height: 6,
-          backgroundColor: 'var(--accent)',
-          transition: 'background-color 0.4s ease',
+          x: dotX, y: dotY,
+          translateX: '-50%', translateY: '-50%',
+          width: dot, height: dot,
+          background: 'var(--accent)',
+          transition: 'width 0.15s ease, height 0.15s ease, background-color 0.5s ease',
         }}
       />
     </>

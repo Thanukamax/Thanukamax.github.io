@@ -1,44 +1,36 @@
 import type { Metadata } from 'next'
-import { Syne, Manrope, Fragment_Mono, Orbitron, Fraunces } from 'next/font/google'
+import {
+  Syne, Manrope, Fragment_Mono, Orbitron, Fraunces,
+  IBM_Plex_Serif, JetBrains_Mono, Fira_Code,
+  Space_Grotesk, Bodoni_Moda, VT323,
+  Courier_Prime, Bebas_Neue, Playfair_Display, Audiowide,
+} from 'next/font/google'
 import './globals.css'
 import SmoothScroll from '@/components/smooth-scroll'
 import Cursor from '@/components/cursor'
 
-const syne = Syne({
-  subsets: ['latin'],
-  weight: ['400', '600', '700', '800'],
-  variable: '--font-syne',
-  display: 'swap',
-})
+/* ── Display / Editorial ── */
+const syne        = Syne({ subsets: ['latin'], weight: ['700', '800'], variable: '--font-syne', display: 'swap' })
+const playfair    = Playfair_Display({ subsets: ['latin'], style: ['normal', 'italic'], variable: '--font-playfair', display: 'swap' })
+const bebas       = Bebas_Neue({ subsets: ['latin'], weight: '400', variable: '--font-bebas', display: 'swap' })
+const bodoni      = Bodoni_Moda({ subsets: ['latin'], style: ['normal', 'italic'], variable: '--font-bodoni', display: 'swap' })
 
-const manrope = Manrope({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-manrope',
-  display: 'swap',
-})
+/* ── Body / Interface ── */
+const manrope     = Manrope({ subsets: ['latin'], variable: '--font-manrope', display: 'swap' })
+const ibmSerif    = IBM_Plex_Serif({ subsets: ['latin'], weight: ['300', '400', '600', '700'], style: ['normal', 'italic'], variable: '--font-ibm-serif', display: 'swap' })
+const spaceG      = Space_Grotesk({ subsets: ['latin'], variable: '--font-space', display: 'swap' })
 
-const fragmentMono = Fragment_Mono({
-  subsets: ['latin'],
-  weight: ['400'],
-  style: ['normal', 'italic'],
-  variable: '--font-fragment-mono',
-  display: 'swap',
-})
+/* ── Mono / Code ── */
+const fragmentMono = Fragment_Mono({ subsets: ['latin'], weight: '400', style: ['normal', 'italic'], variable: '--font-mono', display: 'swap' })
+const jetbrains   = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains', display: 'swap' })
+const firaCode    = Fira_Code({ subsets: ['latin'], variable: '--font-fira', display: 'swap' })
+const courier     = Courier_Prime({ subsets: ['latin'], weight: ['400', '700'], style: ['normal', 'italic'], variable: '--font-courier', display: 'swap' })
+const vt323       = VT323({ subsets: ['latin'], weight: '400', variable: '--font-vt323', display: 'swap' })
 
-const orbitron = Orbitron({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800', '900'],
-  variable: '--font-orbitron',
-  display: 'swap',
-})
-
-const fraunces = Fraunces({
-  subsets: ['latin'],
-  style: ['normal', 'italic'],
-  variable: '--font-fraunces',
-  display: 'swap',
-})
+/* ── Specialty ── */
+const orbitron    = Orbitron({ subsets: ['latin'], weight: ['400', '500', '700', '900'], variable: '--font-orbitron', display: 'swap' })
+const fraunces    = Fraunces({ subsets: ['latin'], style: ['normal', 'italic'], variable: '--font-fraunces', display: 'swap' })
+const audiowide   = Audiowide({ subsets: ['latin'], weight: '400', variable: '--font-audiowide', display: 'swap' })
 
 export const metadata: Metadata = {
   title: 'Thanuka Sehasna Perera',
@@ -50,16 +42,17 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const vars = [
+    syne.variable, playfair.variable, bebas.variable, bodoni.variable,
+    manrope.variable, ibmSerif.variable, spaceG.variable,
+    fragmentMono.variable, jetbrains.variable, firaCode.variable, courier.variable, vt323.variable,
+    orbitron.variable, fraunces.variable, audiowide.variable,
+  ].join(' ')
+
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${syne.variable} ${manrope.variable} ${fragmentMono.variable} ${orbitron.variable} ${fraunces.variable} font-body bg-[#06070e] text-[#f0f2f7] overflow-x-hidden`}
-      >
+      <body className={`${vars} font-body bg-void text-chalk antialiased overflow-x-hidden`}>
         <SmoothScroll>
           <Cursor />
           {children}

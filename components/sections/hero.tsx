@@ -1,156 +1,160 @@
 'use client'
 
-import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
+
+const E: [number,number,number,number] = [0.16, 1, 0.3, 1]
 
 export default function Hero() {
   const ref = useRef<HTMLElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start start', 'end start'],
-  })
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
 
-  const y = useTransform(scrollYProgress, [0, 1], ['0%', '25%'])
-  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0])
+  const y       = useTransform(scrollYProgress, [0, 1], ['0%', '28%'])
+  const opacity = useTransform(scrollYProgress, [0, 0.55], [1, 0])
 
   return (
-    <section
-      ref={ref}
-      id="hero"
-      className="relative h-screen flex flex-col justify-between pt-20 pb-10 px-6 md:px-10 overflow-hidden"
-    >
-      {/* Animated grid background */}
+    <section ref={ref} id="hero" className="relative h-screen overflow-hidden">
+      {/* Grid + vignette */}
       <div className="hero-grid" aria-hidden="true" />
-
-      {/* Radial vignette */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            'radial-gradient(ellipse 120% 80% at 50% 0%, transparent 40%, #06070e 100%)',
-        }}
-        aria-hidden="true"
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true"
+        style={{ background: 'radial-gradient(ellipse 140% 100% at 50% 0%, transparent 25%, #030304 100%)' }}
       />
 
-      {/* Top row */}
-      <div className="relative z-10 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--accent)] opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--accent)]" />
-          </span>
-          <span
-            className="font-mono text-xs tracking-[0.12em] uppercase"
-            style={{ color: 'rgba(var(--accent-rgb, 34, 211, 238), 0.8)' }}
-          >
-            Available for new projects
+      <motion.div style={{ y, opacity }} className="relative z-10 h-full flex flex-col justify-between py-8 px-6 md:px-12">
+
+        {/* ── Status row ── */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                    style={{ background: 'var(--accent)' }} />
+              <span className="relative inline-flex rounded-full h-2 w-2"
+                    style={{ background: 'var(--accent)' }} />
+            </span>
+            <span className="font-jetbrains text-[0.62rem] tracking-[0.18em] uppercase"
+                  style={{ color: 'var(--accent)' }}>
+              Available for contracts
+            </span>
+          </div>
+          <span className="font-mono text-[0.58rem] tracking-widest text-white/28 hidden sm:block">
+            UTC+05:30 · COLOMBO
           </span>
         </div>
-        <span className="font-mono text-xs text-[rgba(240,242,247,0.35)] tracking-widest hidden sm:block">
-          UTC +05:30 · Sri Lanka
-        </span>
-      </div>
 
-      {/* Center hero text — parallax */}
-      <motion.div
-        style={{ y, opacity }}
-        className="relative z-10 flex flex-col items-start leading-none select-none"
-      >
-        <h1
-          className="font-display font-black tracking-tighter"
-          style={{ fontSize: 'clamp(3.5rem, 11vw, 12rem)', lineHeight: '0.92' }}
-        >
-          {/* Staggered reveal — line 1 */}
-          <span className="block overflow-hidden">
-            <motion.span
-              className="block text-[#f0f2f7] text-glitch"
-              data-text="THANUKA"
+        {/* ── Giant title block ── */}
+        <div className="relative -mt-4">
+
+          {/* GAME — mask reveal from below */}
+          <div className="overflow-hidden leading-[0.87]">
+            <motion.div
               initial={{ y: '110%' }}
-              animate={{ y: 0 }}
-              transition={{ delay: 0.08, duration: 1.1, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
+              animate={{ y: '0%' }}
+              transition={{ delay: 0.25, duration: 1.35, ease: E }}
             >
-              THANUKA
-            </motion.span>
-          </span>
-          {/* Line 2 — outlined with accent glow */}
-          <span className="block overflow-hidden">
-            <motion.span
-              className="block"
+              <h1 className="font-signal text-chalk text-glitch leading-[0.87] tracking-[0.03em]"
+                  data-text="GAME"
+                  style={{ fontSize: 'clamp(4.5rem, 19vw, 19rem)' }}>
+                GAME
+              </h1>
+            </motion.div>
+          </div>
+
+          {/* DEVELOPER — mask reveal, slightly delayed */}
+          <div className="overflow-hidden leading-[0.87] relative">
+            <motion.div
+              initial={{ y: '110%' }}
+              animate={{ y: '0%' }}
+              transition={{ delay: 0.4, duration: 1.35, ease: E }}
+            >
+              <h1 className="font-signal text-chalk leading-[0.87] tracking-[0.03em]"
+                  style={{ fontSize: 'clamp(3.2rem, 14.5vw, 14.5rem)' }}>
+                DEVELOPER
+              </h1>
+            </motion.div>
+
+            {/* SYSTEMS ENGINEER — blend overlay, wipes in from left */}
+            <motion.div
+              className="absolute pointer-events-none select-none"
               style={{
-                WebkitTextStroke: '1px var(--accent)',
-                WebkitTextFillColor: 'transparent',
-                filter: 'drop-shadow(0 0 18px rgba(var(--accent-rgb), 0.4))',
-                transition: 'filter 0.4s ease',
+                top: '12%', left: '0.5%',
+                mixBlendMode: 'difference',
               }}
-              initial={{ y: '110%' }}
-              animate={{ y: 0 }}
-              transition={{ delay: 0.22, duration: 1.1, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
+              initial={{ clipPath: 'inset(0 100% 0 0)' }}
+              animate={{ clipPath: 'inset(0 0% 0 0)' }}
+              transition={{ delay: 1.05, duration: 1.5, ease: E }}
             >
-              SEHASNA
-            </motion.span>
-          </span>
-          {/* Line 3 */}
-          <span className="block overflow-hidden">
-            <motion.span
-              className="block text-[#f0f2f7]"
-              initial={{ y: '110%' }}
-              animate={{ y: 0 }}
-              transition={{ delay: 0.36, duration: 1.1, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
-            >
-              PERERA
-            </motion.span>
-          </span>
-        </h1>
+              <div className="font-systems font-semibold italic"
+                   style={{
+                     fontSize: 'clamp(1.6rem, 5vw, 5.5rem)',
+                     color: 'var(--accent)',
+                     lineHeight: 1.08,
+                   }}>
+                SYSTEMS<br />ENGINEER
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Name — Playfair Editorial, fades in from right */}
+          <motion.div
+            className="mt-3 sm:mt-0 sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2 text-right"
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1.3, duration: 1.2, ease: E }}
+          >
+            <p className="font-editorial italic text-chalk/45 leading-[1.15]"
+               style={{ fontSize: 'clamp(0.9rem, 1.9vw, 1.7rem)' }}>
+              Thanuka Sehasna<br />
+              <span className="not-italic font-light text-chalk/25 tracking-widest text-[0.75em]">
+                PERERA
+              </span>
+            </p>
+          </motion.div>
+        </div>
+
+        {/* ── Bottom row ── */}
+        <motion.div
+          className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-5"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.5, duration: 1.0, ease: E }}
+        >
+          {/* Role chips with distinct fonts */}
+          <div className="flex flex-wrap gap-2">
+            <span className="tech-chip font-rdna"    style={{ color: 'var(--accent)', borderColor: 'rgba(var(--accent-rgb),0.25)' }}>GPU Architecture</span>
+            <span className="tech-chip font-blender" style={{ color: 'rgba(232,232,240,0.6)' }}>Game Development</span>
+            <span className="tech-chip font-systems" style={{ color: 'rgba(232,232,240,0.6)' }}>Systems Engineering</span>
+          </div>
+
+          {/* CTAs */}
+          <div className="flex items-center gap-3">
+            <a href="#projects"
+               className="font-signal tracking-[0.12em] text-sm px-5 py-2 rounded-sm text-black hover:opacity-85 transition-opacity"
+               style={{ background: 'var(--accent)' }}>
+              VIEW WORK
+            </a>
+            <a href="https://github.com/thanukamax" target="_blank" rel="noopener noreferrer"
+               className="font-mono text-[0.65rem] tracking-widest px-5 py-2 rounded-sm border text-white/50 hover:border-white/20 transition-colors"
+               style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+              GITHUB ↗
+            </a>
+          </div>
+        </motion.div>
       </motion.div>
 
-      {/* Bottom row */}
-      <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-        {/* Role tags */}
-        <div className="flex flex-wrap gap-2">
-          {['Game Developer', 'GPU Architecture', 'Systems Builder'].map((tag) => (
-            <span key={tag} className="tech-chip">
-              {tag}
-            </span>
-          ))}
-        </div>
-
-        {/* CTA Buttons */}
-        <div className="flex items-center gap-3">
-          <a
-            href="#projects"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium text-[#010508] transition-all duration-300 hover:scale-105 active:scale-95"
-            style={{
-              backgroundColor: 'var(--accent)',
-              fontFamily: 'var(--font-manrope)',
-            }}
-          >
-            View Work ↓
-          </a>
-          <a
-            href="https://github.com/thanukamax"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 hover:bg-white/5"
-            style={{
-              border: '1px solid rgba(var(--accent-rgb, 34, 211, 238), 0.3)',
-              color: 'var(--accent)',
-              fontFamily: 'var(--font-manrope)',
-            }}
-          >
-            GitHub ↗
-          </a>
-        </div>
-      </div>
-
-      {/* Scroll indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2">
+      {/* Scroll cue */}
+      <motion.div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2.2, duration: 1 }}
+      >
         <motion.div
-          className="w-px h-16"
-          style={{ backgroundColor: 'rgba(var(--accent-rgb, 34, 211, 238), 0.4)' }}
-          animate={{ scaleY: [1, 0.3, 1], opacity: [0.4, 1, 0.4] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          className="w-px h-14 mx-auto"
+          style={{ background: 'rgba(var(--accent-rgb),0.4)' }}
+          animate={{ scaleY: [1, 0.2, 1], opacity: [0.4, 1, 0.4] }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
         />
-      </div>
+      </motion.div>
     </section>
   )
 }
