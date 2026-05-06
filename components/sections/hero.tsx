@@ -60,17 +60,46 @@ export default function Hero() {
           className="font-display font-black tracking-tighter"
           style={{ fontSize: 'clamp(3.5rem, 11vw, 12rem)', lineHeight: '0.92' }}
         >
-          <span className="block text-[#f0f2f7]">THANUKA</span>
-          <span
-            className="block outlined"
-            style={{
-              WebkitTextStroke: '1px var(--accent)',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            SEHASNA
+          {/* Staggered reveal — line 1 */}
+          <span className="block overflow-hidden">
+            <motion.span
+              className="block text-[#f0f2f7] text-glitch"
+              data-text="THANUKA"
+              initial={{ y: '110%' }}
+              animate={{ y: 0 }}
+              transition={{ delay: 0.08, duration: 1.1, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
+            >
+              THANUKA
+            </motion.span>
           </span>
-          <span className="block text-[#f0f2f7]">PERERA</span>
+          {/* Line 2 — outlined with accent glow */}
+          <span className="block overflow-hidden">
+            <motion.span
+              className="block"
+              style={{
+                WebkitTextStroke: '1px var(--accent)',
+                WebkitTextFillColor: 'transparent',
+                filter: 'drop-shadow(0 0 18px rgba(var(--accent-rgb), 0.4))',
+                transition: 'filter 0.4s ease',
+              }}
+              initial={{ y: '110%' }}
+              animate={{ y: 0 }}
+              transition={{ delay: 0.22, duration: 1.1, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
+            >
+              SEHASNA
+            </motion.span>
+          </span>
+          {/* Line 3 */}
+          <span className="block overflow-hidden">
+            <motion.span
+              className="block text-[#f0f2f7]"
+              initial={{ y: '110%' }}
+              animate={{ y: 0 }}
+              transition={{ delay: 0.36, duration: 1.1, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
+            >
+              PERERA
+            </motion.span>
+          </span>
         </h1>
       </motion.div>
 

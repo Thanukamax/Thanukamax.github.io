@@ -116,7 +116,7 @@ export default function Projects() {
                 <div className="relative z-10 flex items-start justify-between mb-auto">
                   <div className="flex items-center gap-3">
                     <span
-                      className="font-mono text-xs tracking-[0.15em] uppercase"
+                      className="font-orbitron text-[0.6rem] font-semibold tracking-[0.25em] uppercase"
                       style={{ color: project.accent }}
                     >
                       {project.id}

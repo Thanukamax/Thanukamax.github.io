@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Syne, Manrope, Fragment_Mono } from 'next/font/google'
+import { Syne, Manrope, Fragment_Mono, Orbitron, Fraunces } from 'next/font/google'
 import './globals.css'
 import SmoothScroll from '@/components/smooth-scroll'
 import Cursor from '@/components/cursor'
@@ -26,6 +26,20 @@ const fragmentMono = Fragment_Mono({
   display: 'swap',
 })
 
+const orbitron = Orbitron({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  variable: '--font-orbitron',
+  display: 'swap',
+})
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  style: ['normal', 'italic'],
+  variable: '--font-fraunces',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
   title: 'Thanuka Sehasna Perera',
   description: 'Game Developer · GPU Architecture · Systems Builder',
@@ -44,7 +58,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${syne.variable} ${manrope.variable} ${fragmentMono.variable} font-body bg-[#06070e] text-[#f0f2f7] overflow-x-hidden`}
+        className={`${syne.variable} ${manrope.variable} ${fragmentMono.variable} ${orbitron.variable} ${fraunces.variable} font-body bg-[#06070e] text-[#f0f2f7] overflow-x-hidden`}
       >
         <SmoothScroll>
           <Cursor />

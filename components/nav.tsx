@@ -47,7 +47,7 @@ export default function Nav() {
         {/* Logo */}
         <a
           href="#"
-          className="font-mono text-sm tracking-[0.2em] text-accent uppercase"
+          className="font-orbitron text-sm font-bold tracking-[0.2em] uppercase"
           style={{ color: 'var(--accent)', transition: 'color 0.4s ease' }}
         >
           TSP
@@ -70,7 +70,7 @@ export default function Nav() {
         {/* GPU Theme Toggle */}
         <button
           onClick={cycleTheme}
-          className="font-mono text-xs tracking-[0.15em] uppercase px-3 py-1.5 rounded-md border transition-all duration-300"
+          className="font-orbitron text-[0.6rem] font-semibold tracking-[0.2em] uppercase px-3 py-1.5 rounded-md border transition-all duration-300"
           style={{
             color: 'var(--accent)',
             borderColor: 'rgba(var(--accent-rgb, 34, 211, 238), 0.3)',

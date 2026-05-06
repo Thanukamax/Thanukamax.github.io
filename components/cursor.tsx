@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 
 export default function Cursor() {
-  const [isTouch, setIsTouch] = useState(true)
+  const [isTouch, setIsTouch] = useState(false)
   const [isHovering, setIsHovering] = useState(false)
 
   const mouseX = useMotionValue(-100)
@@ -19,10 +19,8 @@ export default function Cursor() {
   const ringY = useSpring(mouseY, { stiffness: 160, damping: 26 })
 
   useEffect(() => {
-    // Detect touch devices
-    const isTouchDevice =
-      window.matchMedia('(pointer: coarse)').matches ||
-      navigator.maxTouchPoints > 0
+    // Use pointer media query only — maxTouchPoints is unreliable (reports > 0 on trackpad laptops)
+    const isTouchDevice = window.matchMedia('(pointer: coarse)').matches
 
     setIsTouch(isTouchDevice)
 

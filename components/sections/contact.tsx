@@ -45,12 +45,7 @@ export default function Contact() {
         >
           <span className="block text-[#f0f2f7]">Let&apos;s build</span>
           <span
-            className="block"
-            style={{
-              WebkitTextStroke: '1px var(--accent)',
-              WebkitTextFillColor: 'transparent',
-              transition: 'color 0.4s ease',
-            }}
+            className="block font-serif italic font-black tracking-normal text-gradient-accent"
           >
             something sharp.
           </span>
