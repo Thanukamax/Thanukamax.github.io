@@ -86,7 +86,7 @@ export default function Hero() {
               <div className="font-systems font-semibold italic"
                    style={{
                      fontSize: 'clamp(1.6rem, 5vw, 5.5rem)',
-                     color: 'var(--accent)',
+                     color: '#00e8f0',
                      lineHeight: 1.08,
                    }}>
                 SYSTEMS<br />ENGINEER
