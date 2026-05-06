@@ -49,6 +49,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${vars} font-body bg-void text-chalk antialiased overflow-x-hidden`}>
+        {/* Visible before JS — removed in Preloader useEffect */}
+        <div id="css-boot">
+          <div id="css-boot-label">THANUKA.DEV</div>
+          <div id="css-boot-track">
+            <div id="css-boot-fill" />
+          </div>
+        </div>
         <SmoothScroll>
           <Cursor />
           {children}

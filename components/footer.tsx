@@ -22,7 +22,19 @@ export default function Footer() {
   const doubled = [...TICKER, ...TICKER]
 
   return (
-    <footer className="relative overflow-hidden border-t" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+    <footer
+      className="relative overflow-hidden border-t"
+      style={{
+        borderColor: 'rgba(255,255,255,0.06)',
+        background: `
+          radial-gradient(ellipse 120% 55% at 50% 100%, rgba(var(--accent-rgb), 0.09) 0%, transparent 65%),
+          radial-gradient(ellipse 60% 40% at 10% 80%,  rgba(var(--accent-rgb), 0.05) 0%, transparent 60%),
+          radial-gradient(ellipse 60% 40% at 90% 90%,  rgba(var(--accent-rgb), 0.05) 0%, transparent 60%),
+          #030304
+        `,
+        transition: 'background 0.5s ease',
+      }}
+    >
 
       {/* ── Marquee ticker ── */}
       <div className="relative overflow-hidden py-4 border-b"
@@ -63,16 +75,12 @@ export default function Footer() {
             THANUKA.DEV
           </h2>
 
-          {/* Hover: accent fill slides up from below */}
+          {/* Hover: lava gradient wipes up from below */}
           <motion.h2
-            className="absolute inset-0 font-signal block leading-none pointer-events-none select-none"
+            className="absolute inset-0 font-signal block leading-none pointer-events-none select-none lava-text"
             animate={{ clipPath: hovered ? 'inset(0% 0 0% 0)' : 'inset(100% 0 0% 0)' }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            style={{
-              fontSize: 'clamp(3.2rem, 15vw, 15rem)',
-              color: 'var(--accent)',
-              transition: 'color 0.5s ease',
-            }}
+            style={{ fontSize: 'clamp(3.2rem, 15vw, 15rem)' }}
             aria-hidden="true"
           >
             THANUKA.DEV

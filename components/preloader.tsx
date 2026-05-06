@@ -18,6 +18,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
   const DURATION = 1500
 
   useEffect(() => {
+    document.getElementById('css-boot')?.remove()
     t0.current = performance.now()
 
     const tick = (now: number) => {
