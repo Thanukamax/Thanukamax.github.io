@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef } from 'react'
 import { motion, useMotionValue, useSpring, useTransform, useInView, type Variants } from 'framer-motion'
 
 const E: [number,number,number,number] = [0.16, 1, 0.3, 1]
@@ -39,16 +39,6 @@ const CLOUD: Skill[] = [
 ]
 
 const STRENGTH = [60, 36, 16, 6] // px of travel per layer at max deflection
-
-const mobileGroups = [
-  { id: 'SYS.01', label: 'Languages',    skills: ['TypeScript', 'C++', 'C#', 'Python', 'Rust', 'Lua'], font: 'font-mono',     color: '#a78bfa' },
-  { id: 'SYS.02', label: 'Game Engines', skills: ['Unity', 'UE5', 'Ka3d'],                              font: 'font-blender', color: '#fb7185' },
-  { id: 'SYS.03', label: 'Graphics/GPU', skills: ['RDNA', 'HLSL', 'Compute Shaders', 'PhysX'],         font: 'font-rdna',    color: '#7dd3fc' },
-  { id: 'SYS.04', label: 'Creative',     skills: ['Blender', 'After FX', 'Cinema 4D'],                 font: 'font-craft',   color: '#e879f9' },
-  { id: 'SYS.05', label: 'Tooling',      skills: ['Ghidra', 'Wireshark', 'HxD', 'Tauri v2'],          font: 'font-ghidra',  color: '#fbbf24' },
-  { id: 'SYS.06', label: 'Infra',        skills: ['Cloudflare', 'Git', 'GitHub CI'],                   font: 'font-mono',    color: '#fb923c' },
-  { id: 'SYS.07', label: 'Linux',        skills: ['Nobara KDE (Fedora)', 'Arch (Garuda)', 'Ubuntu'],   font: 'font-systems', color: '#34d399' },
-]
 
 const fadeUp: Variants = {
   hidden:  { opacity: 0, y: 24 },
@@ -136,56 +126,45 @@ export default function Systems() {
           </motion.div>
         </div>
 
-        {/* ─── Mobile: categorised grid with entrance animations ─── */}
-        <div className="md:hidden rounded-sm overflow-hidden"
-             style={{ border: '1px solid var(--border)', background: 'rgba(255,255,255,0.025)' }}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-px"
-               style={{ background: 'rgba(255,255,255,0.04)' }}>
-            {mobileGroups.map((g, i) => (
-              <motion.div key={g.id} custom={i} variants={fadeUp}
-                initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
-                className="p-5"
-                style={{ background: 'var(--bg)', borderLeft: `2px solid ${g.color}44` }}>
-                {/* ID — floating pulse animation */}
-                <p
-                  className="font-rdna text-[0.48rem] tracking-[0.28em] uppercase mb-1.5"
-                  style={{
-                    color: g.color,
-                    animation: `tier-pulse ${3 + i * 0.4}s ease-in-out ${i * 0.2}s infinite`,
-                  }}
-                >
-                  {g.id}
-                </p>
-                {/* Label — scans in from left */}
-                <p
-                  className={`${g.font} text-sm mb-3 scan-in`}
-                  style={{
-                    color: `${g.color}cc`,
-                    animationDelay: `${i * 0.12 + 0.35}s`,
-                  }}
-                >
-                  {g.label}
-                </p>
-                {/* Chips — staggered pop-in */}
-                <div className="flex flex-wrap gap-1.5">
-                  {g.skills.map((s, si) => (
-                    <span
-                      key={s}
-                      className={`tech-chip ${g.font} chip-pop`}
-                      style={{
-                        color: `${g.color}99`,
-                        borderColor: `${g.color}22`,
-                        background: `${g.color}08`,
-                        animationDelay: `${i * 0.12 + si * 0.055 + 0.5}s`,
-                      }}
-                    >
-                      {s}
-                    </span>
-                  ))}
-                </div>
+        {/* ─── Mobile: autonomous floating word cloud ─── */}
+        {/* Same word data as desktop; golden-angle drift replaces cursor parallax */}
+        <div
+          className="relative md:hidden select-none"
+          style={{ height: '85vw', minHeight: '300px' }}
+        >
+          {CLOUD.map((skill, i) => {
+            const goldenAngle = i * 137.507 * (Math.PI / 180)
+            const driftAmp = ([18, 11, 6, 3] as number[])[skill.depth]
+            const driftX = driftAmp * Math.cos(goldenAngle)
+            const driftY = driftAmp * Math.sin(goldenAngle)
+            const mobileRem = Math.min(parseFloat(skill.size) * 0.7, 2)
+            return (
+              <motion.div
+                key={skill.text}
+                className={`absolute ${skill.font} leading-none whitespace-nowrap cursor-default`}
+                style={{
+                  left: `${skill.x}%`,
+                  top: `${skill.y}%`,
+                  fontSize: `${mobileRem}rem`,
+                  color: skill.color,
+                }}
+                initial={{ opacity: 0, x: 0, y: 0 }}
+                animate={inView ? {
+                  opacity: skill.op,
+                  x: [0, driftX, driftX * 0.3, -driftX * 0.7, 0],
+                  y: [0, -driftY * 0.4, driftY, driftY * 0.2, 0],
+                } : { opacity: 0 }}
+                whileTap={{ opacity: 1, scale: 1.1 }}
+                transition={{
+                  opacity: { delay: i * 0.05 + 0.1, duration: 0.8, ease: E },
+                  x: { duration: 5 + skill.depth * 1.8 + (i % 3) * 0.7, repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 },
+                  y: { duration: 6 + skill.depth * 1.8 + (i % 4) * 0.6, repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 + 1.4 },
+                }}
+              >
+                {skill.text}
               </motion.div>
-            ))}
-          </div>
+            )
+          })}
         </div>
       </div>
     </section>
