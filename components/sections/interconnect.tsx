@@ -78,39 +78,6 @@ function labelSize(tier: Tier) {
   return { core: 11, bridge: 9.5, peripheral: 8 }[tier]
 }
 
-/* Golden ratio — dots oscillate with φ cycles along each edge */
-const PHI = 1.6180339887
-
-function GoldenPulseDot({
-  x1, y1, x2, y2, d, r = 2.5, filterId = 'ic-glow',
-}: {
-  x1: number; y1: number; x2: number; y2: number
-  d: number; r?: number; filterId?: string
-}) {
-  const dx = x2 - x1, dy = y2 - y1
-  const len = Math.sqrt(dx * dx + dy * dy) || 1
-  const ux = dx / len, uy = dy / len
-  const px = -uy, py = ux                      // perpendicular unit vector
-  const amp = Math.min(len * 0.09, 11)         // oscillation amplitude (capped)
-  const N = 18                                 // keyframe steps
-  const xs = Array.from({ length: N + 1 }, (_, i) => {
-    const t = i / N
-    return t * dx + amp * Math.sin(t * 2 * Math.PI * PHI) * px
-  })
-  const ys = Array.from({ length: N + 1 }, (_, i) => {
-    const t = i / N
-    return t * dy + amp * Math.sin(t * 2 * Math.PI * PHI) * py
-  })
-  return (
-    <motion.circle
-      cx={x1} cy={y1} r={r}
-      fill="var(--accent)"
-      filter={`url(#${filterId})`}
-      animate={{ x: xs, y: ys }}
-      transition={{ duration: 2.2, repeat: Infinity, repeatDelay: 0.6, ease: 'linear', delay: d }}
-    />
-  )
-}
 
 export default function Interconnect() {
   const [hovered, setHovered] = useState<string | null>(null)
@@ -222,9 +189,6 @@ export default function Interconnect() {
                     transition: 'stroke-opacity 0.25s, stroke-width 0.25s',
                   }}
                   vectorEffect="non-scaling-stroke" />
-                {/* Always-on golden-oscillation pulses for mobile */}
-                <GoldenPulseDot x1={a.x} y1={a.y} x2={b.x} y2={b.y} d={nf.delay} filterId="ic-glow-m" />
-                <GoldenPulseDot x1={a.x} y1={a.y} x2={b.x} y2={b.y} d={nf.delay + 2.2 / PHI} r={1.8} filterId="ic-glow-m" />
               </g>
             )
           })}
@@ -358,12 +322,6 @@ export default function Interconnect() {
                   }}
                   vectorEffect="non-scaling-stroke"
                 />
-                {active && <>
-                  <GoldenPulseDot x1={a.x} y1={a.y} x2={b.x} y2={b.y} d={0} />
-                  <GoldenPulseDot x1={a.x} y1={a.y} x2={b.x} y2={b.y} d={2.2 / PHI} r={1.8} />
-                  <GoldenPulseDot x1={b.x} y1={b.y} x2={a.x} y2={a.y} d={0.55} />
-                  <GoldenPulseDot x1={b.x} y1={b.y} x2={a.x} y2={a.y} d={0.55 + 2.2 / PHI} r={1.8} />
-                </>}
               </g>
             )
           })}

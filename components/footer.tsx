@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
 const TICKER = [
@@ -17,7 +17,12 @@ const links = [
 ]
 
 export default function Footer() {
-  const [hovered, setHovered] = useState(false)
+  const [hovered,  setHovered]  = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    setIsMobile(window.matchMedia('(pointer: coarse)').matches)
+  }, [])
 
   const doubled = [...TICKER, ...TICKER]
 
@@ -79,7 +84,7 @@ export default function Footer() {
           <div className="lava-drive absolute inset-0 pointer-events-none" aria-hidden="true">
             <motion.h2
               className="absolute inset-0 font-signal block leading-none select-none lava-text"
-              animate={{ clipPath: hovered ? 'inset(0% 0 0% 0)' : 'inset(100% 0 0% 0)' }}
+              animate={{ clipPath: (hovered || isMobile) ? 'inset(0% 0 0% 0)' : 'inset(100% 0 0% 0)' }}
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               style={{ fontSize: 'clamp(1.8rem, 11vw, 15rem)' }}
               aria-hidden="true"
