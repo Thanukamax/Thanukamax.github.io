@@ -81,19 +81,6 @@ export default function Contact() {
         </a>
       </motion.div>
 
-      {/* Footer */}
-      <motion.div
-        className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-6"
-        style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
-        initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }}
-        custom={4} variants={fadeUp}>
-        <p className="font-rdna text-[0.5rem] tracking-[0.22em] text-white/28">
-          © {new Date().getFullYear()} Thanuka Sehasna Perera
-        </p>
-        <p className="font-mono text-[0.5rem] tracking-widest text-white/20">
-          Next.js · Framer Motion · Lenis
-        </p>
-      </motion.div>
     </section>
   )
 }

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Nav        from '@/components/nav'
 import Preloader  from '@/components/preloader'
+import Footer     from '@/components/footer'
 import Hero       from '@/components/sections/hero'
 import About      from '@/components/sections/about'
 import Projects   from '@/components/sections/projects'
@@ -31,6 +32,7 @@ export default function Home() {
           <Experience />
           <Contact />
         </main>
+        <Footer />
       </motion.div>
     </>
   )
