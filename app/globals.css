@@ -231,6 +231,20 @@ body::after {
   transition: var(--transition-theme);
 }
 
+/* ── CRT flicker entrance ────────────────────────────────────────── */
+@keyframes crt-flicker {
+  0%   { opacity: 0.25; filter: brightness(1.4); }
+  6%   { opacity: 1;    filter: brightness(0.9); }
+  12%  { opacity: 0.75; filter: brightness(1.2); }
+  20%  { opacity: 1;    filter: brightness(1);   }
+  28%  { opacity: 0.88; filter: brightness(1.1); }
+  40%  { opacity: 1;    filter: brightness(1);   }
+  100% { opacity: 1;    filter: brightness(1);   }
+}
+.crt-text {
+  animation: crt-flicker 0.65s ease-out forwards;
+}
+
 /* ── Horizontal scroll section reset ────────────────────────────── */
 .h-scroll-track {
   display: flex;
