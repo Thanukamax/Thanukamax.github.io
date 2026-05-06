@@ -7,53 +7,56 @@ const E: [number,number,number,number] = [0.16, 1, 0.3, 1]
 
 const projects = [
   {
-    id: 'VK_PT_001',
-    name: 'Vulkan Path Tracer',
-    state: 'COMPILING',
+    id: 'VN2APK_001',
+    name: 'vn2apk',
+    state: 'PLANNING',
     priority: 'P0',
-    sector: 'R&D',
-    mode: 'Experimental',
-    progress: 65,
-    stack: ['C++', 'Vulkan', 'GLSL', 'Compute'],
-    desc: 'Real-time path tracer on Vulkan compute pipelines. BVH traversal, importance sampling, and a denoising pass — currently mid-build.',
+    sector: 'TOOLING',
+    mode: 'Architecture',
+    progress: 8,
+    stack: ['Tauri v2', 'Rust', 'React', 'TypeScript'],
+    desc: 'Desktop tool that converts PC visual novel and RPG game folders into signed Android APKs. Drag-and-drop UX, engine auto-detection, and a built-in toolchain manager. Architecture fully specced.',
   },
   {
-    id: 'RDNA3_PROF_002',
-    name: 'RDNA3 Micro-arch Profiler',
+    id: 'VK_RENDERER_002',
+    name: 'Vulkan Renderer',
+    state: 'COMPILING',
+    priority: 'P1',
+    sector: 'GRAPHICS',
+    mode: 'Learning',
+    progress: 32,
+    stack: ['C++', 'Vulkan', 'GLSL', 'VMA'],
+    desc: 'Learning Vulkan by building a renderer from scratch — triangle to spinning cube to textured scene. Swap chain, render pass, descriptor sets, and a basic lighting model so far.',
+  },
+  {
+    id: 'WGPU_EXPLORER_003',
+    name: 'WGPU Shader Explorer',
     state: 'INITIALIZING',
     priority: 'P1',
-    sector: 'PERF',
+    sector: 'R&D',
     mode: 'Initializing',
-    progress: 20,
-    stack: ['C++', 'Ghidra', 'RDNA ISA', 'LLVM'],
-    desc: 'Low-level profiler targeting RDNA3 wave scheduling, occupancy metrics, and L1/L2 cache telemetry at the ISA level.',
-  },
-  {
-    id: 'UE5_PHYS_003',
-    name: 'UE5 Physics Solver',
-    state: 'OPTIMIZING',
-    priority: 'P0',
-    sector: 'SIMULATION',
-    mode: 'Optimization',
-    progress: 85,
-    stack: ['C++', 'UE5', 'Chaos', 'SIMD'],
-    desc: 'Custom constraint-based solver replacing Chaos defaults. Targeting deterministic simulation with reduced per-tick overhead.',
+    progress: 14,
+    stack: ['Rust', 'WGPU', 'WGSL', 'Tauri v2'],
+    desc: 'Local interactive playground for writing and live-previewing WGSL compute and fragment shaders. Tauri shell, real-time error feedback, and exportable shader snapshots.',
   },
 ] as const
 
 const SEGS = 22
 
 const STATE_COLOR: Record<string, string> = {
+  PLANNING:    'rgba(255, 210, 80, 0.9)',
   COMPILING:   'rgba(var(--accent-rgb), 0.9)',
   INITIALIZING:'rgba(255, 170, 0, 0.88)',
   OPTIMIZING:  'rgba(0, 255, 160, 0.88)',
 }
 const STATE_BORDER: Record<string, string> = {
+  PLANNING:    'rgba(255, 210, 80, 0.28)',
   COMPILING:   'rgba(var(--accent-rgb), 0.28)',
   INITIALIZING:'rgba(255, 170, 0, 0.28)',
   OPTIMIZING:  'rgba(0, 255, 160, 0.28)',
 }
 const STATE_BG: Record<string, string> = {
+  PLANNING:    'rgba(255, 210, 80, 0.05)',
   COMPILING:   'rgba(var(--accent-rgb), 0.05)',
   INITIALIZING:'rgba(255, 170, 0, 0.05)',
   OPTIMIZING:  'rgba(0, 255, 160, 0.05)',
