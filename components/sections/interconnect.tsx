@@ -42,6 +42,20 @@ const EDGES: { id: string; from: string; to: string }[] = [
 
 const NODE_MAP = Object.fromEntries(NODES.map(n => [n.id, n]))
 
+/* Portrait coordinates for mobile SVG (viewBox 380 × 450) */
+const MOBILE_COORDS: Record<string, { x: number; y: number }> = {
+  cpp:     { x: 190, y: 148 },
+  rdna:    { x: 80,  y: 72  },
+  gpu:     { x: 298, y: 72  },
+  physx:   { x: 52,  y: 255 },
+  ghidra:  { x: 145, y: 288 },
+  unity:   { x: 242, y: 268 },
+  ue5:     { x: 334, y: 200 },
+  react:   { x: 52,  y: 385 },
+  ts:      { x: 175, y: 418 },
+  blender: { x: 320, y: 388 },
+}
+
 const TIER_COLOR: Record<Tier, string> = {
   core:       '#7dd3fc',  // sky   — hardware / silicon
   bridge:     '#fbbf24',  // amber — engines / tools
@@ -141,33 +155,125 @@ export default function Interconnect() {
         ))}
       </div>
 
-      {/* Mobile card grid — shown below md */}
-      <div className="md:hidden flex flex-col gap-5 mb-4">
-        {(['core', 'bridge', 'peripheral'] as Tier[]).map(tier => (
-          <div key={tier}>
-            <p className="font-jetbrains text-[0.42rem] tracking-[0.22em] uppercase mb-2"
-               style={{ color: `${TIER_COLOR[tier]}66` }}>
-              {tier}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {NODES.filter(n => n.tier === tier).map(node => (
-                <div
-                  key={node.id}
-                  className="px-3 py-1.5 rounded-sm border text-[0.55rem] tracking-[0.12em] uppercase"
+      {/* Mobile: animated portrait graph — auto-playing, tap to highlight */}
+      <motion.div
+        className="md:hidden"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.1 }}
+        transition={{ duration: 1.1, ease: E }}
+      >
+        <p className="font-jetbrains text-[0.42rem] tracking-[0.22em] text-white/25 uppercase mb-4">
+          ▸ Tap a node to trace signal paths
+        </p>
+        <svg
+          viewBox="0 0 380 450"
+          className="w-full select-none"
+          style={{ overflow: 'visible' }}
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <defs>
+            <filter id="ic-glow-m" x="-150%" y="-150%" width="400%" height="400%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+
+          {/* Edges */}
+          {EDGES.map(edge => {
+            const a  = MOBILE_COORDS[edge.from]
+            const b  = MOBILE_COORDS[edge.to]
+            const nf = NODE_MAP[edge.from]
+            const active = hovered === edge.from || hovered === edge.to
+            return (
+              <g key={edge.id + '-m'}>
+                {active && (
+                  <line x1={a.x} y1={a.y} x2={b.x} y2={b.y}
+                    style={{ stroke: 'var(--accent)', strokeOpacity: 0.13, strokeWidth: 5 }}
+                    vectorEffect="non-scaling-stroke" />
+                )}
+                <line x1={a.x} y1={a.y} x2={b.x} y2={b.y}
                   style={{
-                    fontFamily: node.font,
-                    color: TIER_COLOR[node.tier],
-                    borderColor: `${TIER_COLOR[node.tier]}28`,
-                    background: `${TIER_COLOR[node.tier]}08`,
+                    stroke: 'var(--accent)',
+                    strokeOpacity: active ? 0.6 : 0.11,
+                    strokeWidth:   active ? 1.5  : 0.7,
+                    transition: 'stroke-opacity 0.25s, stroke-width 0.25s',
                   }}
+                  vectorEffect="non-scaling-stroke" />
+                {/* Always-on pulse for mobile — one dot per edge */}
+                <PulseDot x1={a.x} y1={a.y} x2={b.x} y2={b.y} d={nf.delay} />
+              </g>
+            )
+          })}
+
+          {/* Nodes */}
+          {NODES.map(node => {
+            const mn  = MOBILE_COORDS[node.id]
+            const active = hovered === node.id
+            const connected =
+              hovered !== null &&
+              EDGES.some(e => (e.from === hovered && e.to === node.id) || (e.to === hovered && e.from === node.id))
+            return (
+              <motion.g
+                key={node.id + '-m'}
+                animate={{ y: [0, -node.fa * 0.65, node.fa * 0.3, -node.fa * 0.45, 0] }}
+                transition={{ duration: node.fd, repeat: Infinity, ease: 'easeInOut', delay: node.delay }}
+                style={{ cursor: 'pointer' }}
+                onTouchStart={() => setHovered(node.id)}
+                onTouchEnd={() => setTimeout(() => setHovered(null), 1400)}
+                onMouseEnter={() => setHovered(node.id)}
+                onMouseLeave={() => setHovered(null)}
+              >
+                {(active || connected) && (
+                  <motion.circle
+                    cx={mn.x} cy={mn.y} r={node.r + 10}
+                    fill={TIER_COLOR[node.tier]}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: [0.07, 0.2, 0.07] }}
+                    transition={{ duration: 1.2, repeat: Infinity }}
+                  />
+                )}
+                <circle
+                  cx={mn.x} cy={mn.y} r={node.r}
+                  style={{
+                    fill: TIER_COLOR[node.tier],
+                    stroke: TIER_COLOR[node.tier],
+                    fillOpacity:   tierFill(node.tier, active),
+                    strokeOpacity: tierStroke(node.tier, active),
+                    strokeWidth:   tierStrokeW(node.tier, active),
+                    filter: active ? 'url(#ic-glow-m)' : undefined,
+                    transition: 'fill-opacity 0.25s, stroke-opacity 0.25s, stroke-width 0.25s',
+                  }}
+                />
+                <text
+                  x={mn.x} y={mn.y + 4}
+                  textAnchor="middle"
+                  fontSize={labelSize(node.tier)}
+                  fontFamily={node.font}
+                  fill={active ? TIER_COLOR[node.tier] : `${TIER_COLOR[node.tier]}88`}
+                  letterSpacing="0.08em"
+                  style={{ userSelect: 'none', transition: 'fill 0.2s' }}
                 >
                   {node.label}
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+                </text>
+                {node.tier === 'core' && (
+                  <text
+                    x={mn.x} y={mn.y + node.r + 13}
+                    textAnchor="middle"
+                    fontSize={6}
+                    fontFamily="var(--font-orbitron)"
+                    fill={`${TIER_COLOR[node.tier]}44`}
+                    letterSpacing="0.18em"
+                    style={{ userSelect: 'none' }}
+                  >
+                    {node.sub}
+                  </text>
+                )}
+              </motion.g>
+            )
+          })}
+        </svg>
+      </motion.div>
 
       {/* SVG graph — desktop only */}
       <motion.div

@@ -94,6 +94,21 @@ export default function Hero() {
             </motion.div>
           </div>
 
+          {/* Mobile-only: SYSTEMS ENGINEER as readable scan-in below DEVELOPER */}
+          <motion.div
+            className="sm:hidden mt-2"
+            initial={{ clipPath: 'inset(0 100% 0 0)' }}
+            animate={{ clipPath: 'inset(0 0% 0 0)' }}
+            transition={{ delay: 1.05, duration: 1.3, ease: E }}
+          >
+            <span
+              className="font-systems font-semibold italic"
+              style={{ fontSize: 'clamp(1.3rem, 6vw, 2rem)', color: '#00e8f0', lineHeight: 1.1 }}
+            >
+              Systems Engineer
+            </span>
+          </motion.div>
+
           {/* Name — Playfair Editorial, fades in from right */}
           <motion.div
             className="mt-3 sm:mt-0 sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2 text-right"

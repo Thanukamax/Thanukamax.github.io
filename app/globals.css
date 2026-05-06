@@ -366,3 +366,27 @@ body::after {
   height: 100vh;
   will-change: transform;
 }
+
+/* ── Mobile-native animations ─────────────────────────────────── */
+@keyframes mobile-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
+
+@keyframes chip-pop {
+  from { opacity: 0; transform: translateY(6px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0)   scale(1);    }
+}
+
+@keyframes scan-in {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0%   0 0); }
+}
+
+@keyframes tier-pulse {
+  0%, 100% { opacity: 0.5; }
+  50%      { opacity: 1;   }
+}
+
+.chip-pop  { animation: chip-pop 0.45s var(--ease-expo) both; }
+.scan-in   { animation: scan-in  0.7s  var(--ease-expo) both; }

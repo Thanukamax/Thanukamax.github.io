@@ -136,23 +136,49 @@ export default function Systems() {
           </motion.div>
         </div>
 
-        {/* ─── Mobile: categorised grid ─── */}
+        {/* ─── Mobile: categorised grid with entrance animations ─── */}
         <div className="md:hidden rounded-sm overflow-hidden"
              style={{ border: '1px solid var(--border)', background: 'rgba(255,255,255,0.025)' }}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-px"
                style={{ background: 'rgba(255,255,255,0.04)' }}>
             {mobileGroups.map((g, i) => (
               <motion.div key={g.id} custom={i} variants={fadeUp}
-                initial="hidden" whileInView="visible" viewport={{ once: true }}
-                className="p-5 transition-colors"
+                initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}
+                className="p-5"
                 style={{ background: 'var(--bg)', borderLeft: `2px solid ${g.color}44` }}>
-                <p className="font-rdna text-[0.48rem] tracking-[0.28em] uppercase mb-1.5"
-                   style={{ color: g.color }}>{g.id}</p>
-                <p className={`${g.font} text-sm mb-3`} style={{ color: `${g.color}cc` }}>{g.label}</p>
+                {/* ID — floating pulse animation */}
+                <p
+                  className="font-rdna text-[0.48rem] tracking-[0.28em] uppercase mb-1.5"
+                  style={{
+                    color: g.color,
+                    animation: `tier-pulse ${3 + i * 0.4}s ease-in-out ${i * 0.2}s infinite`,
+                  }}
+                >
+                  {g.id}
+                </p>
+                {/* Label — scans in from left */}
+                <p
+                  className={`${g.font} text-sm mb-3 scan-in`}
+                  style={{
+                    color: `${g.color}cc`,
+                    animationDelay: `${i * 0.12 + 0.35}s`,
+                  }}
+                >
+                  {g.label}
+                </p>
+                {/* Chips — staggered pop-in */}
                 <div className="flex flex-wrap gap-1.5">
-                  {g.skills.map(s => (
-                    <span key={s} className={`tech-chip ${g.font}`}
-                      style={{ color: `${g.color}99`, borderColor: `${g.color}22`, background: `${g.color}08` }}>
+                  {g.skills.map((s, si) => (
+                    <span
+                      key={s}
+                      className={`tech-chip ${g.font} chip-pop`}
+                      style={{
+                        color: `${g.color}99`,
+                        borderColor: `${g.color}22`,
+                        background: `${g.color}08`,
+                        animationDelay: `${i * 0.12 + si * 0.055 + 0.5}s`,
+                      }}
+                    >
                       {s}
                     </span>
                   ))}
