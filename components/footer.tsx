@@ -68,23 +68,25 @@ export default function Footer() {
           {/* Base: outlined */}
           <h2 className="font-signal block leading-none select-none"
               style={{
-                fontSize: 'clamp(3.2rem, 15vw, 15rem)',
+                fontSize: 'clamp(1.8rem, 11vw, 15rem)',
                 WebkitTextStroke: '1px rgba(255,255,255,0.12)',
                 WebkitTextFillColor: 'transparent',
               }}>
             THANUKA.DEV
           </h2>
 
-          {/* Hover: lava gradient wipes up from below */}
-          <motion.h2
-            className="absolute inset-0 font-signal block leading-none pointer-events-none select-none lava-text"
-            animate={{ clipPath: hovered ? 'inset(0% 0 0% 0)' : 'inset(100% 0 0% 0)' }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            style={{ fontSize: 'clamp(3.2rem, 15vw, 15rem)' }}
-            aria-hidden="true"
-          >
-            THANUKA.DEV
-          </motion.h2>
+          {/* lava-drive animates --lp* vars; motion.h2 just reads them via background */}
+          <div className="lava-drive absolute inset-0 pointer-events-none" aria-hidden="true">
+            <motion.h2
+              className="absolute inset-0 font-signal block leading-none select-none lava-text"
+              animate={{ clipPath: hovered ? 'inset(0% 0 0% 0)' : 'inset(100% 0 0% 0)' }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              style={{ fontSize: 'clamp(1.8rem, 11vw, 15rem)' }}
+              aria-hidden="true"
+            >
+              THANUKA.DEV
+            </motion.h2>
+          </div>
         </div>
 
         {/* ── Links + meta row ── */}

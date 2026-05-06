@@ -141,8 +141,37 @@ export default function Interconnect() {
         ))}
       </div>
 
-      {/* SVG graph */}
+      {/* Mobile card grid — shown below md */}
+      <div className="md:hidden flex flex-col gap-5 mb-4">
+        {(['core', 'bridge', 'peripheral'] as Tier[]).map(tier => (
+          <div key={tier}>
+            <p className="font-jetbrains text-[0.42rem] tracking-[0.22em] uppercase mb-2"
+               style={{ color: `${TIER_COLOR[tier]}66` }}>
+              {tier}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {NODES.filter(n => n.tier === tier).map(node => (
+                <div
+                  key={node.id}
+                  className="px-3 py-1.5 rounded-sm border text-[0.55rem] tracking-[0.12em] uppercase"
+                  style={{
+                    fontFamily: node.font,
+                    color: TIER_COLOR[node.tier],
+                    borderColor: `${TIER_COLOR[node.tier]}28`,
+                    background: `${TIER_COLOR[node.tier]}08`,
+                  }}
+                >
+                  {node.label}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* SVG graph — desktop only */}
       <motion.div
+        className="hidden md:block"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}

@@ -105,7 +105,7 @@ function ProjectSlide({ project, index }: { project: Project; index: number }) {
            style={{ background: `linear-gradient(to bottom, transparent, ${project.accent}40, transparent)` }} />
 
       {/* Content */}
-      <div className="relative z-10 pb-20 px-12 md:px-20 max-w-4xl">
+      <div className="relative z-10 pb-12 md:pb-20 px-5 sm:px-10 md:px-20 max-w-4xl">
         {/* Module ID + badge */}
         <div className="flex items-center gap-3 mb-5">
           <span className="font-rdna text-[0.55rem] tracking-[0.32em] uppercase"

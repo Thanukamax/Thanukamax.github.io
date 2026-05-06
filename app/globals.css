@@ -4,10 +4,11 @@
 
 /* ── Silicon Grimoire: Theme System ─────────────────────────────── */
 :root {
-  --accent:       #00d4ff;
-  --accent-rgb:   0, 212, 255;
-  --accent-dim:   rgba(0, 212, 255, 0.1);
-  --accent-glow:  0 0 40px rgba(0,212,255,0.22), 0 0 100px rgba(0,212,255,0.07);
+  --accent:        #00d4ff;
+  --accent-rgb:    0, 212, 255;
+  --accent-dim:    rgba(0, 212, 255, 0.1);
+  --accent-glow:   0 0 40px rgba(0,212,255,0.22), 0 0 100px rgba(0,212,255,0.07);
+  --lava-bubble:   #ff3355;
 
   --bg:           #030304;
   --bg-surface:   rgba(255, 255, 255, 0.028);
@@ -33,6 +34,7 @@
   --accent-dim:    rgba(255, 34, 68, 0.1);
   --accent-glow:   0 0 40px rgba(255,34,68,0.28), 0 0 100px rgba(255,34,68,0.09);
   --border-accent: rgba(255, 34, 68, 0.25);
+  --lava-bubble:   #00e87a;
 }
 
 [data-theme="cuda"] {
@@ -41,6 +43,7 @@
   --accent-dim:    rgba(118, 185, 0, 0.1);
   --accent-glow:   0 0 40px rgba(118,185,0,0.22), 0 0 100px rgba(118,185,0,0.07);
   --border-accent: rgba(118, 185, 0, 0.2);
+  --lava-bubble:   #00aaff;
 }
 
 /* ── Resets ──────────────────────────────────────────────────────── */
@@ -247,34 +250,71 @@ body::after {
 
 /* ── Footer lava text ────────────────────────────────────────────── */
 /* Registered properties let @keyframes interpolate blob positions   */
-@property --lp1x { syntax: '<percentage>'; inherits: false; initial-value: 20%; }
-@property --lp1y { syntax: '<percentage>'; inherits: false; initial-value: 25%; }
-@property --lp2x { syntax: '<percentage>'; inherits: false; initial-value: 75%; }
-@property --lp2y { syntax: '<percentage>'; inherits: false; initial-value: 15%; }
-@property --lp3x { syntax: '<percentage>'; inherits: false; initial-value: 45%; }
-@property --lp3y { syntax: '<percentage>'; inherits: false; initial-value: 78%; }
-@property --lp4x { syntax: '<percentage>'; inherits: false; initial-value: 85%; }
-@property --lp4y { syntax: '<percentage>'; inherits: false; initial-value: 58%; }
+@property --lp1x { syntax: '<percentage>'; inherits: true; initial-value: 20%; }
+@property --lp1y { syntax: '<percentage>'; inherits: true; initial-value: 25%; }
+@property --lp2x { syntax: '<percentage>'; inherits: true; initial-value: 75%; }
+@property --lp2y { syntax: '<percentage>'; inherits: true; initial-value: 15%; }
+@property --lp3x { syntax: '<percentage>'; inherits: true; initial-value: 45%; }
+@property --lp3y { syntax: '<percentage>'; inherits: true; initial-value: 78%; }
+@property --lp4x { syntax: '<percentage>'; inherits: true; initial-value: 85%; }
+@property --lp4y { syntax: '<percentage>'; inherits: true; initial-value: 58%; }
+@property --lp5x { syntax: '<percentage>'; inherits: true; initial-value: 10%; }
+@property --lp5y { syntax: '<percentage>'; inherits: true; initial-value: 60%; }
+@property --lp6x { syntax: '<percentage>'; inherits: true; initial-value: 55%; }
+@property --lp6y { syntax: '<percentage>'; inherits: true; initial-value: 40%; }
+@property --lp7x { syntax: '<percentage>'; inherits: true; initial-value: 35%; }
+@property --lp7y { syntax: '<percentage>'; inherits: true; initial-value: 88%; }
+@property --lp8x { syntax: '<percentage>'; inherits: true; initial-value: 92%; }
+@property --lp8y { syntax: '<percentage>'; inherits: true; initial-value: 35%; }
 
 @keyframes lava-bubble {
-  0%   { --lp1x:20%; --lp1y:25%; --lp2x:75%; --lp2y:15%; --lp3x:45%; --lp3y:78%; --lp4x:85%; --lp4y:58%; }
-  25%  { --lp1x:65%; --lp1y:70%; --lp2x:18%; --lp2y:68%; --lp3x:82%; --lp3y:22%; --lp4x:32%; --lp4y:82%; }
-  50%  { --lp1x:82%; --lp1y:12%; --lp2x:52%; --lp2y:88%; --lp3x:12%; --lp3y:42%; --lp4x:68%; --lp4y:18%; }
-  75%  { --lp1x:32%; --lp1y:82%; --lp2x:88%; --lp2y:32%; --lp3x:58%; --lp3y:12%; --lp4x:18%; --lp4y:62%; }
-  100% { --lp1x:20%; --lp1y:25%; --lp2x:75%; --lp2y:15%; --lp3x:45%; --lp3y:78%; --lp4x:85%; --lp4y:58%; }
+  0%   {
+    --lp1x:20%; --lp1y:25%; --lp2x:75%; --lp2y:15%; --lp3x:45%; --lp3y:78%;
+    --lp4x:85%; --lp4y:58%; --lp5x:10%; --lp5y:60%; --lp6x:55%; --lp6y:40%;
+    --lp7x:35%; --lp7y:88%; --lp8x:92%; --lp8y:35%;
+  }
+  25%  {
+    --lp1x:65%; --lp1y:70%; --lp2x:18%; --lp2y:68%; --lp3x:82%; --lp3y:22%;
+    --lp4x:32%; --lp4y:82%; --lp5x:78%; --lp5y:18%; --lp6x:22%; --lp6y:85%;
+    --lp7x:60%; --lp7y:12%; --lp8x:48%; --lp8y:72%;
+  }
+  50%  {
+    --lp1x:82%; --lp1y:12%; --lp2x:52%; --lp2y:88%; --lp3x:12%; --lp3y:42%;
+    --lp4x:68%; --lp4y:18%; --lp5x:38%; --lp5y:75%; --lp6x:88%; --lp6y:55%;
+    --lp7x:15%; --lp7y:35%; --lp8x:62%; --lp8y:92%;
+  }
+  75%  {
+    --lp1x:32%; --lp1y:82%; --lp2x:88%; --lp2y:32%; --lp3x:58%; --lp3y:12%;
+    --lp4x:18%; --lp4y:62%; --lp5x:62%; --lp5y:45%; --lp6x:42%; --lp6y:18%;
+    --lp7x:88%; --lp7y:68%; --lp8x:25%; --lp8y:52%;
+  }
+  100% {
+    --lp1x:20%; --lp1y:25%; --lp2x:75%; --lp2y:15%; --lp3x:45%; --lp3y:78%;
+    --lp4x:85%; --lp4y:58%; --lp5x:10%; --lp5y:60%; --lp6x:55%; --lp6y:40%;
+    --lp7x:35%; --lp7y:88%; --lp8x:92%; --lp8y:35%;
+  }
+}
+
+/* Animation lives on a wrapper div — keeps it off the Framer Motion element */
+.lava-drive {
+  animation: lava-bubble 10s ease-in-out infinite;
 }
 
 .lava-text {
   background:
-    radial-gradient(ellipse 38% 48% at var(--lp1x) var(--lp1y), color-mix(in oklab, var(--accent), white 72%) 0%, transparent 70%),
-    radial-gradient(ellipse 32% 42% at var(--lp2x) var(--lp2y), color-mix(in oklab, var(--accent), white 58%) 0%, transparent 68%),
-    radial-gradient(ellipse 42% 36% at var(--lp3x) var(--lp3y), color-mix(in oklab, var(--accent), white 48%) 0%, transparent 70%),
-    radial-gradient(ellipse 30% 44% at var(--lp4x) var(--lp4y), color-mix(in oklab, var(--accent), white 65%) 0%, transparent 65%),
-    linear-gradient(140deg, color-mix(in oklab, var(--accent), black 30%) 0%, var(--accent) 50%, color-mix(in oklab, var(--accent), black 20%) 100%);
+    radial-gradient(circle 4vw   at var(--lp1x) var(--lp1y), var(--lava-bubble) 0%, transparent 80%),
+    radial-gradient(circle 3vw   at var(--lp2x) var(--lp2y), var(--lava-bubble) 0%, transparent 75%),
+    radial-gradient(circle 5vw   at var(--lp3x) var(--lp3y), var(--lava-bubble) 0%, transparent 80%),
+    radial-gradient(circle 3.5vw at var(--lp4x) var(--lp4y), var(--lava-bubble) 0%, transparent 75%),
+    radial-gradient(circle 2.5vw at var(--lp5x) var(--lp5y), var(--lava-bubble) 0%, transparent 75%),
+    radial-gradient(circle 4.5vw at var(--lp6x) var(--lp6y), var(--lava-bubble) 0%, transparent 80%),
+    radial-gradient(circle 3vw   at var(--lp7x) var(--lp7y), var(--lava-bubble) 0%, transparent 75%),
+    radial-gradient(circle 2vw   at var(--lp8x) var(--lp8y), var(--lava-bubble) 0%, transparent 70%),
+    var(--accent);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: lava-bubble 10s ease-in-out infinite;
+  transition: background 0.5s ease;
 }
 
 /* ── CSS boot screen (removed on React mount) ────────────────────── */

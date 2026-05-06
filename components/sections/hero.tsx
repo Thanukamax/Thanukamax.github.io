@@ -74,7 +74,7 @@ export default function Hero() {
 
             {/* SYSTEMS ENGINEER — blend overlay, wipes in from left */}
             <motion.div
-              className="absolute pointer-events-none select-none"
+              className="absolute pointer-events-none select-none hidden sm:block"
               style={{
                 top: '12%', left: '0.5%',
                 mixBlendMode: 'difference',
