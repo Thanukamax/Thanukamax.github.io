@@ -28,11 +28,11 @@
 }
 
 [data-theme="udna"] {
-  --accent:        #9b30ff;
-  --accent-rgb:    155, 48, 255;
-  --accent-dim:    rgba(155, 48, 255, 0.1);
-  --accent-glow:   0 0 40px rgba(155,48,255,0.28), 0 0 100px rgba(155,48,255,0.09);
-  --border-accent: rgba(155, 48, 255, 0.25);
+  --accent:        #ff2244;
+  --accent-rgb:    255, 34, 68;
+  --accent-dim:    rgba(255, 34, 68, 0.1);
+  --accent-glow:   0 0 40px rgba(255,34,68,0.28), 0 0 100px rgba(255,34,68,0.09);
+  --border-accent: rgba(255, 34, 68, 0.25);
 }
 
 [data-theme="cuda"] {
