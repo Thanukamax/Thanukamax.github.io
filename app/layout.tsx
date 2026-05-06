@@ -9,28 +9,24 @@ import './globals.css'
 import SmoothScroll from '@/components/smooth-scroll'
 import Cursor from '@/components/cursor'
 
-/* ── Display / Editorial ── */
-const syne        = Syne({ subsets: ['latin'], weight: ['700', '800'], variable: '--font-syne', display: 'swap' })
-const playfair    = Playfair_Display({ subsets: ['latin'], style: ['normal', 'italic'], variable: '--font-playfair', display: 'swap' })
+/* ── Display / Editorial — critical, preloaded ── */
 const bebas       = Bebas_Neue({ subsets: ['latin'], weight: '400', variable: '--font-bebas', display: 'swap' })
-const bodoni      = Bodoni_Moda({ subsets: ['latin'], style: ['normal', 'italic'], variable: '--font-bodoni', display: 'swap' })
+const playfair    = Playfair_Display({ subsets: ['latin'], weight: ['400', '700'], style: ['normal', 'italic'], variable: '--font-playfair', display: 'swap' })
+const orbitron    = Orbitron({ subsets: ['latin'], weight: ['500', '700'], variable: '--font-orbitron', display: 'swap' })
+const jetbrains   = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-jetbrains', display: 'swap' })
+const ibmSerif    = IBM_Plex_Serif({ subsets: ['latin'], weight: ['400', '600'], style: ['normal', 'italic'], variable: '--font-ibm-serif', display: 'swap' })
 
-/* ── Body / Interface ── */
-const manrope     = Manrope({ subsets: ['latin'], variable: '--font-manrope', display: 'swap' })
-const ibmSerif    = IBM_Plex_Serif({ subsets: ['latin'], weight: ['300', '400', '600', '700'], style: ['normal', 'italic'], variable: '--font-ibm-serif', display: 'swap' })
-const spaceG      = Space_Grotesk({ subsets: ['latin'], variable: '--font-space', display: 'swap' })
-
-/* ── Mono / Code ── */
-const fragmentMono = Fragment_Mono({ subsets: ['latin'], weight: '400', style: ['normal', 'italic'], variable: '--font-mono', display: 'swap' })
-const jetbrains   = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains', display: 'swap' })
-const firaCode    = Fira_Code({ subsets: ['latin'], variable: '--font-fira', display: 'swap' })
-const courier     = Courier_Prime({ subsets: ['latin'], weight: ['400', '700'], style: ['normal', 'italic'], variable: '--font-courier', display: 'swap' })
-const vt323       = VT323({ subsets: ['latin'], weight: '400', variable: '--font-vt323', display: 'swap' })
-
-/* ── Specialty ── */
-const orbitron    = Orbitron({ subsets: ['latin'], weight: ['400', '500', '700', '900'], variable: '--font-orbitron', display: 'swap' })
-const fraunces    = Fraunces({ subsets: ['latin'], style: ['normal', 'italic'], variable: '--font-fraunces', display: 'swap' })
-const audiowide   = Audiowide({ subsets: ['latin'], weight: '400', variable: '--font-audiowide', display: 'swap' })
+/* ── Below-fold fonts — deferred ── */
+const syne        = Syne({ subsets: ['latin'], weight: ['700'], variable: '--font-syne', display: 'swap', preload: false })
+const bodoni      = Bodoni_Moda({ subsets: ['latin'], weight: ['400'], style: ['italic'], variable: '--font-bodoni', display: 'swap', preload: false })
+const manrope     = Manrope({ subsets: ['latin'], weight: ['400', '600'], variable: '--font-manrope', display: 'swap', preload: false })
+const spaceG      = Space_Grotesk({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-space', display: 'swap', preload: false })
+const fragmentMono = Fragment_Mono({ subsets: ['latin'], weight: '400', variable: '--font-mono', display: 'swap', preload: false })
+const firaCode    = Fira_Code({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-fira', display: 'swap', preload: false })
+const courier     = Courier_Prime({ subsets: ['latin'], weight: ['400'], style: ['normal', 'italic'], variable: '--font-courier', display: 'swap', preload: false })
+const vt323       = VT323({ subsets: ['latin'], weight: '400', variable: '--font-vt323', display: 'swap', preload: false })
+const fraunces    = Fraunces({ subsets: ['latin'], weight: ['400'], style: ['italic'], variable: '--font-fraunces', display: 'swap', preload: false })
+const audiowide   = Audiowide({ subsets: ['latin'], weight: '400', variable: '--font-audiowide', display: 'swap', preload: false })
 
 export const metadata: Metadata = {
   title: 'Thanuka Sehasna Perera',

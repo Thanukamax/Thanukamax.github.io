@@ -1,18 +1,23 @@
 'use client'
 
 import { useState } from 'react'
-import { motion } from 'framer-motion'
-import Nav        from '@/components/nav'
-import Preloader  from '@/components/preloader'
-import Footer     from '@/components/footer'
-import Hero       from '@/components/sections/hero'
-import About      from '@/components/sections/about'
-import Projects     from '@/components/sections/projects'
-import Pipeline     from '@/components/sections/pipeline'
-import Systems      from '@/components/sections/systems'
-import Interconnect from '@/components/sections/interconnect'
-import Experience   from '@/components/sections/experience'
-import Contact    from '@/components/sections/contact'
+import { motion }   from 'framer-motion'
+import dynamic      from 'next/dynamic'
+
+/* Critical — load immediately */
+import Nav       from '@/components/nav'
+import Preloader from '@/components/preloader'
+import Footer    from '@/components/footer'
+import Hero      from '@/components/sections/hero'
+import About     from '@/components/sections/about'
+import Projects  from '@/components/sections/projects'
+import Systems   from '@/components/sections/systems'
+
+/* Below fold — lazy chunks, load after hydration */
+const Pipeline     = dynamic(() => import('@/components/sections/pipeline'))
+const Interconnect = dynamic(() => import('@/components/sections/interconnect'))
+const Experience   = dynamic(() => import('@/components/sections/experience'))
+const Contact      = dynamic(() => import('@/components/sections/contact'))
 
 export default function Home() {
   const [loaded, setLoaded] = useState(false)

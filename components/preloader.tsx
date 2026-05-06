@@ -15,7 +15,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
   const [exiting,  setExiting]  = useState(false)
   const rafRef = useRef<number>(0)
   const t0     = useRef(0)
-  const DURATION = 2600
+  const DURATION = 1500
 
   useEffect(() => {
     t0.current = performance.now()
@@ -55,7 +55,7 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
           key="pl"
           className="fixed inset-0 z-[99999] flex flex-col items-center justify-center overflow-hidden"
           style={{ background: '#030304' }}
-          exit={{ y: '-100vh', transition: { duration: 0.75, ease: [0.87, 0, 0.13, 1] } }}
+          exit={{ y: '-100vh', transition: { duration: 0.5, ease: [0.87, 0, 0.13, 1] } }}
         >
           <div className="scanlines" aria-hidden="true" />
 
