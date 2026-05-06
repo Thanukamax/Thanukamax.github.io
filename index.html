@@ -7,7 +7,7 @@
   <meta name="description" content="Game Developer, Computer Science undergraduate, and systems-focused builder working across GPU architecture, real-time rendering, and creative tooling.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Manrope:wght@400;500;600;700&family=Fragment+Mono:ital@0;1&family=Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300;1,9..144,400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -15,35 +15,45 @@
       margin: 0;
       min-height: 100vh;
       overflow-x: hidden;
-      font-family: 'DM Sans', system-ui, sans-serif;
+      font-family: 'Manrope', system-ui, sans-serif;
       color: var(--text-1);
-      background:
-        radial-gradient(circle at 20% 10%, rgba(38, 150, 220, 0.16) 0, transparent 30%),
-        radial-gradient(circle at 80% 20%, rgba(15, 96, 170, 0.14) 0, transparent 28%),
-        linear-gradient(180deg, #020813 0%, #04101d 45%, #030b15 100%);
+      background: var(--body-bg);
       background-attachment: fixed;
       -webkit-font-smoothing: antialiased;
+      transition: background 0.6s ease, --accent 0.4s ease;
+    }
+    /* Grain texture overlay — adds tactile depth, kills the "AI gradient soup" feel */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.022;
+      mix-blend-mode: overlay;
     }
     :root {
-      --bg-0: #020813;
-      --bg-1: rgba(8, 19, 36, 0.72);
-      --bg-2: rgba(10, 24, 44, 0.86);
-      --bg-3: rgba(7, 17, 31, 0.94);
-      --border-1: rgba(87, 182, 255, 0.14);
-      --border-2: rgba(87, 182, 255, 0.24);
-      --shadow-1: 0 12px 40px rgba(0, 0, 0, 0.28);
-      --shadow-2: 0 24px 90px rgba(0, 0, 0, 0.42);
-      --text-1: #e8f0f8;
-      --text-2: #a4bfd7;
-      --text-3: #6f8da9;
-      --text-4: #496780;
-      --accent: #58c5ff;
-      --accent-2: #1eb8da;
-      --accent-3: #0d82d8;
-      --hero-glow: rgba(88, 197, 255, 0.16);
-      --rdna-red: #ed1c24;
-      --rdna-red-2: #ff4a41;
-      --rdna-red-3: #b3161c;
+      --body-bg: linear-gradient(155deg, #0c0e1a 0%, #06070e 55%, #07090e 100%);
+      --bg-0: #06070e;
+      --bg-1: rgba(10, 12, 22, 0.72);
+      --bg-2: rgba(12, 14, 28, 0.86);
+      --bg-3: rgba(8, 10, 20, 0.94);
+      --border-1: color-mix(in oklab, var(--accent), transparent 86%);
+      --border-2: color-mix(in oklab, var(--accent), transparent 76%);
+      --shadow-1: 0 12px 40px rgba(0, 0, 0, 0.32);
+      --shadow-2: 0 24px 90px rgba(0, 0, 0, 0.48);
+      --text-1: #f0f2f7;
+      --text-2: #8d9bb5;
+      --text-3: #5b6a80;
+      --text-4: #3d4e62;
+      --accent: #22d3ee;
+      --accent-2: #06b6d4;
+      --accent-3: #0891b2;
+      --hero-glow: rgba(34, 211, 238, 0.11);
+      --rdna-red: #e11d48;
+      --rdna-red-2: #fb7185;
+      --rdna-red-3: #be123c;
       --radius-lg: 24px;
       --radius-md: 16px;
       --radius-sm: 10px;
@@ -51,66 +61,58 @@
       --ease: cubic-bezier(0.16, 1, 0.3, 1);
     }
     body.rdna {
+      --body-bg: linear-gradient(155deg, #110409 0%, #08030a 55%, #09040a 100%);
       --accent: var(--rdna-red);
       --accent-2: var(--rdna-red-2);
       --accent-3: var(--rdna-red-3);
-      --hero-glow: rgba(237, 28, 36, 0.14);
-      background:
-        radial-gradient(circle at 20% 10%, rgba(120, 28, 28, 0.18) 0, transparent 30%),
-        radial-gradient(circle at 80% 20%, rgba(85, 12, 18, 0.18) 0, transparent 28%),
-        linear-gradient(180deg, #090506 0%, #120809 45%, #070405 100%);
-      background-attachment: fixed;
+      --hero-glow: rgba(225, 29, 72, 0.11);
+      --bg-1: rgba(18, 6, 10, 0.72);
+      --bg-2: rgba(20, 8, 14, 0.86);
+      --bg-3: rgba(14, 5, 9, 0.94);
+      --text-2: #a08898;
+      --text-3: #6b4a55;
+      --text-4: #4a3038;
     }
     body.cuda {
+      --body-bg: linear-gradient(155deg, #060d03 0%, #040703 55%, #050804 100%);
       --accent: #76b900;
-      --accent-2: #8fd400;
-      --accent-3: #5a8f00;
-      --hero-glow: rgba(118, 185, 0, 0.14);
-      background:
-        radial-gradient(circle at 20% 10%, rgba(40, 80, 10, 0.2) 0, transparent 30%),
-        radial-gradient(circle at 80% 20%, rgba(30, 60, 8, 0.18) 0, transparent 28%),
-        linear-gradient(180deg, #050806 0%, #081208 45%, #040704 100%);
-      background-attachment: fixed;
+      --accent-2: #a3e635;
+      --accent-3: #65a30d;
+      --hero-glow: rgba(118, 185, 0, 0.11);
+      --bg-1: rgba(8, 14, 4, 0.72);
+      --bg-2: rgba(10, 16, 5, 0.86);
+      --bg-3: rgba(6, 12, 3, 0.94);
+      --text-2: #859d72;
+      --text-3: #566648;
+      --text-4: #3c4d32;
     }
     body.cuda .depth-grid {
       background-image:
-        linear-gradient(rgba(118, 185, 0, 0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(118, 185, 0, 0.02) 1px, transparent 1px);
+        linear-gradient(color-mix(in oklab, var(--accent), transparent 98%) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in oklab, var(--accent), transparent 98%) 1px, transparent 1px);
     }
     body.cuda .depth-ribs::before,
     body.cuda .depth-ribs::after {
-      border-color: rgba(118, 185, 0, 0.08);
+      border-color: color-mix(in oklab, var(--accent), transparent 92%);
     }
     body.cuda .depth-shards::before,
     body.cuda .depth-shards::after {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 14%, rgba(118, 185, 0, 0.04) 60%, transparent);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 14%, color-mix(in oklab, var(--accent), transparent 96%) 60%, transparent);
     }
     body.cuda .world-foreground::before,
     body.cuda .world-foreground::after {
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 25%, rgba(118, 185, 0, 0.04) 55%, transparent);
-    }
-    body.cuda .scene-far::before,
-    body.cuda .scene-far::after {
-      border-color: rgba(118, 185, 0, 0.11);
-      box-shadow: inset 0 0 50px rgba(118, 185, 0, 0.04);
-    }
-    body.cuda .scene-mid::before,
-    body.cuda .scene-mid::after {
-      border-color: rgba(118, 185, 0, 0.11);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 22%, rgba(118, 185, 0, 0.04) 60%, transparent);
-    }
-    body.cuda .scene-front::before {
-      border-color: rgba(118, 185, 0, 0.14);
-      box-shadow: 0 0 0 26px rgba(118, 185, 0, 0.03), 0 0 0 58px rgba(118, 185, 0, 0.015);
-    }
-    body.cuda .scene-glyph,
-    body.cuda .scene-plate::after {
-      border-color: rgba(118, 185, 0, 0.12);
-      box-shadow: inset 0 0 0 22px rgba(118, 185, 0, 0.03), inset 0 0 0 54px rgba(118, 185, 0, 0.018);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 25%, color-mix(in oklab, var(--accent), transparent 96%) 55%, transparent);
     }
     a { color: inherit; }
     img, svg { display: block; }
     ::selection { background: var(--accent); color: #01060d; }
+    /* Smooth mode transitions — key accent-aware elements ease on class change */
+    .scroll-progress, .signal-dot, .eyebrow, .nav-links a,
+    .btn-primary, .cursor-dot, .cursor-ring {
+      transition-property: background, border-color, color, box-shadow;
+      transition-duration: 0.4s;
+      transition-timing-function: ease;
+    }
 
     /* ═══ CUSTOM CURSOR ═══ */
     *, *::before, *::after { cursor: none !important; }
@@ -190,7 +192,7 @@
       min-height: 300px;
       top: 18vh;
       right: -10vw;
-      background: radial-gradient(circle, rgba(30, 184, 218, 0.08) 0%, transparent 62%);
+      background: radial-gradient(circle, color-mix(in oklab, var(--accent-2), transparent 92%) 0%, transparent 62%);
     }
     .depth-grid,
     .depth-ribs,
@@ -202,15 +204,10 @@
     }
     .depth-grid {
       background-image:
-        linear-gradient(rgba(88, 197, 255, 0.018) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(88, 197, 255, 0.018) 1px, transparent 1px);
+        linear-gradient(color-mix(in oklab, var(--accent), transparent 98%) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in oklab, var(--accent), transparent 98%) 1px, transparent 1px);
       background-size: 64px 64px;
       mask-image: radial-gradient(circle at 50% 35%, black, transparent 70%);
-    }
-    body.rdna .depth-grid {
-      background-image:
-        linear-gradient(rgba(237, 28, 36, 0.022) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(237, 28, 36, 0.022) 1px, transparent 1px);
     }
     .depth-ribs::before,
     .depth-ribs::after {
@@ -220,7 +217,7 @@
       height: 58vw;
       min-width: 560px;
       min-height: 560px;
-      border: 1px solid rgba(88, 197, 255, 0.06);
+      border: 1px solid color-mix(in oklab, var(--accent), transparent 94%);
       border-radius: 50%;
       top: 18vh;
       right: -18vw;
@@ -233,11 +230,7 @@
       top: 48vh;
       left: -12vw;
       right: auto;
-      border-color: rgba(88, 197, 255, 0.04);
-    }
-    body.rdna .depth-ribs::before,
-    body.rdna .depth-ribs::after {
-      border-color: rgba(237, 28, 36, 0.08);
+      border-color: color-mix(in oklab, var(--accent), transparent 96%);
     }
     .depth-shards::before,
     .depth-shards::after {
@@ -247,16 +240,12 @@
       min-width: 220px;
       height: 120vh;
       top: -10vh;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 14%, rgba(88, 197, 255, 0.03) 60%, transparent);
+      background: linear-gradient(180deg, rgba(255,255,255,0.018), transparent 14%, color-mix(in oklab, var(--accent), transparent 97%) 60%, transparent);
       clip-path: polygon(30% 0, 100% 0, 70% 100%, 0 100%);
       opacity: 0.3;
     }
     .depth-shards::before { left: -4vw; }
     .depth-shards::after { right: -10vw; transform: scaleX(-1); }
-    body.rdna .depth-shards::before,
-    body.rdna .depth-shards::after {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 14%, rgba(237, 28, 36, 0.04) 60%, transparent);
-    }
     .world-foreground {
       z-index: 8;
       mix-blend-mode: screen;
@@ -270,14 +259,10 @@
       bottom: 0;
       width: 8vw;
       min-width: 56px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.035), transparent 25%, rgba(88, 197, 255, 0.03) 55%, transparent);
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 25%, color-mix(in oklab, var(--accent), transparent 97%) 55%, transparent);
     }
     .world-foreground::before { left: 0; clip-path: polygon(0 0, 80% 0, 40% 100%, 0 100%); }
     .world-foreground::after { right: 0; clip-path: polygon(20% 0, 100% 0, 100% 100%, 60% 100%); }
-    body.rdna .world-foreground::before,
-    body.rdna .world-foreground::after {
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 25%, rgba(237, 28, 36, 0.04) 55%, transparent);
-    }
 
     /* ═══════════════════════════════════════
        FOREGROUND EFFECTS — PARTICLE SYSTEM
@@ -447,12 +432,12 @@
       gap: 18px;
     }
     .brand {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
-      font-weight: 600;
+      font-family: 'Syne', system-ui, sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
       color: var(--text-1);
       text-decoration: none;
-      letter-spacing: 0.02em;
+      letter-spacing: -0.01em;
       white-space: nowrap;
     }
     .brand b { color: var(--accent); }
@@ -466,7 +451,7 @@
       border: 1px solid transparent;
       border-radius: 999px;
       padding: 8px 12px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.64rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -478,7 +463,7 @@
     .nav-links a:hover {
       color: var(--accent);
       border-color: var(--border-2);
-      background: rgba(88, 197, 255, 0.05);
+      background: color-mix(in oklab, var(--accent), transparent 95%);
     }
     /* RDNA toggle — fixed bottom-right FAB */
     .rdna-fab {
@@ -489,7 +474,7 @@
       border: 1px solid rgba(237, 28, 36, 0.25);
       border-radius: 999px;
       padding: 10px 16px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.62rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -537,7 +522,7 @@
       right: 24px;
       top: 0;
       height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(88, 197, 255, 0.09), transparent);
+      background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--accent), transparent 91%), transparent);
       pointer-events: none;
     }
     .wrap {
@@ -552,7 +537,7 @@
       gap: 10px;
       margin-bottom: 16px;
       color: var(--accent);
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.64rem;
       letter-spacing: 0.22em;
       text-transform: uppercase;
@@ -564,6 +549,9 @@
       background: currentColor;
     }
     h1, h2, h3, p { margin: 0; }
+    h1, h2, h3 {
+      font-family: 'Syne', system-ui, sans-serif;
+    }
     .hero {
       min-height: calc(100vh - 66px);
       display: grid;
@@ -586,7 +574,7 @@
       align-items: center;
       gap: 10px;
       margin-bottom: 22px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.72rem;
       letter-spacing: 0.08em;
       color: var(--accent);
@@ -617,7 +605,7 @@
     }
     .hero-kicker {
       margin-top: 14px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       color: var(--text-3);
       text-transform: uppercase;
       font-size: 0.73rem;
@@ -654,7 +642,7 @@
     }
     .meta-chip .k {
       display: block;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.55rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
@@ -663,7 +651,7 @@
     }
     .meta-chip .v {
       display: block;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.72rem;
       color: var(--text-1);
       white-space: nowrap;
@@ -730,7 +718,7 @@
       left: 4%;
       top: 6%;
       border-radius: 46% 54% 42% 58% / 48% 41% 59% 52%;
-      border: 1px solid rgba(88, 197, 255, 0.08);
+      border: 1px solid color-mix(in oklab, var(--accent), transparent 92%);
       opacity: 0.8;
     }
     .scene-far::after {
@@ -739,21 +727,16 @@
       left: 15%;
       top: 15%;
       border-radius: 50%;
-      border: 1px solid rgba(88, 197, 255, 0.05);
-      box-shadow: inset 0 0 50px rgba(88, 197, 255, 0.02);
-    }
-    body.rdna .scene-far::before,
-    body.rdna .scene-far::after {
-      border-color: rgba(237, 28, 36, 0.11);
-      box-shadow: inset 0 0 50px rgba(237, 28, 36, 0.04);
+      border: 1px solid color-mix(in oklab, var(--accent), transparent 95%);
+      box-shadow: inset 0 0 50px color-mix(in oklab, var(--accent), transparent 98%);
     }
     .scene-mid::before,
     .scene-mid::after {
       top: 7%;
       bottom: 7%;
       width: 28%;
-      border: 1px solid rgba(88, 197, 255, 0.09);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 22%, rgba(88, 197, 255, 0.03) 60%, transparent);
+      border: 1px solid color-mix(in oklab, var(--accent), transparent 91%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 22%, color-mix(in oklab, var(--accent), transparent 97%) 60%, transparent);
       filter: blur(0.2px);
     }
     .scene-mid::before {
@@ -764,21 +747,16 @@
       right: 5%;
       clip-path: polygon(0 0, 80% 0, 100% 100%, 32% 100%);
     }
-    body.rdna .scene-mid::before,
-    body.rdna .scene-mid::after {
-      border-color: rgba(237, 28, 36, 0.11);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 22%, rgba(237, 28, 36, 0.04) 60%, transparent);
-    }
     .scene-front::before {
       width: 72%;
       height: 72%;
       left: 14%;
       top: 14%;
       border-radius: 50%;
-      border: 1px solid rgba(88, 197, 255, 0.12);
+      border: 1px solid color-mix(in oklab, var(--accent), transparent 88%);
       box-shadow:
-        0 0 0 26px rgba(88, 197, 255, 0.03),
-        0 0 0 58px rgba(88, 197, 255, 0.015);
+        0 0 0 26px color-mix(in oklab, var(--accent), transparent 97%),
+        0 0 0 58px color-mix(in oklab, var(--accent), transparent 98%);
       animation: rotateSlow 70s linear infinite;
     }
     .scene-front::after {
@@ -790,12 +768,6 @@
       background: var(--accent);
       box-shadow: 0 0 26px color-mix(in oklab, var(--accent), transparent 35%), 0 0 90px color-mix(in oklab, var(--accent), transparent 80%);
       animation: pulse 2.8s ease-in-out infinite;
-    }
-    body.rdna .scene-front::before {
-      border-color: rgba(237, 28, 36, 0.14);
-      box-shadow:
-        0 0 0 26px rgba(237, 28, 36, 0.03),
-        0 0 0 58px rgba(237, 28, 36, 0.015);
     }
     @keyframes rotateSlow { to { transform: rotate(360deg); } }
     .scene-plate {
@@ -826,26 +798,19 @@
     .scene-plate::after {
       inset: 34px;
       border-radius: 24px;
-      border-color: rgba(88, 197, 255, 0.08);
+      border-color: color-mix(in oklab, var(--accent), transparent 92%);
     }
     .scene-glyph {
       position: relative;
       width: 62%;
       aspect-ratio: 1;
       border-radius: 50%;
-      border: 1px solid rgba(88, 197, 255, 0.12);
+      border: 1px solid color-mix(in oklab, var(--accent), transparent 88%);
       box-shadow:
-        inset 0 0 0 22px rgba(88, 197, 255, 0.03),
-        inset 0 0 0 54px rgba(88, 197, 255, 0.018);
+        inset 0 0 0 22px color-mix(in oklab, var(--accent), transparent 97%),
+        inset 0 0 0 54px color-mix(in oklab, var(--accent), transparent 98%);
       display: grid;
       place-items: center;
-    }
-    body.rdna .scene-glyph,
-    body.rdna .scene-plate::after {
-      border-color: rgba(237, 28, 36, 0.12);
-      box-shadow:
-        inset 0 0 0 22px rgba(237, 28, 36, 0.03),
-        inset 0 0 0 54px rgba(237, 28, 36, 0.018);
     }
     .scene-glyph::before,
     .scene-glyph::after {
@@ -874,7 +839,7 @@
       bottom: 18px;
       display: grid;
       gap: 6px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.56rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -910,9 +875,13 @@
     .project-card,
     .signal-panel {
       border: 1px solid var(--border-1);
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.012)), var(--bg-1);
-      backdrop-filter: blur(16px);
+      background:
+        linear-gradient(145deg, rgba(255,255,255,0.035) 0%, rgba(255,255,255,0.008) 50%, rgba(255,255,255,0.018) 100%),
+        var(--bg-1);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
       box-shadow: var(--shadow-1);
+      transition: border-color 0.4s ease, background 0.4s ease;
     }
 
     .about-layout {
@@ -955,14 +924,14 @@
     .timeline-meta,
     .module-id,
     .chip-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.56rem;
+      font-family: 'Fragment Mono', monospace;
+      font-size: 0.55rem;
       text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: var(--text-4);
+      letter-spacing: 0.22em;
+      color: color-mix(in oklab, var(--card-accent, var(--accent)), var(--text-4) 60%);
     }
     .stat-row .v {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.72rem;
       color: var(--text-1);
       text-align: right;
@@ -977,7 +946,7 @@
     }
     .strip-title {
       margin-bottom: 10px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.58rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
@@ -1016,7 +985,7 @@
       align-items: center;
       gap: 8px;
       margin-bottom: 12px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.58rem;
       letter-spacing: 0.15em;
       text-transform: uppercase;
@@ -1037,7 +1006,7 @@
       margin-bottom: 4px;
     }
     .timeline-org {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       color: var(--accent);
       font-size: 0.8rem;
       text-decoration: none;
@@ -1051,17 +1020,24 @@
     .chip-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 16px;
+      gap: 6px;
+      margin-top: 18px;
     }
     .chip {
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.62rem;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-family: 'Fragment Mono', monospace;
+      font-size: 0.61rem;
+      letter-spacing: 0.04em;
       color: var(--text-3);
-      background: rgba(255,255,255,0.02);
+      background: rgba(255,255,255,0.025);
+      transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+    }
+    .project-card:hover .chip {
+      border-color: color-mix(in oklab, var(--card-accent, var(--accent)), transparent 70%);
+      color: color-mix(in oklab, var(--card-accent, var(--accent)), var(--text-3) 35%);
+      background: color-mix(in oklab, var(--card-accent, var(--accent)), transparent 94%);
     }
 
     .education-grid {
@@ -1077,7 +1053,7 @@
       align-items: start;
     }
     .module-year {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.62rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
@@ -1091,7 +1067,7 @@
       margin-bottom: 5px;
     }
     .module-sub {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       color: var(--accent);
       font-size: 0.78rem;
     }
@@ -1139,7 +1115,7 @@
       border-radius: 8px;
       border: 1px solid rgba(255,255,255,0.06);
       background: rgba(255,255,255,0.02);
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.64rem;
       color: var(--text-2);
       text-decoration: none;
@@ -1170,29 +1146,29 @@
       box-shadow: var(--shadow-2);
     }
     .project-info {
-      padding: 24px;
+      padding: 28px 32px;
     }
     .project-name {
-      margin: 12px 0 10px;
-      font-size: 1.14rem;
-      font-weight: 650;
-      letter-spacing: -0.025em;
-      font-family: 'JetBrains Mono', monospace;
+      margin: 10px 0 12px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      font-family: 'Syne', system-ui, sans-serif;
     }
     .project-copy {
       color: var(--text-2);
-      font-size: 0.96rem;
-      line-height: 1.82;
+      font-size: 0.94rem;
+      line-height: 1.85;
     }
     .project-visual {
       position: relative;
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01)),
-        radial-gradient(circle at 50% 34%, color-mix(in oklab, var(--accent), transparent 84%), transparent 36%),
-        rgba(8, 20, 37, 0.82);
+        linear-gradient(160deg, rgba(255,255,255,0.04), rgba(255,255,255,0.008)),
+        radial-gradient(circle at 50% 40%, color-mix(in oklab, var(--card-accent, var(--accent)), transparent 82%), transparent 40%),
+        var(--bg-2);
       display: grid;
       place-items: center;
-      border-left: 1px solid rgba(255,255,255,0.04);
+      border-left: 1px solid color-mix(in oklab, var(--card-accent, var(--accent)), transparent 90%);
       overflow: hidden;
     }
     .project-visual::before,
@@ -1200,7 +1176,7 @@
       content: "";
       position: absolute;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.05);
+      border: 1px solid color-mix(in oklab, var(--card-accent, var(--accent)), transparent 88%);
       animation: rotateSlow 40s linear infinite;
     }
     .project-visual::before {
@@ -1215,7 +1191,7 @@
     .project-icon {
       position: relative;
       z-index: 2;
-      color: var(--accent);
+      color: var(--card-accent, var(--accent));
       opacity: 0.28;
       transition: opacity 0.25s ease, transform 0.25s ease;
     }
@@ -1230,7 +1206,7 @@
     .age-badge {
       display: inline-flex; align-items: center; gap: 4px;
       padding: 3px 8px; border-radius: 6px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.56rem; font-weight: 600;
       letter-spacing: 0.08em; text-transform: uppercase;
       color: #ff6b6b; border: 1px solid rgba(255, 107, 107, 0.25);
@@ -1261,7 +1237,7 @@
     .community-title { font-size: 1rem; font-weight: 650; }
     .community-sub {
       margin-top: 4px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.76rem;
       color: var(--accent-2);
     }
@@ -1269,7 +1245,7 @@
       margin-top: 4px;
       font-size: 0.72rem;
       color: var(--text-4);
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
     }
 
     .contact-grid {
@@ -1285,9 +1261,9 @@
       max-width: 12ch;
     }
     .contact-copy h2 em {
-      font-family: 'Instrument Serif', Georgia, serif;
+      font-family: 'Fraunces', Georgia, serif;
       font-style: italic;
-      font-weight: 400;
+      font-weight: 300;
     }
     .contact-copy p {
       margin-top: 18px;
@@ -1312,7 +1288,7 @@
       background: linear-gradient(180deg, var(--accent), transparent);
     }
     .signal-panel .line {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.64rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
@@ -1391,21 +1367,45 @@
     .nav-links a.active {
       color: var(--accent);
       border-color: var(--border-2);
-      background: color-mix(in oklab, var(--accent), transparent 92%);
+      background: color-mix(in oklab, var(--accent), transparent 91%);
     }
 
     /* Project card base border — hover border-color needs a base to work from */
     .project-card {
       border: 1px solid var(--border-1);
+      position: relative;
     }
+    /* Top accent strip per card — unique identity at a glance */
+    .project-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--card-accent, var(--accent)) 0%, color-mix(in oklab, var(--card-accent, var(--accent)), transparent 70%) 60%, transparent 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+    /* Ambient card glow — subtle field effect */
+    .project-card::after {
+      content: "";
+      position: absolute;
+      top: -60%; left: -20%;
+      width: 60%; height: 80%;
+      border-radius: 50%;
+      background: radial-gradient(circle, color-mix(in oklab, var(--card-accent, var(--accent)), transparent 92%), transparent 65%);
+      pointer-events: none;
+      transition: opacity 0.4s var(--ease);
+      opacity: 0;
+    }
+    .project-card:hover::after { opacity: 1; }
 
     /* ═══════════════════════════════════════════════════════
        FRONTEND-DESIGN — Per-project accent system.
        Each card has a unique identity; no two cards look the same.
        ═══════════════════════════════════════════════════════ */
-    .project-card:nth-child(1) { --card-accent: #58c5ff; }   /* h-cli: cyan  */
-    .project-card:nth-child(2) { --card-accent: #ffaa44; }   /* donghua: amber */
-    .project-card:nth-child(3) { --card-accent: #a78bfa; }   /* CROW: violet  */
+    .project-card:nth-child(1) { --card-accent: #ffaa44; }   /* donghua-cli: amber */
+    .project-card:nth-child(2) { --card-accent: #a78bfa; }   /* CROW: violet  */
+    .project-card:nth-child(3) { --card-accent: #34d399; }   /* vn2apk: emerald */
 
     .project-visual {
       background:
@@ -1432,7 +1432,7 @@
     .project-badge {
       display: inline-flex; align-items: center;
       padding: 3px 8px; border-radius: 6px;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.56rem; font-weight: 600;
       letter-spacing: 0.08em; text-transform: uppercase;
       color: #a78bfa;
@@ -1556,7 +1556,7 @@
       display: flex; gap: 12px; align-items: center;
     }
     .trailer-btn {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase;
       color: rgba(255,255,255,0.55);
       background: rgba(255,255,255,0.04);
@@ -1584,7 +1584,7 @@
       background: rgba(255,255,255,0.08);
     }
     .trailer-label {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.52rem; letter-spacing: 0.2em; text-transform: uppercase;
       color: rgba(255,255,255,0.25);
     }
@@ -1597,7 +1597,7 @@
       background: rgba(255,255,255,0.02);
       color: var(--accent);
       text-decoration: none; font-weight: 600;
-      font-family: 'JetBrains Mono', monospace;
+      font-family: 'Fragment Mono', monospace;
       font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
       cursor: pointer;
       transition: all 0.25s ease;
@@ -1897,28 +1897,9 @@
           </div>
 
           <div class="projects-stack">
-            <a class="project-card reveal" href="https://github.com/Thanukamax/h-cli" target="_blank" rel="noopener">
-              <div class="project-info">
-                <div class="module-id">Module 001</div>
-                <div class="project-name">h-cli <span class="age-badge">18+</span></div>
-                <p class="project-copy">Terminal streaming client with themed UI, caching, preloading, and MPV integration. Built for speed-of-thought media consumption instead of bloated playback flow.</p>
-                <div class="chip-row">
-                  <span class="chip">Python</span>
-                  <span class="chip">MPV</span>
-                  <span class="chip">Terminal UI</span>
-                  <span class="chip">Caching</span>
-                </div>
-              </div>
-              <div class="project-visual" aria-hidden="true">
-                <div class="project-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
-                </div>
-              </div>
-            </a>
-
             <a class="project-card reveal" href="https://github.com/Thanukamax/donghua-cli" target="_blank" rel="noopener">
               <div class="project-info">
-                <div class="module-id">Module 002</div>
+                <div class="module-id">Module 001</div>
                 <div class="project-name">donghua-cli</div>
                 <p class="project-copy">Chinese animation streaming and download tool powered by a custom Wuxia-forged engine. Search, pick, play — one command, one authored world, one clean interface.</p>
                 <div class="chip-row">
@@ -1937,7 +1918,7 @@
 
             <a class="project-card reveal" href="https://github.com/Thanukamax" target="_blank" rel="noopener">
               <div class="project-info">
-                <div class="module-id">Module 003</div>
+                <div class="module-id">Module 002</div>
                 <div class="project-name">CROW <span class="project-badge">SDGP</span></div>
                 <p class="project-copy">Unified customer interaction intelligence platform. Real-time CCTV analytics, AI-powered behavioural insights, and microservice architecture across Cloudflare Workers. 6-person team, 2 production clients, 3000+ commits.</p>
                 <div class="chip-row">
@@ -1950,6 +1931,25 @@
               <div class="project-visual" aria-hidden="true">
                 <div class="project-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                </div>
+              </div>
+            </a>
+
+            <a class="project-card reveal" href="https://github.com/Thanukamax" target="_blank" rel="noopener">
+              <div class="project-info">
+                <div class="module-id">Module 003</div>
+                <div class="project-name">vn2apk <span class="project-badge" style="color:#34d399;border-color:rgba(52,211,153,0.3);background:rgba(52,211,153,0.08)">WIP</span></div>
+                <p class="project-copy">Desktop GUI tool that converts PC visual novel and RPG game folders into signed, installable Android APKs. Drag-and-drop flow, automatic engine detection (Ren'Py, RPG Maker, ONScripter), and one-click toolchain management.</p>
+                <div class="chip-row">
+                  <span class="chip">Rust</span>
+                  <span class="chip">Tauri v2</span>
+                  <span class="chip">React</span>
+                  <span class="chip">Android SDK</span>
+                </div>
+              </div>
+              <div class="project-visual" aria-hidden="true">
+                <div class="project-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
                 </div>
               </div>
             </a>
