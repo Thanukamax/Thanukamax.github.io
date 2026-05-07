@@ -1,37 +1,28 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import Lenis from 'lenis'
+import { ReactLenis } from 'lenis/react'
+import type { LenisRef } from 'lenis/react'
+import { cancelFrame, frame } from 'framer-motion'
 
-export default function SmoothScroll({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const lenisRef = useRef<Lenis | null>(null)
+export default function SmoothScroll({ children }: { children: React.ReactNode }) {
+  const lenisRef = useRef<LenisRef>(null)
 
   useEffect(() => {
-    const lenis = new Lenis({
-      lerp: 0.1,
-      smoothWheel: true,
-    })
-
-    lenisRef.current = lenis
-
-    let rafId: number
-
-    function raf(time: number) {
-      lenis.raf(time)
-      rafId = requestAnimationFrame(raf)
+    function update(data: { timestamp: number }) {
+      lenisRef.current?.lenis?.raf(data.timestamp)
     }
-
-    rafId = requestAnimationFrame(raf)
-
-    return () => {
-      cancelAnimationFrame(rafId)
-      lenis.destroy()
-    }
+    frame.update(update, true)
+    return () => cancelFrame(update)
   }, [])
 
-  return <>{children}</>
+  return (
+    <ReactLenis
+      root
+      ref={lenisRef}
+      options={{ autoRaf: false, smoothWheel: true }}
+    >
+      {children}
+    </ReactLenis>
+  )
 }

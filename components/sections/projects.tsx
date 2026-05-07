@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
-import { motion, useScroll, useTransform, type Variants } from 'framer-motion'
+import { motion, useScroll, useTransform, useInView, useReducedMotion } from 'framer-motion'
 
 /* ─── Decorative image outlines (processed via canny edge detection) ─── */
 
@@ -28,7 +28,7 @@ const projects: Project[] = [
     name: 'CROW',
     description:
       'Unified customer interaction intelligence platform — 6-person SDGP team, two live clients, Cloudflare microservices, real-time CCTV ingest pipeline, and 3K+ commits in production.',
-    accent: '#a78bfa',
+    accent: '#e53e3e',
     tags: [
       { text: 'TypeScript', font: 'font-mono' },
       { text: 'Cloudflare Workers', font: 'font-mono' },
@@ -37,14 +37,14 @@ const projects: Project[] = [
     ],
     badge: 'SDGP',
     href: 'https://github.com/Thanukamax',
-    visual: 'radial-gradient(ellipse 55% 55% at 65% 45%, rgba(167,139,250,0.18) 0%, transparent 70%), linear-gradient(135deg, rgba(167,139,250,0.06) 0%, transparent 60%)',
+    visual: 'radial-gradient(ellipse 55% 55% at 65% 45%, rgba(229,62,62,0.20) 0%, transparent 70%), linear-gradient(135deg, rgba(139,92,246,0.10) 0%, transparent 60%)',
   },
   {
     id: '002',
     name: 'DONGHUA-CLI',
     description:
       'Terminal streaming client for Chinese animation — search, pick, and play directly from the CLI. MPV-backed, cached, with preloading so video starts in under 15 seconds on most mirrors.',
-    accent: '#ffaa44',
+    accent: '#d4a017',
     tags: [
       { text: 'Python', font: 'font-rust' },
       { text: 'Scraping', font: 'font-mono' },
@@ -53,14 +53,14 @@ const projects: Project[] = [
     ],
     badge: null,
     href: 'https://github.com/Thanukamax',
-    visual: 'radial-gradient(ellipse 55% 55% at 65% 45%, rgba(255,170,68,0.16) 0%, transparent 70%), linear-gradient(135deg, rgba(255,170,68,0.05) 0%, transparent 60%)',
+    visual: 'radial-gradient(ellipse 55% 55% at 65% 45%, rgba(212,160,23,0.20) 0%, transparent 70%), linear-gradient(135deg, rgba(34,197,94,0.10) 0%, transparent 60%)',
   },
   {
     id: '003',
     name: 'VN2APK',
     description:
       'Tauri v2 desktop app that packages PC visual novel and RPG game folders into signed Android APKs — drag-and-drop workflow, Rust process orchestration, React UI, one-click deploy.',
-    accent: '#34d399',
+    accent: '#3b82f6',
     tags: [
       { text: 'Rust', font: 'font-rust' },
       { text: 'Tauri v2', font: 'font-mono' },
@@ -69,23 +69,22 @@ const projects: Project[] = [
     ],
     badge: 'v1.0.0',
     href: 'https://github.com/Thanukamax/vn2apk/releases',
-    visual: 'radial-gradient(ellipse 55% 55% at 65% 45%, rgba(52,211,153,0.15) 0%, transparent 70%), linear-gradient(135deg, rgba(52,211,153,0.05) 0%, transparent 60%)',
+    visual: 'radial-gradient(ellipse 55% 55% at 65% 45%, rgba(59,130,246,0.20) 0%, transparent 70%), linear-gradient(135deg, rgba(212,160,23,0.10) 0%, transparent 60%)',
   },
 ]
 
 const N = projects.length
 
-function ProjectSlide({ project, index }: { project: Project; index: number }) {
+function ProjectSlide({
+  project, index, sectionInView, reduced,
+}: {
+  project: Project; index: number; sectionInView: boolean; reduced: boolean | null
+}) {
   return (
     <div className="relative w-screen h-screen flex-shrink-0 overflow-hidden flex items-end">
       {/* Background visual */}
       <div className="absolute inset-0" style={{ background: '#030304' }}>
-        <motion.div
-          className="absolute inset-0"
-          animate={{ scale: [1, 1.04, 1] }}
-          transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: index * 1.5 }}
-          style={{ background: project.visual }}
-        />
+        <div className="absolute inset-0" style={{ background: project.visual }} />
         {/* Accent grid */}
         <div className="absolute inset-0 opacity-[0.04]"
           style={{
@@ -111,14 +110,14 @@ function ProjectSlide({ project, index }: { project: Project; index: number }) {
       {/* Decorative image outline */}
       {OUTLINES[project.id] && (
         <div
-          className="absolute right-0 top-1/2 -translate-y-1/2 h-[90vh] w-auto pointer-events-none select-none flex items-center"
+          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
           aria-hidden="true"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={OUTLINES[project.id].src}
             alt=""
-            className="h-full w-auto object-contain"
+            className="h-[85vh] w-auto max-w-[85%] object-contain"
             style={{
               filter: 'invert(1)',
               mixBlendMode: 'screen',
@@ -132,12 +131,17 @@ function ProjectSlide({ project, index }: { project: Project; index: number }) {
       <div className="absolute top-0 bottom-0 left-0 w-px"
            style={{ background: `linear-gradient(to bottom, transparent, ${project.accent}40, transparent)` }} />
 
-      {/* Content */}
-      <a
+      {/* Content — slides in from right when section enters view */}
+      <motion.a
         href={project.href}
         target="_blank"
         rel="noopener noreferrer"
         className="relative z-10 pb-12 md:pb-20 px-5 sm:px-10 md:px-20 max-w-4xl block group"
+        initial={reduced ? { opacity: 0 } : { opacity: 0, x: 40 }}
+        animate={sectionInView
+          ? (reduced ? { opacity: 1 } : { opacity: 1, x: 0 })
+          : {}}
+        transition={{ type: 'spring', duration: 0.55, bounce: 0, delay: index * 0.12 + 0.15 }}
       >
         {/* Module ID + badge */}
         <div className="flex items-center gap-3 mb-5">
@@ -184,7 +188,7 @@ function ProjectSlide({ project, index }: { project: Project; index: number }) {
           View Project
           <span className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-0.5">↗</span>
         </span>
-      </a>
+      </motion.a>
 
       {/* Slide counter — top right */}
       <div className="absolute top-8 right-10 font-mono text-[0.58rem] tracking-widest text-white/20">
@@ -195,25 +199,22 @@ function ProjectSlide({ project, index }: { project: Project; index: number }) {
 }
 
 export default function Projects() {
+  const reduced      = useReducedMotion()
   const containerRef = useRef<HTMLDivElement>(null)
+  const sectionInView = useInView(containerRef, { once: false, amount: 0.05 })
   const { scrollYProgress } = useScroll({ target: containerRef })
   const x = useTransform(scrollYProgress, [0, 1], ['0vw', `${-(N - 1) * 100}vw`])
-
-  const labelVariants: Variants = {
-    hidden:  { opacity: 0, y: 12 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
-  }
 
   return (
     <section ref={containerRef} id="projects" style={{ height: `${N * 100}vh` }}>
       <div className="sticky top-0 h-screen overflow-hidden">
-        {/* Section label */}
+        {/* Section label — clip-path wipe from left */}
         <motion.div
           className="absolute top-8 left-6 md:left-12 z-20"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={labelVariants}
+          initial={reduced ? { opacity: 0 } : { opacity: 0, clipPath: 'inset(0 100% 0 0)' }}
+          whileInView={reduced ? { opacity: 1 } : { opacity: 1, clipPath: 'inset(0 0% 0 0)' }}
+          viewport={{ once: false, amount: 0.1 }}
+          transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
         >
           <span className="section-label">02. Build Archive</span>
         </motion.div>
@@ -224,7 +225,7 @@ export default function Projects() {
           style={{ x, width: `${N * 100}vw` }}
         >
           {projects.map((p, i) => (
-            <ProjectSlide key={p.id} project={p} index={i} />
+            <ProjectSlide key={p.id} project={p} index={i} sectionInView={sectionInView} reduced={reduced} />
           ))}
         </motion.div>
       </div>

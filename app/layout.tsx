@@ -7,7 +7,6 @@ import {
 } from 'next/font/google'
 import './globals.css'
 import SmoothScroll from '@/components/smooth-scroll'
-import Cursor from '@/components/cursor'
 
 /* ── Display / Editorial — critical, preloaded ── */
 const bebas       = Bebas_Neue({ subsets: ['latin'], weight: '400', variable: '--font-bebas', display: 'swap' })
@@ -57,7 +56,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </div>
         <SmoothScroll>
-          <Cursor />
           {children}
         </SmoothScroll>
       </body>

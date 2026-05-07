@@ -1,17 +1,10 @@
 'use client'
 
 import { useRef } from 'react'
-import { motion, useScroll, useTransform, type Variants } from 'framer-motion'
+import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 
 const E: [number,number,number,number] = [0.16, 1, 0.3, 1]
-
-const fadeUp: Variants = {
-  hidden:  { opacity: 0, y: 28 },
-  visible: (i: number) => ({
-    opacity: 1, y: 0,
-    transition: { delay: i * 0.1, duration: 0.8, ease: E },
-  }),
-}
+const SPRING = { type: 'spring' as const, duration: 0.5, bounce: 0 }
 
 const stats = [
   { value: '3+',  label: 'Years building',  color: '#a78bfa' },
@@ -28,13 +21,13 @@ const profile = [
 ]
 
 export default function About() {
+  const reduced = useReducedMotion()
   const ref = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
   const y = useTransform(scrollYProgress, [0, 1], ['-4%', '4%'])
 
   return (
     <section ref={ref} id="about" className="relative py-32 px-6 md:px-12 max-w-7xl mx-auto overflow-hidden">
-      {/* Parallax accent text in background */}
       <motion.div
         style={{ y }}
         className="absolute -right-10 top-1/2 -translate-y-1/2 pointer-events-none select-none"
@@ -45,10 +38,12 @@ export default function About() {
         </span>
       </motion.div>
 
-      {/* Label */}
+      {/* Label — clip-path wipe from left */}
       <motion.div className="mb-12"
-        initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }}
-        custom={0} variants={fadeUp}>
+        initial={reduced ? { opacity: 0 } : { opacity: 0, clipPath: 'inset(0 100% 0 0)' }}
+        whileInView={reduced ? { opacity: 1 } : { opacity: 1, clipPath: 'inset(0 0% 0 0)' }}
+        viewport={{ once: false, amount: 0.1, margin: '-80px' }}
+        transition={{ duration: 0.75, ease: E }}>
         <span className="section-label">01. Identity</span>
         <h2 className="font-editorial font-bold italic mt-2 text-chalk leading-none"
             style={{ fontSize: 'clamp(2.4rem, 4.5vw, 4rem)' }}>
@@ -58,10 +53,12 @@ export default function About() {
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
 
-        {/* Profile card */}
+        {/* Profile card — slide from left */}
         <motion.div className="md:col-span-4"
-          initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }}
-          custom={1} variants={fadeUp}>
+          initial={reduced ? { opacity: 0 } : { opacity: 0, x: -36 }}
+          whileInView={reduced ? { opacity: 1 } : { opacity: 1, x: 0 }}
+          viewport={{ once: false, amount: 0.1, margin: '-60px' }}
+          transition={{ ...SPRING, delay: 0.1 }}>
           <div className="rounded-sm p-6 h-full"
                style={{ border: '1px solid var(--border)', background: 'var(--bg-surface)' }}>
             <div className="mb-6 pb-6" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
@@ -88,11 +85,13 @@ export default function About() {
           </div>
         </motion.div>
 
-        {/* Right column */}
         <div className="md:col-span-8 flex flex-col gap-8">
+          {/* Body text — materialise up */}
           <motion.div className="space-y-5"
-            initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }}
-            custom={2} variants={fadeUp}>
+            initial={reduced ? { opacity: 0 } : { opacity: 0, y: 16 }}
+            whileInView={reduced ? { opacity: 1 } : { opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.1, margin: '-60px' }}
+            transition={{ ...SPRING, delay: 0.18 }}>
             <p className="font-systems text-base leading-relaxed text-white/65">
               I build at the intersection of game development, GPU architecture, and systems
               engineering. Whether it&apos;s shipping a Unity game, reverse-engineering NVR
@@ -106,10 +105,12 @@ export default function About() {
             </p>
           </motion.div>
 
-          {/* Stats */}
+          {/* Stats — slide from right */}
           <motion.div className="grid grid-cols-2 sm:grid-cols-4 gap-4"
-            initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }}
-            custom={3} variants={fadeUp}>
+            initial={reduced ? { opacity: 0 } : { opacity: 0, x: 32 }}
+            whileInView={reduced ? { opacity: 1 } : { opacity: 1, x: 0 }}
+            viewport={{ once: false, amount: 0.1, margin: '-60px' }}
+            transition={{ ...SPRING, delay: 0.28 }}>
             {stats.map((s) => (
               <div key={s.label} className="rounded-sm p-4"
                    style={{ border: `1px solid ${s.color}22`, background: `${s.color}08` }}>

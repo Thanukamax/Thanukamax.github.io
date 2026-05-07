@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll, useTransform, useInView, useReducedMotion } from 'framer-motion'
 
 const E: [number,number,number,number] = [0.16, 1, 0.3, 1]
 
@@ -42,7 +42,6 @@ const EDGES: { id: string; from: string; to: string }[] = [
 
 const NODE_MAP = Object.fromEntries(NODES.map(n => [n.id, n]))
 
-/* Portrait coordinates for mobile SVG (viewBox 380 × 450) */
 const MOBILE_COORDS: Record<string, { x: number; y: number }> = {
   cpp:     { x: 190, y: 148 },
   rdna:    { x: 80,  y: 72  },
@@ -57,9 +56,9 @@ const MOBILE_COORDS: Record<string, { x: number; y: number }> = {
 }
 
 const TIER_COLOR: Record<Tier, string> = {
-  core:       '#7dd3fc',  // sky   — hardware / silicon
-  bridge:     '#fbbf24',  // amber — engines / tools
-  peripheral: '#a78bfa',  // violet — web / creative
+  core:       '#7dd3fc',
+  bridge:     '#fbbf24',
+  peripheral: '#a78bfa',
 }
 
 function tierFill(tier: Tier, active: boolean) {
@@ -78,10 +77,11 @@ function labelSize(tier: Tier) {
   return { core: 11, bridge: 9.5, peripheral: 8 }[tier]
 }
 
-
 export default function Interconnect() {
+  const reduced    = useReducedMotion()
   const [hovered, setHovered] = useState<string | null>(null)
   const sectionRef = useRef<HTMLElement>(null)
+  const nodeInView = useInView(sectionRef, { once: false, amount: 0.1, margin: '-10%' })
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start end', 'end start'] })
   const bgY = useTransform(scrollYProgress, [0, 1], ['-4%', '4%'])
 
@@ -97,27 +97,21 @@ export default function Interconnect() {
         className="absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none select-none"
         aria-hidden="true"
       >
-        <span
-          className="font-signal outlined-chalk opacity-[0.018]"
-          style={{ fontSize: '22vw', lineHeight: 1 }}
-        >
+        <span className="font-signal outlined-chalk opacity-[0.018]" style={{ fontSize: '22vw', lineHeight: 1 }}>
           GRAPH
         </span>
       </motion.div>
 
-      {/* Label */}
+      {/* Label — slide from right */}
       <motion.div
         className="mb-10"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.7, ease: E }}
+        initial={reduced ? { opacity: 0 } : { opacity: 0, x: 40 }}
+        whileInView={reduced ? { opacity: 1 } : { opacity: 1, x: 0 }}
+        viewport={{ once: false, amount: 0.1 }}
+        transition={{ type: 'spring', duration: 0.5, bounce: 0 }}
       >
         <span className="section-label">03.5 Subsystem Map</span>
-        <h2
-          className="font-signal leading-none outlined mt-2"
-          style={{ fontSize: 'clamp(2.8rem, 7vw, 6.5rem)' }}
-        >
+        <h2 className="font-signal leading-none outlined mt-2" style={{ fontSize: 'clamp(2.8rem, 7vw, 6.5rem)' }}>
           INTERCONNECT
         </h2>
         <p className="font-jetbrains text-[0.5rem] tracking-[0.22em] text-white/25 uppercase mt-2">
@@ -129,13 +123,8 @@ export default function Interconnect() {
       <div className="flex flex-wrap gap-6 mb-8">
         {(['core', 'bridge', 'peripheral'] as Tier[]).map(tier => (
           <div key={tier} className="flex items-center gap-2">
-            <div
-              className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-              style={{
-                background: TIER_COLOR[tier],
-                boxShadow: `0 0 6px ${TIER_COLOR[tier]}88`,
-              }}
-            />
+            <div className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+              style={{ background: TIER_COLOR[tier], boxShadow: `0 0 6px ${TIER_COLOR[tier]}88` }} />
             <span className="font-jetbrains text-[0.46rem] tracking-[0.2em] uppercase"
               style={{ color: `${TIER_COLOR[tier]}88` }}>
               {tier}
@@ -144,23 +133,18 @@ export default function Interconnect() {
         ))}
       </div>
 
-      {/* Mobile: animated portrait graph — auto-playing, tap to highlight */}
+      {/* Mobile: whole-graph fade */}
       <motion.div
         className="md:hidden"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        viewport={{ once: true, amount: 0.1 }}
-        transition={{ duration: 1.1, ease: E }}
+        viewport={{ once: false, amount: 0.05 }}
+        transition={{ duration: 0.7, ease: E }}
       >
         <p className="font-jetbrains text-[0.42rem] tracking-[0.22em] text-white/25 uppercase mb-4">
           ▸ Tap a node to trace signal paths
         </p>
-        <svg
-          viewBox="0 0 380 450"
-          className="w-full select-none"
-          style={{ overflow: 'visible' }}
-          preserveAspectRatio="xMidYMid meet"
-        >
+        <svg viewBox="0 0 380 450" className="w-full select-none" style={{ overflow: 'visible' }} preserveAspectRatio="xMidYMid meet">
           <defs>
             <filter id="ic-glow-m" x="-150%" y="-150%" width="400%" height="400%">
               <feGaussianBlur stdDeviation="3" result="blur" />
@@ -168,11 +152,9 @@ export default function Interconnect() {
             </filter>
           </defs>
 
-          {/* Edges */}
           {EDGES.map(edge => {
             const a  = MOBILE_COORDS[edge.from]
             const b  = MOBILE_COORDS[edge.to]
-            const nf = NODE_MAP[edge.from]
             const active = hovered === edge.from || hovered === edge.to
             return (
               <g key={edge.id + '-m'}>
@@ -193,18 +175,16 @@ export default function Interconnect() {
             )
           })}
 
-          {/* Nodes */}
           {NODES.map(node => {
-            const mn  = MOBILE_COORDS[node.id]
+            const mn = MOBILE_COORDS[node.id]
             const active = hovered === node.id
-            const connected =
-              hovered !== null &&
+            const connected = hovered !== null &&
               EDGES.some(e => (e.from === hovered && e.to === node.id) || (e.to === hovered && e.from === node.id))
             return (
               <motion.g
                 key={node.id + '-m'}
-                animate={{ y: [0, -node.fa * 0.65, node.fa * 0.3, -node.fa * 0.45, 0] }}
-                transition={{ duration: node.fd, repeat: Infinity, ease: 'easeInOut', delay: node.delay }}
+                animate={{ y: reduced ? 0 : [0, -node.fa * 0.65, node.fa * 0.3, -node.fa * 0.45, 0] }}
+                transition={{ duration: node.fd, repeat: reduced ? 0 : Infinity, ease: 'easeInOut', delay: node.delay }}
                 style={{ cursor: 'pointer' }}
                 onTouchStart={() => setHovered(node.id)}
                 onTouchEnd={() => setTimeout(() => setHovered(null), 1400)}
@@ -212,47 +192,27 @@ export default function Interconnect() {
                 onMouseLeave={() => setHovered(null)}
               >
                 {(active || connected) && (
-                  <motion.circle
-                    cx={mn.x} cy={mn.y} r={node.r + 10}
-                    fill={TIER_COLOR[node.tier]}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: [0.07, 0.2, 0.07] }}
-                    transition={{ duration: 1.2, repeat: Infinity }}
-                  />
+                  <motion.circle cx={mn.x} cy={mn.y} r={node.r + 10} fill={TIER_COLOR[node.tier]}
+                    initial={{ opacity: 0 }} animate={{ opacity: [0.07, 0.2, 0.07] }}
+                    transition={{ duration: 1.2, repeat: Infinity }} />
                 )}
-                <circle
-                  cx={mn.x} cy={mn.y} r={node.r}
+                <circle cx={mn.x} cy={mn.y} r={node.r}
                   style={{
-                    fill: TIER_COLOR[node.tier],
-                    stroke: TIER_COLOR[node.tier],
-                    fillOpacity:   tierFill(node.tier, active),
-                    strokeOpacity: tierStroke(node.tier, active),
-                    strokeWidth:   tierStrokeW(node.tier, active),
+                    fill: TIER_COLOR[node.tier], stroke: TIER_COLOR[node.tier],
+                    fillOpacity: tierFill(node.tier, active), strokeOpacity: tierStroke(node.tier, active),
+                    strokeWidth: tierStrokeW(node.tier, active),
                     filter: active ? 'url(#ic-glow-m)' : undefined,
                     transition: 'fill-opacity 0.25s, stroke-opacity 0.25s, stroke-width 0.25s',
-                  }}
-                />
-                <text
-                  x={mn.x} y={mn.y + 4}
-                  textAnchor="middle"
-                  fontSize={labelSize(node.tier)}
-                  fontFamily={node.font}
+                  }} />
+                <text x={mn.x} y={mn.y + 4} textAnchor="middle" fontSize={labelSize(node.tier)} fontFamily={node.font}
                   fill={active ? TIER_COLOR[node.tier] : `${TIER_COLOR[node.tier]}88`}
-                  letterSpacing="0.08em"
-                  style={{ userSelect: 'none', transition: 'fill 0.2s' }}
-                >
+                  letterSpacing="0.08em" style={{ userSelect: 'none', transition: 'fill 0.2s' }}>
                   {node.label}
                 </text>
                 {node.tier === 'core' && (
-                  <text
-                    x={mn.x} y={mn.y + node.r + 13}
-                    textAnchor="middle"
-                    fontSize={6}
-                    fontFamily="var(--font-orbitron)"
-                    fill={`${TIER_COLOR[node.tier]}44`}
-                    letterSpacing="0.18em"
-                    style={{ userSelect: 'none' }}
-                  >
+                  <text x={mn.x} y={mn.y + node.r + 13} textAnchor="middle" fontSize={6}
+                    fontFamily="var(--font-orbitron)" fill={`${TIER_COLOR[node.tier]}44`}
+                    letterSpacing="0.18em" style={{ userSelect: 'none' }}>
                     {node.sub}
                   </text>
                 )}
@@ -262,132 +222,93 @@ export default function Interconnect() {
         </svg>
       </motion.div>
 
-      {/* SVG graph — desktop only */}
-      <motion.div
-        className="hidden md:block"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.1, ease: E }}
-      >
-        <svg
-          viewBox="0 0 900 510"
-          className="w-full select-none"
-          style={{ maxHeight: 520, overflow: 'visible' }}
-          preserveAspectRatio="xMidYMid meet"
-        >
+      {/* Desktop: nodes crystallise in with stagger */}
+      <div className="hidden md:block">
+        <svg viewBox="0 0 900 510" className="w-full select-none" style={{ maxHeight: 520, overflow: 'visible' }} preserveAspectRatio="xMidYMid meet">
           <defs>
             <filter id="ic-glow" x="-150%" y="-150%" width="400%" height="400%">
               <feGaussianBlur stdDeviation="3.5" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
             <filter id="ic-edge-glow" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur stdDeviation="2" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
           </defs>
 
-          {/* ── Edges ── */}
-          {EDGES.map(edge => {
-            const a = NODE_MAP[edge.from]
-            const b = NODE_MAP[edge.to]
-            const active = hovered === edge.from || hovered === edge.to
-            return (
-              <g key={edge.id}>
-                {active && (
-                  <line
-                    x1={a.x} y1={a.y} x2={b.x} y2={b.y}
+          {/* Edges — fade in after nodes */}
+          <motion.g
+            animate={{ opacity: nodeInView ? 1 : 0 }}
+            transition={{ duration: 0.8, delay: 1.4, ease: E }}
+          >
+            {EDGES.map(edge => {
+              const a = NODE_MAP[edge.from]
+              const b = NODE_MAP[edge.to]
+              const active = hovered === edge.from || hovered === edge.to
+              return (
+                <g key={edge.id}>
+                  {active && (
+                    <line x1={a.x} y1={a.y} x2={b.x} y2={b.y}
+                      style={{ stroke: 'var(--accent)', strokeOpacity: 0.14, strokeWidth: 5, filter: 'url(#ic-edge-glow)' }}
+                      vectorEffect="non-scaling-stroke" />
+                  )}
+                  <line x1={a.x} y1={a.y} x2={b.x} y2={b.y}
                     style={{
                       stroke: 'var(--accent)',
-                      strokeOpacity: 0.14,
-                      strokeWidth: 5,
-                      filter: 'url(#ic-edge-glow)',
+                      strokeOpacity: active ? 0.65 : 0.1,
+                      strokeWidth: active ? 1.5 : 0.8,
+                      transition: 'stroke-opacity 0.25s, stroke-width 0.25s',
                     }}
-                    vectorEffect="non-scaling-stroke"
-                  />
-                )}
-                <line
-                  x1={a.x} y1={a.y} x2={b.x} y2={b.y}
-                  style={{
-                    stroke: 'var(--accent)',
-                    strokeOpacity: active ? 0.65 : 0.1,
-                    strokeWidth: active ? 1.5 : 0.8,
-                    transition: 'stroke-opacity 0.25s, stroke-width 0.25s',
-                  }}
-                  vectorEffect="non-scaling-stroke"
-                />
-              </g>
-            )
-          })}
+                    vectorEffect="non-scaling-stroke" />
+                </g>
+              )
+            })}
+          </motion.g>
 
-          {/* ── Nodes ── */}
+          {/* Nodes — staggered crystallise */}
           {NODES.map(node => {
             const active = hovered === node.id
-            const connected =
-              hovered !== null &&
+            const connected = hovered !== null &&
               EDGES.some(e => (e.from === hovered && e.to === node.id) || (e.to === hovered && e.from === node.id))
-
             return (
               <motion.g
                 key={node.id}
-                animate={{ y: [0, -node.fa, node.fa * 0.4, -node.fa * 0.6, 0] }}
-                transition={{ duration: node.fd, repeat: Infinity, ease: 'easeInOut', delay: node.delay }}
+                animate={{
+                  opacity: nodeInView ? 1 : 0,
+                  y: reduced ? 0 : [0, -node.fa, node.fa * 0.4, -node.fa * 0.6, 0],
+                }}
+                transition={{
+                  opacity: { duration: 0.45, delay: node.delay * 0.5 + 0.4, ease: E },
+                  y: { duration: node.fd, repeat: reduced ? 0 : Infinity, ease: 'easeInOut', delay: node.delay },
+                }}
                 style={{ cursor: 'crosshair' }}
                 onMouseEnter={() => setHovered(node.id)}
                 onMouseLeave={() => setHovered(null)}
               >
-                {/* Outer glow ring */}
                 {(active || connected) && (
-                  <motion.circle
-                    cx={node.x} cy={node.y} r={node.r + 12}
-                    fill={TIER_COLOR[node.tier]}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: [0.07, 0.18, 0.07] }}
-                    transition={{ duration: 1.2, repeat: Infinity }}
-                  />
+                  <motion.circle cx={node.x} cy={node.y} r={node.r + 12} fill={TIER_COLOR[node.tier]}
+                    initial={{ opacity: 0 }} animate={{ opacity: [0.07, 0.18, 0.07] }}
+                    transition={{ duration: 1.2, repeat: Infinity }} />
                 )}
-                {/* Main circle */}
-                <circle
-                  cx={node.x} cy={node.y} r={node.r}
+                <circle cx={node.x} cy={node.y} r={node.r}
                   style={{
-                    fill: TIER_COLOR[node.tier],
-                    stroke: TIER_COLOR[node.tier],
+                    fill: TIER_COLOR[node.tier], stroke: TIER_COLOR[node.tier],
                     fillOpacity: tierFill(node.tier, active),
                     strokeOpacity: tierStroke(node.tier, active),
                     strokeWidth: tierStrokeW(node.tier, active),
                     filter: active ? 'url(#ic-glow)' : undefined,
                     transition: 'fill-opacity 0.25s, stroke-opacity 0.25s, stroke-width 0.25s',
-                  }}
-                />
-                {/* Label */}
-                <text
-                  x={node.x} y={node.y + 4}
-                  textAnchor="middle"
-                  fontSize={labelSize(node.tier)}
+                  }} />
+                <text x={node.x} y={node.y + 4} textAnchor="middle" fontSize={labelSize(node.tier)}
                   fontFamily={node.font}
                   fill={active ? TIER_COLOR[node.tier] : `${TIER_COLOR[node.tier]}88`}
-                  letterSpacing="0.08em"
-                  style={{ userSelect: 'none', transition: 'fill 0.2s' }}
-                >
+                  letterSpacing="0.08em" style={{ userSelect: 'none', transition: 'fill 0.2s' }}>
                   {node.label}
                 </text>
-                {/* Sub-label for core nodes */}
                 {node.tier === 'core' && (
-                  <text
-                    x={node.x} y={node.y + node.r + 16}
-                    textAnchor="middle"
-                    fontSize={6.5}
-                    fontFamily="var(--font-orbitron)"
-                    fill={`${TIER_COLOR[node.tier]}44`}
-                    letterSpacing="0.18em"
-                    style={{ userSelect: 'none' }}
-                  >
+                  <text x={node.x} y={node.y + node.r + 16} textAnchor="middle" fontSize={6.5}
+                    fontFamily="var(--font-orbitron)" fill={`${TIER_COLOR[node.tier]}44`}
+                    letterSpacing="0.18em" style={{ userSelect: 'none' }}>
                     {node.sub}
                   </text>
                 )}
@@ -395,7 +316,7 @@ export default function Interconnect() {
             )
           })}
         </svg>
-      </motion.div>
+      </div>
     </section>
   )
 }

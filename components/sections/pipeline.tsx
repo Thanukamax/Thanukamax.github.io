@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
-import { motion, useScroll, useTransform, useInView } from 'framer-motion'
+import { motion, useScroll, useTransform, useInView, useReducedMotion } from 'framer-motion'
 
 const E: [number,number,number,number] = [0.16, 1, 0.3, 1]
 
@@ -47,41 +47,22 @@ const projects = [
 const SEGS = 22
 
 const STACK_COLOR: Record<string, string> = {
-  'Tauri v2':     '#a78bfa',
-  'Rust':         '#a78bfa',
-  'React':        '#7dd3fc',
-  'TypeScript':   '#7dd3fc',
-  'C++':          '#fb923c',
-  'Vulkan':       '#fb923c',
-  'GLSL':         '#fbbf24',
-  'VMA':          '#fbbf24',
-  'WGPU':         '#34d399',
-  'WGSL':         '#34d399',
-  'Compute':      '#7dd3fc',
-  'LLVM':         '#e879f9',
-  'Android SDK':  '#bef264',
+  'Tauri v2': '#a78bfa', 'Rust': '#a78bfa', 'React': '#7dd3fc', 'TypeScript': '#7dd3fc',
+  'C++': '#fb923c', 'Vulkan': '#fb923c', 'GLSL': '#fbbf24', 'VMA': '#fbbf24',
+  'WGPU': '#34d399', 'WGSL': '#34d399', 'Compute': '#7dd3fc', 'LLVM': '#e879f9', 'Android SDK': '#bef264',
 }
 
 const STATE_COLOR: Record<string, string> = {
-  PLANNING:    'rgba(255, 210, 80, 0.9)',
-  COMPILING:   'rgba(var(--accent-rgb), 0.9)',
-  INITIALIZING:'rgba(255, 170, 0, 0.88)',
-  OPTIMIZING:  'rgba(0, 255, 160, 0.88)',
-  SHIPPED:     'rgba(0, 255, 160, 0.9)',
+  PLANNING: 'rgba(255,210,80,0.9)', COMPILING: 'rgba(var(--accent-rgb),0.9)',
+  INITIALIZING: 'rgba(255,170,0,0.88)', OPTIMIZING: 'rgba(0,255,160,0.88)', SHIPPED: 'rgba(0,255,160,0.9)',
 }
 const STATE_BORDER: Record<string, string> = {
-  PLANNING:    'rgba(255, 210, 80, 0.28)',
-  COMPILING:   'rgba(var(--accent-rgb), 0.28)',
-  INITIALIZING:'rgba(255, 170, 0, 0.28)',
-  OPTIMIZING:  'rgba(0, 255, 160, 0.28)',
-  SHIPPED:     'rgba(0, 255, 160, 0.28)',
+  PLANNING: 'rgba(255,210,80,0.28)', COMPILING: 'rgba(var(--accent-rgb),0.28)',
+  INITIALIZING: 'rgba(255,170,0,0.28)', OPTIMIZING: 'rgba(0,255,160,0.28)', SHIPPED: 'rgba(0,255,160,0.28)',
 }
 const STATE_BG: Record<string, string> = {
-  PLANNING:    'rgba(255, 210, 80, 0.05)',
-  COMPILING:   'rgba(var(--accent-rgb), 0.05)',
-  INITIALIZING:'rgba(255, 170, 0, 0.05)',
-  OPTIMIZING:  'rgba(0, 255, 160, 0.05)',
-  SHIPPED:     'rgba(0, 255, 160, 0.06)',
+  PLANNING: 'rgba(255,210,80,0.05)', COMPILING: 'rgba(var(--accent-rgb),0.05)',
+  INITIALIZING: 'rgba(255,170,0,0.05)', OPTIMIZING: 'rgba(0,255,160,0.05)', SHIPPED: 'rgba(0,255,160,0.06)',
 }
 
 function SegBar({ pct, active }: { pct: number; active: boolean }) {
@@ -89,23 +70,15 @@ function SegBar({ pct, active }: { pct: number; active: boolean }) {
   return (
     <div className="flex gap-[3px] items-center">
       {Array.from({ length: SEGS }).map((_, i) => (
-        <motion.div
-          key={i}
-          className="h-[5px] flex-1 origin-left"
-          style={{ borderRadius: 1 }}
+        <motion.div key={i} className="h-[5px] flex-1 origin-left" style={{ borderRadius: 1 }}
           initial={{ scaleX: 0 }}
-          animate={
-            active
-              ? { scaleX: 1, background: i < filled ? 'var(--accent)' : 'rgba(255,255,255,0.07)' }
-              : { scaleX: 0 }
-          }
-          transition={{ delay: active ? i * 0.02 : 0, duration: 0.22, ease: 'easeOut' }}
+          animate={active
+            ? { scaleX: 1, background: i < filled ? 'var(--accent)' : 'rgba(255,255,255,0.07)' }
+            : { scaleX: 0 }}
+          transition={{ delay: active ? i * 0.02 : 0, duration: 0.2, ease: 'easeOut' }}
         />
       ))}
-      <span
-        className="ml-2 font-jetbrains text-[0.52rem] tracking-widest shrink-0"
-        style={{ color: 'var(--accent)' }}
-      >
+      <span className="ml-2 font-jetbrains text-[0.52rem] tracking-widest shrink-0" style={{ color: 'var(--accent)' }}>
         {pct}%
       </span>
     </div>
@@ -113,89 +86,63 @@ function SegBar({ pct, active }: { pct: number; active: boolean }) {
 }
 
 function Card({ proj, idx }: { proj: (typeof projects)[number]; idx: number }) {
+  const reduced = useReducedMotion()
   const ref = useRef<HTMLDivElement>(null)
-  const active = useInView(ref, { once: true, margin: '-80px' })
+  const active = useInView(ref, { once: false, amount: 0.1, margin: '-80px' })
 
   const inner = (
     <motion.div
       ref={ref}
       className="relative rounded-sm p-7 md:p-9 grid grid-cols-1 md:grid-cols-12 gap-y-5 gap-x-8 overflow-hidden"
       style={{ border: '1px solid rgba(var(--accent-rgb),0.1)', background: 'var(--bg-surface)' }}
-      initial={{ opacity: 0, y: 18 }}
-      animate={active ? { opacity: 1, y: 0 } : {}}
+      initial={reduced ? { opacity: 0 } : { opacity: 0, x: 48 }}
+      animate={active ? (reduced ? { opacity: 1 } : { opacity: 1, x: 0 }) : {}}
       whileHover={proj.url ? { borderColor: 'rgba(var(--accent-rgb),0.35)', background: 'rgba(var(--accent-rgb),0.04)' } : {}}
-      transition={{ duration: 0.7, ease: E }}
+      transition={{ duration: 0.5, ease: E, delay: idx * 0.08 }}
     >
-      {/* Accent left bar */}
       <div className="absolute left-0 top-7 bottom-7 w-[2px] rounded-r"
            style={{ background: STATE_COLOR[proj.state] ?? 'var(--accent)' }} />
 
-      {/* ── ID + name + desc ── */}
       <div className="md:col-span-5 pl-4">
         <p className="font-jetbrains text-[0.44rem] tracking-[0.22em] text-white/22 mb-2 uppercase">
           ▸ buffer_{String(idx + 1).padStart(2, '0')} · {proj.id}
         </p>
-        <h3
-          className={`font-signal leading-none tracking-[0.03em] text-chalk${active ? ' crt-text' : ''}`}
-          style={{ fontSize: 'clamp(1.6rem, 3.2vw, 2.6rem)' }}
-        >
+        <h3 className={`font-signal leading-none tracking-[0.03em] text-chalk${active ? ' crt-text' : ''}`}
+            style={{ fontSize: 'clamp(1.6rem, 3.2vw, 2.6rem)' }}>
           {proj.name}
         </h3>
-        <p className="font-systems italic text-sm text-white/42 mt-2 leading-relaxed max-w-[28ch]">
-          {proj.desc}
-        </p>
+        <p className="font-systems italic text-sm text-white/42 mt-2 leading-relaxed max-w-[28ch]">{proj.desc}</p>
         <div className="flex flex-wrap gap-1.5 mt-3">
           {proj.stack.map((s) => {
             const c = STACK_COLOR[s] ?? '#ffffff'
             return (
-              <span
-                key={s}
-                className="font-jetbrains text-[0.46rem] tracking-widest px-2 py-0.5 rounded-[2px]"
-                style={{ color: `${c}bb`, border: `1px solid ${c}22`, background: `${c}08` }}
-              >
+              <span key={s} className="font-jetbrains text-[0.46rem] tracking-widest px-2 py-0.5 rounded-[2px]"
+                    style={{ color: `${c}bb`, border: `1px solid ${c}22`, background: `${c}08` }}>
                 {s}
               </span>
             )
           })}
         </div>
         {proj.url && (
-          <p className="font-mono text-[0.48rem] tracking-widest uppercase mt-3"
-             style={{ color: 'rgba(var(--accent-rgb),0.45)' }}>
+          <p className="font-mono text-[0.48rem] tracking-widest uppercase mt-3" style={{ color: 'rgba(var(--accent-rgb),0.45)' }}>
             View ↗
           </p>
         )}
       </div>
 
-      {/* ── Progress bar ── */}
       <div className="md:col-span-4 flex flex-col justify-center gap-2">
-        <p className="font-jetbrains text-[0.44rem] tracking-[0.22em] text-white/28 uppercase mb-1">
-          Completion index
-        </p>
+        <p className="font-jetbrains text-[0.44rem] tracking-[0.22em] text-white/28 uppercase mb-1">Completion index</p>
         <SegBar pct={proj.progress} active={active} />
       </div>
 
-      {/* ── Status codes ── */}
       <div className="md:col-span-3 flex flex-col gap-1.5 justify-center items-start md:items-end">
-        <span
-          className="font-jetbrains text-[0.44rem] tracking-[0.18em] px-2 py-1 rounded-[2px]"
-          style={{
-            color: STATE_COLOR[proj.state],
-            border: `1px solid ${STATE_BORDER[proj.state]}`,
-            background: STATE_BG[proj.state],
-          }}
-        >
+        <span className="font-jetbrains text-[0.44rem] tracking-[0.18em] px-2 py-1 rounded-[2px]"
+          style={{ color: STATE_COLOR[proj.state], border: `1px solid ${STATE_BORDER[proj.state]}`, background: STATE_BG[proj.state] }}>
           [STATE: {proj.state}]
         </span>
-        {([
-          `PRIORITY: ${proj.priority}`,
-          `SECTOR: ${proj.sector}`,
-          `MODE: ${proj.mode.toUpperCase()}`,
-        ] as const).map((tag) => (
-          <span
-            key={tag}
-            className="font-jetbrains text-[0.44rem] tracking-[0.18em] px-2 py-1 rounded-[2px] text-white/30"
-            style={{ border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)' }}
-          >
+        {([`PRIORITY: ${proj.priority}`, `SECTOR: ${proj.sector}`, `MODE: ${proj.mode.toUpperCase()}`] as const).map((tag) => (
+          <span key={tag} className="font-jetbrains text-[0.44rem] tracking-[0.18em] px-2 py-1 rounded-[2px] text-white/30"
+            style={{ border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)' }}>
             [{tag}]
           </span>
         ))}
@@ -205,53 +152,37 @@ function Card({ proj, idx }: { proj: (typeof projects)[number]; idx: number }) {
 
   return (
     <div className="mb-4">
-      {proj.url ? (
-        <a href={proj.url} target="_blank" rel="noopener noreferrer" className="block" style={{ cursor: 'pointer' }}>
-          {inner}
-        </a>
-      ) : inner}
+      {proj.url
+        ? <a href={proj.url} target="_blank" rel="noopener noreferrer" className="block" style={{ cursor: 'pointer' }}>{inner}</a>
+        : inner}
     </div>
   )
 }
 
 export default function Pipeline() {
+  const reduced = useReducedMotion()
   const ref = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
   const bgY = useTransform(scrollYProgress, [0, 1], ['-4%', '4%'])
 
   return (
-    <section
-      ref={ref}
-      id="pipeline"
-      className="relative py-28 px-6 md:px-12 max-w-7xl mx-auto overflow-hidden"
-    >
-      {/* Ghost word */}
-      <motion.div
-        style={{ y: bgY }}
+    <section ref={ref} id="pipeline" className="relative py-28 px-6 md:px-12 max-w-7xl mx-auto overflow-hidden">
+      <motion.div style={{ y: bgY }}
         className="absolute -right-8 top-1/2 -translate-y-1/2 pointer-events-none select-none"
-        aria-hidden="true"
-      >
-        <span
-          className="font-signal outlined-chalk opacity-[0.022]"
-          style={{ fontSize: '18vw', lineHeight: 1 }}
-        >
+        aria-hidden="true">
+        <span className="font-signal outlined-chalk opacity-[0.022]" style={{ fontSize: '18vw', lineHeight: 1 }}>
           PIPELINE
         </span>
       </motion.div>
 
-      {/* Header */}
-      <motion.div
-        className="mb-16"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.7, ease: E }}
-      >
+      {/* Header — slide from right */}
+      <motion.div className="mb-16"
+        initial={reduced ? { opacity: 0 } : { opacity: 0, x: 40 }}
+        whileInView={reduced ? { opacity: 1 } : { opacity: 1, x: 0 }}
+        viewport={{ once: false, amount: 0.1 }}
+        transition={{ type: 'spring', duration: 0.5, bounce: 0 }}>
         <span className="section-label">06. Pipeline</span>
-        <h2
-          className="font-signal leading-none outlined mt-2"
-          style={{ fontSize: 'clamp(3.5rem, 10vw, 9rem)' }}
-        >
+        <h2 className="font-signal leading-none outlined mt-2" style={{ fontSize: 'clamp(3.5rem, 10vw, 9rem)' }}>
           NEXT_OPS
         </h2>
         <p className="font-jetbrains text-[0.52rem] tracking-[0.25em] text-white/25 uppercase mt-3">
@@ -259,26 +190,17 @@ export default function Pipeline() {
         </p>
       </motion.div>
 
-      {/* Cards */}
       <div className="space-y-3">
-        {projects.map((p, i) => (
-          <Card key={p.id} proj={p} idx={i} />
-        ))}
+        {projects.map((p, i) => <Card key={p.id} proj={p} idx={i} />)}
       </div>
 
-      {/* Footer bar */}
-      <div
-        className="mt-10 pt-5 flex items-center gap-4"
-        style={{ borderTop: '1px solid rgba(var(--accent-rgb),0.1)' }}
-      >
+      <div className="mt-10 pt-5 flex items-center gap-4"
+           style={{ borderTop: '1px solid rgba(var(--accent-rgb),0.1)' }}>
         <span className="font-jetbrains text-[0.44rem] tracking-[0.22em] text-white/20 uppercase">
           END OF BUFFER ◼ {projects.length}/{projects.length} records
         </span>
         <div className="flex-1 h-px" style={{ background: 'rgba(var(--accent-rgb),0.07)' }} />
-        <span
-          className="font-rdna text-[0.42rem] tracking-[0.2em] uppercase"
-          style={{ color: 'rgba(var(--accent-rgb),0.28)' }}
-        >
+        <span className="font-rdna text-[0.42rem] tracking-[0.2em] uppercase" style={{ color: 'rgba(var(--accent-rgb),0.28)' }}>
           ✦ More incoming
         </span>
       </div>
