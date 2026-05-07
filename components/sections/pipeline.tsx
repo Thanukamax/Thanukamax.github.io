@@ -9,13 +9,14 @@ const projects = [
   {
     id: 'VN2APK_001',
     name: 'vn2apk',
-    state: 'PLANNING',
+    state: 'SHIPPED',
     priority: 'P0',
     sector: 'TOOLING',
-    mode: 'Architecture',
-    progress: 8,
+    mode: 'Released',
+    progress: 100,
+    url: 'https://github.com/Thanukamax/vn2apk/releases',
     stack: ['Tauri v2', 'Rust', 'React', 'TypeScript'],
-    desc: 'Desktop tool that converts PC visual novel and RPG game folders into signed Android APKs. Drag-and-drop UX, engine auto-detection, and a built-in toolchain manager. Architecture fully specced.',
+    desc: 'Desktop tool that converts PC visual novel and RPG game folders into signed Android APKs. Drag-and-drop UX, engine auto-detection, and a built-in toolchain manager.',
   },
   {
     id: 'VK_RENDERER_002',
@@ -25,6 +26,7 @@ const projects = [
     sector: 'GRAPHICS',
     mode: 'Learning',
     progress: 32,
+    url: 'https://github.com/Thanukamax',
     stack: ['C++', 'Vulkan', 'GLSL', 'VMA'],
     desc: 'Learning Vulkan by building a renderer from scratch — triangle to spinning cube to textured scene. Swap chain, render pass, descriptor sets, and a basic lighting model so far.',
   },
@@ -36,6 +38,7 @@ const projects = [
     sector: 'R&D',
     mode: 'Initializing',
     progress: 14,
+    url: 'https://github.com/Thanukamax',
     stack: ['Rust', 'WGPU', 'WGSL', 'Tauri v2'],
     desc: 'Local interactive playground for writing and live-previewing WGSL compute and fragment shaders. Tauri shell, real-time error feedback, and exportable shader snapshots.',
   },
@@ -64,18 +67,21 @@ const STATE_COLOR: Record<string, string> = {
   COMPILING:   'rgba(var(--accent-rgb), 0.9)',
   INITIALIZING:'rgba(255, 170, 0, 0.88)',
   OPTIMIZING:  'rgba(0, 255, 160, 0.88)',
+  SHIPPED:     'rgba(0, 255, 160, 0.9)',
 }
 const STATE_BORDER: Record<string, string> = {
   PLANNING:    'rgba(255, 210, 80, 0.28)',
   COMPILING:   'rgba(var(--accent-rgb), 0.28)',
   INITIALIZING:'rgba(255, 170, 0, 0.28)',
   OPTIMIZING:  'rgba(0, 255, 160, 0.28)',
+  SHIPPED:     'rgba(0, 255, 160, 0.28)',
 }
 const STATE_BG: Record<string, string> = {
   PLANNING:    'rgba(255, 210, 80, 0.05)',
   COMPILING:   'rgba(var(--accent-rgb), 0.05)',
   INITIALIZING:'rgba(255, 170, 0, 0.05)',
   OPTIMIZING:  'rgba(0, 255, 160, 0.05)',
+  SHIPPED:     'rgba(0, 255, 160, 0.06)',
 }
 
 function SegBar({ pct, active }: { pct: number; active: boolean }) {
@@ -106,94 +112,105 @@ function SegBar({ pct, active }: { pct: number; active: boolean }) {
   )
 }
 
-function Row({ proj, idx }: { proj: (typeof projects)[number]; idx: number }) {
+function Card({ proj, idx }: { proj: (typeof projects)[number]; idx: number }) {
   const ref = useRef<HTMLDivElement>(null)
   const active = useInView(ref, { once: true, margin: '-80px' })
 
-  return (
-    <>
-      {idx > 0 && (
-        <div
-          className="h-px"
+  const inner = (
+    <motion.div
+      ref={ref}
+      className="relative rounded-sm p-7 md:p-9 grid grid-cols-1 md:grid-cols-12 gap-y-5 gap-x-8 overflow-hidden"
+      style={{ border: '1px solid rgba(var(--accent-rgb),0.1)', background: 'var(--bg-surface)' }}
+      initial={{ opacity: 0, y: 18 }}
+      animate={active ? { opacity: 1, y: 0 } : {}}
+      whileHover={proj.url ? { borderColor: 'rgba(var(--accent-rgb),0.35)', background: 'rgba(var(--accent-rgb),0.04)' } : {}}
+      transition={{ duration: 0.7, ease: E }}
+    >
+      {/* Accent left bar */}
+      <div className="absolute left-0 top-7 bottom-7 w-[2px] rounded-r"
+           style={{ background: STATE_COLOR[proj.state] ?? 'var(--accent)' }} />
+
+      {/* ── ID + name + desc ── */}
+      <div className="md:col-span-5 pl-4">
+        <p className="font-jetbrains text-[0.44rem] tracking-[0.22em] text-white/22 mb-2 uppercase">
+          ▸ buffer_{String(idx + 1).padStart(2, '0')} · {proj.id}
+        </p>
+        <h3
+          className={`font-signal leading-none tracking-[0.03em] text-chalk${active ? ' crt-text' : ''}`}
+          style={{ fontSize: 'clamp(1.6rem, 3.2vw, 2.6rem)' }}
+        >
+          {proj.name}
+        </h3>
+        <p className="font-systems italic text-sm text-white/42 mt-2 leading-relaxed max-w-[28ch]">
+          {proj.desc}
+        </p>
+        <div className="flex flex-wrap gap-1.5 mt-3">
+          {proj.stack.map((s) => {
+            const c = STACK_COLOR[s] ?? '#ffffff'
+            return (
+              <span
+                key={s}
+                className="font-jetbrains text-[0.46rem] tracking-widest px-2 py-0.5 rounded-[2px]"
+                style={{ color: `${c}bb`, border: `1px solid ${c}22`, background: `${c}08` }}
+              >
+                {s}
+              </span>
+            )
+          })}
+        </div>
+        {proj.url && (
+          <p className="font-mono text-[0.48rem] tracking-widest uppercase mt-3"
+             style={{ color: 'rgba(var(--accent-rgb),0.45)' }}>
+            View ↗
+          </p>
+        )}
+      </div>
+
+      {/* ── Progress bar ── */}
+      <div className="md:col-span-4 flex flex-col justify-center gap-2">
+        <p className="font-jetbrains text-[0.44rem] tracking-[0.22em] text-white/28 uppercase mb-1">
+          Completion index
+        </p>
+        <SegBar pct={proj.progress} active={active} />
+      </div>
+
+      {/* ── Status codes ── */}
+      <div className="md:col-span-3 flex flex-col gap-1.5 justify-center items-start md:items-end">
+        <span
+          className="font-jetbrains text-[0.44rem] tracking-[0.18em] px-2 py-1 rounded-[2px]"
           style={{
-            background:
-              'linear-gradient(90deg, transparent, rgba(var(--accent-rgb),0.15) 20%, rgba(var(--accent-rgb),0.15) 80%, transparent)',
+            color: STATE_COLOR[proj.state],
+            border: `1px solid ${STATE_BORDER[proj.state]}`,
+            background: STATE_BG[proj.state],
           }}
-        />
-      )}
-      <motion.div
-        ref={ref}
-        className="py-9 grid grid-cols-1 md:grid-cols-12 gap-y-5 gap-x-8"
-        initial={{ opacity: 0, y: 18 }}
-        animate={active ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.7, ease: E }}
-      >
-        {/* ── ID + name + desc ── */}
-        <div className="md:col-span-5">
-          <p className="font-jetbrains text-[0.44rem] tracking-[0.22em] text-white/22 mb-2 uppercase">
-            ▸ buffer_{String(idx + 1).padStart(2, '0')} · {proj.id}
-          </p>
-          <h3
-            className={`font-signal leading-none tracking-[0.03em] text-chalk${active ? ' crt-text' : ''}`}
-            style={{ fontSize: 'clamp(1.6rem, 3.2vw, 2.6rem)' }}
-          >
-            {proj.name}
-          </h3>
-          <p className="font-systems italic text-sm text-white/42 mt-2 leading-relaxed max-w-[28ch]">
-            {proj.desc}
-          </p>
-          <div className="flex flex-wrap gap-1.5 mt-3">
-            {proj.stack.map((s) => {
-              const c = STACK_COLOR[s] ?? '#ffffff'
-              return (
-                <span
-                  key={s}
-                  className="font-jetbrains text-[0.46rem] tracking-widest px-2 py-0.5 rounded-[2px]"
-                  style={{ color: `${c}bb`, border: `1px solid ${c}22`, background: `${c}08` }}
-                >
-                  {s}
-                </span>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* ── Progress bar ── */}
-        <div className="md:col-span-4 flex flex-col justify-center gap-2">
-          <p className="font-jetbrains text-[0.44rem] tracking-[0.22em] text-white/28 uppercase mb-1">
-            Completion index
-          </p>
-          <SegBar pct={proj.progress} active={active} />
-        </div>
-
-        {/* ── Status codes ── */}
-        <div className="md:col-span-3 flex flex-col gap-1.5 justify-center items-start md:items-end">
+        >
+          [STATE: {proj.state}]
+        </span>
+        {([
+          `PRIORITY: ${proj.priority}`,
+          `SECTOR: ${proj.sector}`,
+          `MODE: ${proj.mode.toUpperCase()}`,
+        ] as const).map((tag) => (
           <span
-            className="font-jetbrains text-[0.44rem] tracking-[0.18em] px-2 py-1 rounded-[2px]"
-            style={{
-              color: STATE_COLOR[proj.state],
-              border: `1px solid ${STATE_BORDER[proj.state]}`,
-              background: STATE_BG[proj.state],
-            }}
+            key={tag}
+            className="font-jetbrains text-[0.44rem] tracking-[0.18em] px-2 py-1 rounded-[2px] text-white/30"
+            style={{ border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)' }}
           >
-            [STATE: {proj.state}]
+            [{tag}]
           </span>
-          {([
-            `PRIORITY: ${proj.priority}`,
-            `SECTOR: ${proj.sector}`,
-            `MODE: ${proj.mode.toUpperCase()}`,
-          ] as const).map((tag) => (
-            <span
-              key={tag}
-              className="font-jetbrains text-[0.44rem] tracking-[0.18em] px-2 py-1 rounded-[2px] text-white/30"
-              style={{ border: '1px solid rgba(255,255,255,0.07)', background: 'rgba(255,255,255,0.02)' }}
-            >
-              [{tag}]
-            </span>
-          ))}
-        </div>
-      </motion.div>
-    </>
+        ))}
+      </div>
+    </motion.div>
+  )
+
+  return (
+    <div className="mb-4">
+      {proj.url ? (
+        <a href={proj.url} target="_blank" rel="noopener noreferrer" className="block" style={{ cursor: 'pointer' }}>
+          {inner}
+        </a>
+      ) : inner}
+    </div>
   )
 }
 
@@ -242,10 +259,10 @@ export default function Pipeline() {
         </p>
       </motion.div>
 
-      {/* Rows */}
-      <div>
+      {/* Cards */}
+      <div className="space-y-3">
         {projects.map((p, i) => (
-          <Row key={p.id} proj={p} idx={i} />
+          <Card key={p.id} proj={p} idx={i} />
         ))}
       </div>
 

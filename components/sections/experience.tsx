@@ -17,7 +17,7 @@ const entries = [
     company:  'BitByBit',
     role:     'Platform Engineer & Marketing',
     type:     'Contract · Part-time · Remote',
-    url:      'https://bitbybit.dev',
+    url:      'https://bbyb.dev',
     period:   '2024 – Present',
     location: 'Sri Lanka / Remote',
     summary:  'Working across engineering and marketing at BitByBit — a platform where developers create, share, and play custom game content. Built and maintained CLI tooling for the platform, contributed to a CCTV ingest and processing pipeline, and handled marketing operations to drive platform growth and creator engagement.',
@@ -84,8 +84,11 @@ function Entry({
       {/* ── Entry card ── */}
       <motion.div custom={1} variants={fadeUp}
         className="md:col-span-8 pl-0 md:pl-14 pb-12">
-        <div className="rounded-sm p-7 md:p-9 relative overflow-hidden"
-             style={{ border: '1px solid var(--border)', background: 'var(--bg-surface)' }}>
+        <a href={entry.url} target="_blank" rel="noopener noreferrer" className="block group">
+        <motion.div className="rounded-sm p-7 md:p-9 relative overflow-hidden"
+             style={{ border: '1px solid var(--border)', background: 'var(--bg-surface)' }}
+             whileHover={{ borderColor: 'rgba(var(--accent-rgb),0.4)', background: 'rgba(var(--accent-rgb),0.04)' }}
+             transition={{ duration: 0.25 }}>
           {/* Accent left bar */}
           <div className="absolute left-0 top-7 bottom-7 w-[2px] rounded-r"
                style={{ background: 'var(--accent)', transition: 'background 0.5s ease' }} />
@@ -150,7 +153,8 @@ function Entry({
               ))}
             </div>
           </div>
-        </div>
+        </motion.div>
+        </a>
       </motion.div>
     </motion.div>
   )
