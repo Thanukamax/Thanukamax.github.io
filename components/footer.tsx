@@ -96,23 +96,22 @@ export default function Footer() {
             </motion.h2>
           </div>
 
-          {/* Konami unlock — right-aligned vertical stack filling the empty
-              space next to THANUKA.DEV. Doesn't extend footer height. */}
+          {/* Konami unlock — vertical stack in the empty right space beside
+              THANUKA.DEV. Sized so all 10 characters fit within the giant
+              name's vertical bounds. Visible only at xl+ where the math works;
+              smaller viewports get the inline horizontal version below. */}
           <button
             type="button"
             onClick={() => window.dispatchEvent(new Event('konami-open'))}
             aria-label="Open credits — Things made by hand"
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 flex flex-col items-center gap-1.5 group/konami active:scale-[0.98] transition-transform duration-150"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden xl:flex flex-col items-center gap-[2px] group/konami active:scale-[0.98] transition-transform duration-150"
           >
-            <span className="font-rdna text-[0.5rem] tracking-[0.32em] uppercase text-white/35 group-hover/konami:text-white/65 transition-colors duration-150 mb-1">
-              Konami
-            </span>
             {Array.from('↑↑↓↓←→←→BA').map((ch, i) => (
               <span
                 key={i}
                 className="font-mono leading-none group-hover/konami:text-white transition-colors duration-150"
                 style={{
-                  fontSize: 'clamp(0.95rem, 1.3vw, 1.2rem)',
+                  fontSize: 'clamp(0.65rem, 0.8vw, 0.85rem)',
                   color: 'rgba(var(--accent-rgb), 0.6)',
                   letterSpacing: '0.08em',
                   fontVariantNumeric: 'tabular-nums',
@@ -168,6 +167,17 @@ export default function Footer() {
               aria-label="How was this built"
             >
               Silicon Grimoire v0.1 · Next.js · Framer Motion · Lenis
+            </button>
+            {/* Inline horizontal Konami fallback — visible when the vertical
+                stack is hidden (i.e. below xl). Reachable on every viewport. */}
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event('konami-open'))}
+              className="xl:hidden active:scale-[0.95] hover:text-white transition-all duration-150"
+              style={{ color: 'rgba(var(--accent-rgb), 0.4)' }}
+              aria-label="Open credits — Things made by hand"
+            >
+              ↑↑↓↓←→←→BA
             </button>
             <button
               type="button"
