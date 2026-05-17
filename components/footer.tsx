@@ -63,7 +63,9 @@ export default function Footer() {
       {/* ── Body ── */}
       <div className="px-6 md:px-12 pt-16 pb-10 max-w-[1600px] mx-auto">
 
-        {/* Giant name — hover reveals lava fill from below */}
+        {/* Giant name — hover reveals lava fill from below.
+            Konami stack lives on the right, filling the empty space next to
+            the name so the footer doesn't get any taller. */}
         <div
           className="relative overflow-hidden mb-12 group"
           style={{ lineHeight: '0.88' }}
@@ -93,6 +95,33 @@ export default function Footer() {
               THANUKA.DEV
             </motion.h2>
           </div>
+
+          {/* Konami unlock — right-aligned vertical stack filling the empty
+              space next to THANUKA.DEV. Doesn't extend footer height. */}
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event('konami-open'))}
+            aria-label="Open credits — Things made by hand"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 flex flex-col items-center gap-1.5 group/konami active:scale-[0.98] transition-transform duration-150"
+          >
+            <span className="font-rdna text-[0.5rem] tracking-[0.32em] uppercase text-white/35 group-hover/konami:text-white/65 transition-colors duration-150 mb-1">
+              Konami
+            </span>
+            {Array.from('↑↑↓↓←→←→BA').map((ch, i) => (
+              <span
+                key={i}
+                className="font-mono leading-none group-hover/konami:text-white transition-colors duration-150"
+                style={{
+                  fontSize: 'clamp(0.95rem, 1.3vw, 1.2rem)',
+                  color: 'rgba(var(--accent-rgb), 0.6)',
+                  letterSpacing: '0.08em',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {ch}
+              </span>
+            ))}
+          </button>
         </div>
 
         {/* ── Links + Receipt row ── */}
@@ -123,35 +152,6 @@ export default function Footer() {
 
           {/* Right column: the Receipt — a memento of the visit */}
           <Receipt />
-        </div>
-
-        {/* ── Konami unlock — full-width row, right-aligned vertical character stack.
-              Mobile gets this as the canonical way to trigger the credits dialog. */}
-        <div className="w-full flex justify-end mt-10">
-          <button
-            type="button"
-            onClick={() => window.dispatchEvent(new Event('konami-open'))}
-            aria-label="Open credits — Things made by hand"
-            className="flex flex-col items-center gap-1.5 group active:scale-[0.98] transition-transform duration-150 px-2"
-          >
-            <span className="font-rdna text-[0.5rem] tracking-[0.32em] uppercase text-white/35 group-hover:text-white/60 transition-colors duration-150 mb-1">
-              Konami ↓
-            </span>
-            {Array.from('↑↑↓↓←→←→BA').map((ch, i) => (
-              <span
-                key={i}
-                className="font-mono leading-none group-hover:text-white transition-colors duration-150"
-                style={{
-                  fontSize: 'clamp(1rem, 1.4vw, 1.25rem)',
-                  color: 'rgba(var(--accent-rgb), 0.6)',
-                  letterSpacing: '0.08em',
-                  fontVariantNumeric: 'tabular-nums',
-                }}
-              >
-                {ch}
-              </span>
-            ))}
-          </button>
         </div>
 
         {/* ── Copyright bar ── */}
