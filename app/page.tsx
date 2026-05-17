@@ -9,15 +9,14 @@ import Nav       from '@/components/nav'
 import Preloader from '@/components/preloader'
 import Footer    from '@/components/footer'
 import Hero      from '@/components/sections/hero'
-import About     from '@/components/sections/about'
 import Projects  from '@/components/sections/projects'
-import Systems   from '@/components/sections/systems'
 
 /* Below fold — lazy chunks, load after hydration */
-const Pipeline     = dynamic(() => import('@/components/sections/pipeline'))
-const Interconnect = dynamic(() => import('@/components/sections/interconnect'))
-const Experience   = dynamic(() => import('@/components/sections/experience'))
-const Contact      = dynamic(() => import('@/components/sections/contact'))
+const Pipeline = dynamic(() => import('@/components/sections/pipeline'))
+const Systems  = dynamic(() => import('@/components/sections/systems'))
+const Notes    = dynamic(() => import('@/components/sections/notes'))
+const About    = dynamic(() => import('@/components/sections/about'))
+const Contact  = dynamic(() => import('@/components/sections/contact'))
 
 export default function Home() {
   const [loaded, setLoaded] = useState(false)
@@ -31,14 +30,13 @@ export default function Home() {
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
         <Nav />
-        <main>
+        <main id="main">
           <Hero />
-          <About />
           <Projects />
           <Pipeline />
           <Systems />
-          <Interconnect />
-          <Experience />
+          <Notes />
+          <About />
           <Contact />
         </main>
         <Footer />

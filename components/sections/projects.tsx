@@ -1,14 +1,35 @@
 'use client'
 
-import { useRef } from 'react'
-import { motion, useScroll, useTransform, useInView, useReducedMotion } from 'framer-motion'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { motion, AnimatePresence, useInView, useReducedMotion, useScroll, useTransform } from 'framer-motion'
+import dynamic from 'next/dynamic'
 
-/* ─── Decorative image outlines (processed via canny edge detection) ─── */
+/* Demos are code-split AND conditionally mounted — only ONE is in the DOM
+   at a time, only while its card is the dominant one in view. */
+const CrowDemo    = dynamic(() => import('@/components/demos/crow'),    { ssr: false })
+const DonghuaDemo = dynamic(() => import('@/components/demos/donghua'), { ssr: false })
+const Vn2apkDemo  = dynamic(() => import('@/components/demos/vn2apk'),  { ssr: false })
 
+type Track = 'systems' | 'graphics' | 'ai'
+
+const THEME_TRACK: Record<string, Track> = {
+  '':     'systems',
+  'udna': 'graphics',
+  'cuda': 'ai',
+}
+
+const TRACK_LABEL: Record<Track, string> = {
+  systems:  'systems',
+  graphics: 'graphics',
+  ai:       'AI · compute',
+}
+
+/* Canny-edge outlines — ambient backdrop layer. Lower opacity now that
+   the live demo sits on top as the foreground artifact. */
 const OUTLINES: Record<string, { src: string; opacity: number }> = {
-  '001': { src: '/outlines/crow.png',   opacity: 0.75 },
-  '002': { src: '/outlines/babata.png', opacity: 0.80 },
-  '003': { src: '/outlines/renpy.png',  opacity: 0.75 },
+  '001': { src: '/outlines/crow.png',   opacity: 0.32 },
+  '002': { src: '/outlines/babata.png', opacity: 0.38 },
+  '003': { src: '/outlines/renpy.png',  opacity: 0.32 },
 }
 
 interface Project {
@@ -16,28 +37,25 @@ interface Project {
   name: string
   description: string
   accent: string
-  tags: { text: string; font: string }[]
+  tracks: Track[]
+  tags: string[]
   badge: string | null
   href: string
-  visual: string
+  Demo: React.ComponentType
 }
 
-const projects: Project[] = [
+const PROJECTS: Project[] = [
   {
     id: '001',
     name: 'CROW',
     description:
       'Unified customer interaction intelligence platform — 6-person SDGP team, two live clients, Cloudflare microservices, real-time CCTV ingest pipeline, and 3K+ commits in production.',
     accent: '#e53e3e',
-    tags: [
-      { text: 'TypeScript', font: 'font-mono' },
-      { text: 'Cloudflare Workers', font: 'font-mono' },
-      { text: 'Computer Vision', font: 'font-mono' },
-      { text: 'Workers AI', font: 'font-mono' },
-    ],
+    tracks: ['systems', 'ai'],
+    tags: ['TypeScript', 'Cloudflare Workers', 'Computer Vision', 'Workers AI'],
     badge: 'SDGP',
     href: 'https://github.com/Thanukamax',
-    visual: 'radial-gradient(ellipse 55% 55% at 65% 45%, rgba(229,62,62,0.20) 0%, transparent 70%), linear-gradient(135deg, rgba(139,92,246,0.10) 0%, transparent 60%)',
+    Demo: CrowDemo,
   },
   {
     id: '002',
@@ -45,15 +63,11 @@ const projects: Project[] = [
     description:
       'Terminal streaming client for Chinese animation — search, pick, and play directly from the CLI. MPV-backed, cached, with preloading so video starts in under 15 seconds on most mirrors.',
     accent: '#d4a017',
-    tags: [
-      { text: 'Python', font: 'font-rust' },
-      { text: 'Scraping', font: 'font-mono' },
-      { text: 'Streaming', font: 'font-mono' },
-      { text: 'MPV', font: 'font-mono' },
-    ],
+    tracks: ['graphics', 'systems'],
+    tags: ['Python', 'Scraping', 'Streaming', 'MPV'],
     badge: null,
     href: 'https://github.com/Thanukamax',
-    visual: 'radial-gradient(ellipse 55% 55% at 65% 45%, rgba(212,160,23,0.20) 0%, transparent 70%), linear-gradient(135deg, rgba(34,197,94,0.10) 0%, transparent 60%)',
+    Demo: DonghuaDemo,
   },
   {
     id: '003',
@@ -61,30 +75,51 @@ const projects: Project[] = [
     description:
       'Tauri v2 desktop app that packages PC visual novel and RPG game folders into signed Android APKs — drag-and-drop workflow, Rust process orchestration, React UI, one-click deploy.',
     accent: '#3b82f6',
-    tags: [
-      { text: 'Rust', font: 'font-rust' },
-      { text: 'Tauri v2', font: 'font-mono' },
-      { text: 'React', font: 'font-mono' },
-      { text: 'Android SDK', font: 'font-mono' },
-    ],
+    tracks: ['graphics', 'systems', 'ai'],
+    tags: ['Rust', 'Tauri v2', 'React', 'Android SDK'],
     badge: 'v1.0.0',
     href: 'https://github.com/Thanukamax/vn2apk/releases',
-    visual: 'radial-gradient(ellipse 55% 55% at 65% 45%, rgba(59,130,246,0.20) 0%, transparent 70%), linear-gradient(135deg, rgba(212,160,23,0.10) 0%, transparent 60%)',
+    Demo: Vn2apkDemo,
   },
 ]
 
-const N = projects.length
+function sortByTrack(list: Project[], track: Track): Project[] {
+  return [...list].sort((a, b) => {
+    const ai = a.tracks.indexOf(track); const bi = b.tracks.indexOf(track)
+    const ap = ai === -1 ? 99 : ai
+    const bp = bi === -1 ? 99 : bi
+    return ap - bp
+  })
+}
 
 function ProjectSlide({
-  project, index, sectionInView, reduced,
+  project, index, total, sectionInView, reduced, currentTrack,
 }: {
-  project: Project; index: number; sectionInView: boolean; reduced: boolean | null
+  project: Project
+  index: number
+  total: number
+  sectionInView: boolean
+  reduced: boolean | null
+  currentTrack: Track
 }) {
+  const cardRef = useRef<HTMLDivElement>(null)
+  /* Tight amount so demo only mounts when card dominates the viewport.
+     Prevents 2 demos running simultaneously while transitioning between slides. */
+  const cardCenter = useInView(cardRef, { amount: 0.55 })
+  const demoMounted = sectionInView && cardCenter
+
+  const isPrimaryMatch = project.tracks[0] === currentTrack
+  const isAnyMatch     = project.tracks.includes(currentTrack)
+  const outline        = OUTLINES[project.id]
+  const Demo           = project.Demo
+
   return (
-    <div className="relative w-screen h-screen flex-shrink-0 overflow-hidden flex items-end">
+    <div ref={cardRef} className="relative w-screen h-screen flex-shrink-0 overflow-hidden">
       {/* Background visual */}
       <div className="absolute inset-0" style={{ background: '#030304' }}>
-        <div className="absolute inset-0" style={{ background: project.visual }} />
+        <div className="absolute inset-0" style={{
+          background: `radial-gradient(ellipse 55% 55% at 65% 45%, ${project.accent}33 0%, transparent 70%), linear-gradient(135deg, rgba(139,92,246,0.08) 0%, transparent 60%)`
+        }} />
         {/* Accent grid */}
         <div className="absolute inset-0 opacity-[0.04]"
           style={{
@@ -96,36 +131,68 @@ function ProjectSlide({
 
       {/* Big watermark number */}
       <span
+        aria-hidden="true"
         className="absolute right-0 bottom-[-0.1em] font-signal leading-none select-none pointer-events-none"
         style={{
           fontSize: 'clamp(18rem, 35vw, 38rem)',
           color: project.accent,
-          opacity: 0.04,
+          opacity: 0.05,
+          fontVariantNumeric: 'tabular-nums',
         }}
-        aria-hidden="true"
       >
         {index + 1}
       </span>
 
-      {/* Decorative image outline */}
-      {OUTLINES[project.id] && (
+      {/* Canny-edge outline — ambient backdrop, lives behind the demo. */}
+      {outline && (
         <div
           className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
           aria-hidden="true"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={OUTLINES[project.id].src}
+            src={outline.src}
             alt=""
+            loading="lazy"
+            decoding="async"
             className="h-[85vh] w-auto max-w-[85%] object-contain"
             style={{
               filter: 'invert(1)',
               mixBlendMode: 'screen',
-              opacity: OUTLINES[project.id].opacity,
+              opacity: outline.opacity,
             }}
           />
         </div>
       )}
+
+      {/* Live demo — foreground panel, conditionally mounted.
+          Only exists in the DOM while this card dominates the viewport. */}
+      <div
+        className="absolute pointer-events-none select-none
+                   top-[7%] left-[5%] right-[5%] h-[34%]
+                   md:top-1/2 md:right-[5%] md:left-auto md:-translate-y-1/2
+                   md:w-[42%] md:h-[54%]"
+        aria-hidden="true"
+      >
+        <AnimatePresence mode="wait">
+          {demoMounted && (
+            <motion.div
+              key="demo"
+              initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.97, filter: 'blur(6px)' }}
+              animate={reduced ? { opacity: 1 } : { opacity: 1, scale: 1,    filter: 'blur(0px)' }}
+              exit={reduced    ? { opacity: 0 } : { opacity: 0, scale: 0.98, filter: 'blur(4px)' }}
+              transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+              className="relative w-full h-full rounded-sm overflow-hidden"
+              style={{
+                border: `1px solid ${project.accent}33`,
+                boxShadow: `0 20px 60px rgba(0,0,0,0.5), 0 0 80px ${project.accent}1a`,
+              }}
+            >
+              <Demo />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* Vertical accent rule */}
       <div className="absolute top-0 bottom-0 left-0 w-px"
@@ -136,96 +203,172 @@ function ProjectSlide({
         href={project.href}
         target="_blank"
         rel="noopener noreferrer"
-        className="relative z-10 pb-12 md:pb-20 px-5 sm:px-10 md:px-20 max-w-4xl block group"
-        initial={reduced ? { opacity: 0 } : { opacity: 0, x: 40 }}
+        className="absolute bottom-0 left-0 pb-12 md:pb-20 px-5 sm:px-10 md:px-20 max-w-2xl block group active:scale-[0.99] transition-transform duration-150"
+        initial={reduced ? { opacity: 0 } : { opacity: 0, x: 40, filter: 'blur(4px)' }}
         animate={sectionInView
-          ? (reduced ? { opacity: 1 } : { opacity: 1, x: 0 })
+          ? (reduced ? { opacity: 1 } : { opacity: 1, x: 0, filter: 'blur(0px)' })
           : {}}
         transition={{ type: 'spring', duration: 0.55, bounce: 0, delay: index * 0.12 + 0.15 }}
       >
-        {/* Module ID + badge */}
-        <div className="flex items-center gap-3 mb-5">
-          <span className="font-rdna text-[0.55rem] tracking-[0.32em] uppercase"
+        {/* Project id + badge + match indicator */}
+        <div className="flex items-center gap-3 mb-5 flex-wrap">
+          <span className="font-rdna text-[0.6rem] tracking-[0.32em] uppercase"
                 style={{ color: project.accent }}>
-            MODULE {project.id}
+            Project {project.id}
           </span>
           {project.badge && (
-            <span className="font-rdna text-[0.5rem] tracking-widest uppercase px-2 py-0.5 rounded-sm border"
-                  style={{ color: project.accent, borderColor: `${project.accent}40`, background: `${project.accent}0f` }}>
+            <span className="font-rdna text-[0.55rem] tracking-widest uppercase px-2 py-0.5 rounded-sm border"
+                  style={{ color: project.accent, borderColor: `${project.accent}55`, background: `${project.accent}14` }}>
               {project.badge}
             </span>
           )}
+          <AnimatePresence>
+            {isAnyMatch && (
+              <motion.span
+                key={`match-${currentTrack}`}
+                initial={{ opacity: 0, y: -2, filter: 'blur(2px)' }}
+                animate={{ opacity: 1, y: 0,  filter: 'blur(0)' }}
+                exit={{    opacity: 0, y: 2,  filter: 'blur(2px)' }}
+                transition={{ duration: 0.25 }}
+                className="font-jetbrains text-[0.55rem] tracking-[0.22em] uppercase px-2 py-0.5 rounded-sm"
+                style={{
+                  color: 'var(--accent)',
+                  border: '1px solid rgba(var(--accent-rgb),0.4)',
+                  background: 'rgba(var(--accent-rgb),0.08)',
+                }}
+              >
+                {isPrimaryMatch ? '★ ' : '· '}{TRACK_LABEL[currentTrack]}
+              </motion.span>
+            )}
+          </AnimatePresence>
         </div>
 
-        {/* Project name */}
         <div className="overflow-hidden mb-5">
           <h2 className="font-signal leading-none tracking-[0.04em]"
-              style={{ fontSize: 'clamp(4rem, 9vw, 10rem)', color: project.accent }}>
+              style={{ fontSize: 'clamp(3rem, 8vw, 8rem)', color: project.accent }}>
             {project.name}
           </h2>
         </div>
 
-        {/* Description */}
-        <p className="font-body text-white/55 leading-relaxed mb-7 max-w-2xl"
+        <p className="font-body text-white/72 leading-relaxed mb-7 max-w-xl"
            style={{ fontSize: 'clamp(0.85rem, 1.2vw, 1rem)' }}>
           {project.description}
         </p>
 
-        {/* Tags */}
-        <div className="flex flex-wrap gap-2 mb-8">
+        <div className="flex flex-wrap gap-2 mb-7">
           {project.tags.map(tag => (
-            <span key={tag.text}
-                  className={`tech-chip ${tag.font}`}
-                  style={{ borderColor: `${project.accent}22`, color: `${project.accent}90` }}>
-              {tag.text}
+            <span key={tag}
+                  className="tech-chip"
+                  style={{ borderColor: `${project.accent}33`, color: `${project.accent}cc` }}>
+              {tag}
             </span>
           ))}
         </div>
 
-        {/* CTA */}
-        <span className="inline-flex items-center gap-2 font-mono text-[0.65rem] tracking-[0.18em] uppercase"
+        <span className="inline-flex items-center gap-2 font-mono text-[0.68rem] tracking-[0.18em] uppercase"
               style={{ color: project.accent }}>
-          View Project
-          <span className="transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-0.5">↗</span>
+          View project
+          <span className="transition-transform duration-150 group-hover:translate-x-1 group-hover:-translate-y-0.5">↗</span>
         </span>
       </motion.a>
 
-      {/* Slide counter — top right */}
-      <div className="absolute top-8 right-10 font-mono text-[0.58rem] tracking-widest text-white/20">
-        {String(index + 1).padStart(2, '0')} / {String(N).padStart(2, '0')}
+      <div className="absolute top-8 right-10 font-mono text-[0.62rem] tracking-widest text-white/45"
+           style={{ fontVariantNumeric: 'tabular-nums' }}>
+        {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
       </div>
     </div>
   )
 }
 
 export default function Projects() {
-  const reduced      = useReducedMotion()
-  const containerRef = useRef<HTMLDivElement>(null)
+  const reduced       = useReducedMotion()
+  const containerRef  = useRef<HTMLDivElement>(null)
   const sectionInView = useInView(containerRef, { once: false, amount: 0.05 })
+
+  const [theme, setTheme] = useState<string>('')
+  useEffect(() => {
+    setTheme(document.documentElement.dataset.theme ?? '')
+    const obs = new MutationObserver(() => {
+      setTheme(document.documentElement.dataset.theme ?? '')
+    })
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+    return () => obs.disconnect()
+  }, [])
+
+  const currentTrack = THEME_TRACK[theme] ?? 'systems'
+  const sortedProjects = useMemo(
+    () => sortByTrack(PROJECTS, currentTrack),
+    [currentTrack]
+  )
+  const N = sortedProjects.length
+
   const { scrollYProgress } = useScroll({ target: containerRef })
   const x = useTransform(scrollYProgress, [0, 1], ['0vw', `${-(N - 1) * 100}vw`])
+
+  /* Arrow-key navigation between slides while the section is in view */
+  useEffect(() => {
+    if (!sectionInView) return
+    const handler = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) return
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+      if (!containerRef.current) return
+      e.preventDefault()
+      const containerTop = containerRef.current.offsetTop
+      const slideH = window.innerHeight
+      const current = Math.round((window.scrollY - containerTop) / slideH)
+      const dir = e.key === 'ArrowRight' ? 1 : -1
+      const next = Math.max(0, Math.min(N - 1, current + dir))
+      window.scrollTo({ top: containerTop + next * slideH, behavior: 'smooth' })
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [sectionInView, N])
 
   return (
     <section ref={containerRef} id="projects" style={{ height: `${N * 100}vh` }}>
       <div className="sticky top-0 h-screen overflow-hidden">
-        {/* Section label — clip-path wipe from left */}
         <motion.div
           className="absolute top-8 left-6 md:left-12 z-20"
-          initial={reduced ? { opacity: 0 } : { opacity: 0, clipPath: 'inset(0 100% 0 0)' }}
-          whileInView={reduced ? { opacity: 1 } : { opacity: 1, clipPath: 'inset(0 0% 0 0)' }}
+          initial={reduced ? { opacity: 0 } : { opacity: 0, clipPath: 'inset(0 100% 0 0)', filter: 'blur(4px)' }}
+          whileInView={reduced ? { opacity: 1 } : { opacity: 1, clipPath: 'inset(0 0% 0 0)', filter: 'blur(0px)' }}
           viewport={{ once: false, amount: 0.1 }}
           transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
         >
-          <span className="section-label">02. Build Archive</span>
+          <span className="section-label">Work · sorted by {TRACK_LABEL[currentTrack]}</span>
         </motion.div>
 
-        {/* Horizontal strip */}
+        {/* Arrow-key hint — only visible when section is the active one */}
+        <AnimatePresence>
+          {sectionInView && (
+            <motion.div
+              className="absolute bottom-6 right-8 z-20 hidden md:flex items-center gap-2 font-mono text-[0.55rem] tracking-[0.22em] uppercase text-white/45 pointer-events-none"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{    opacity: 0, y: 4 }}
+              transition={{ duration: 0.3 }}
+            >
+              <kbd className="px-1.5 py-0.5 rounded-sm border" style={{ borderColor: 'rgba(var(--accent-rgb),0.35)' }}>←</kbd>
+              <kbd className="px-1.5 py-0.5 rounded-sm border" style={{ borderColor: 'rgba(var(--accent-rgb),0.35)' }}>→</kbd>
+              <span>navigate</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <motion.div
           className="h-scroll-track"
           style={{ x, width: `${N * 100}vw` }}
         >
-          {projects.map((p, i) => (
-            <ProjectSlide key={p.id} project={p} index={i} sectionInView={sectionInView} reduced={reduced} />
+          {sortedProjects.map((p, i) => (
+            <ProjectSlide
+              key={p.id}
+              project={p}
+              index={i}
+              total={N}
+              sectionInView={sectionInView}
+              reduced={reduced}
+              currentTrack={currentTrack}
+            />
           ))}
         </motion.div>
       </div>

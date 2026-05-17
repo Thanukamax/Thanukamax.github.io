@@ -11,29 +11,46 @@
   --lava-bubble:   #ff3355;
 
   --bg:           #030304;
-  --bg-surface:   rgba(255, 255, 255, 0.028);
-  --bg-lift:      rgba(255, 255, 255, 0.055);
-  --border:       rgba(255, 255, 255, 0.07);
-  --border-accent:rgba(0, 212, 255, 0.2);
+  --bg-surface:   rgba(255, 255, 255, 0.035);
+  --bg-lift:      rgba(255, 255, 255, 0.07);
+  --border:       rgba(255, 255, 255, 0.09);
+  --border-accent:rgba(0, 212, 255, 0.22);
 
   --chalk:        #e8e8f0;
-  --muted:        rgba(232, 232, 240, 0.45);
-  --ghost:        rgba(232, 232, 240, 0.14);
+  --muted:        rgba(232, 232, 240, 0.62); /* lifted from 0.45 for AA */
+  --ghost:        rgba(232, 232, 240, 0.28); /* lifted from 0.14 */
 
-  --ease-expo:    cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-expo: cubic-bezier(0.87, 0, 0.13, 1);
+  /* Motion tokens */
+  --ease-expo:       cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-expo:    cubic-bezier(0.87, 0, 0.13, 1);
+  --ease-quart-out:  cubic-bezier(0.25, 1, 0.5, 1);
+
+  --dur-instant: 100ms;
+  --dur-link:    150ms;
+  --dur-card:    250ms;
+  --dur-section: 400ms;
+  --dur-theatre: 800ms;
+
+  /* Theme transition — narrowed to colour-only (was 7 properties at 500ms) */
   --transition-theme:
-    color 0.5s ease, background-color 0.5s ease,
-    border-color 0.5s ease, fill 0.5s ease,
-    stroke 0.5s ease, box-shadow 0.5s ease, filter 0.5s ease;
+    color 250ms var(--ease-quart-out),
+    background-color 250ms var(--ease-quart-out),
+    border-color 250ms var(--ease-quart-out);
+
+  /* Z-index scale (was 9997 / 9998 / 99998 sprawl) */
+  --z-base:      1;
+  --z-fx:        5;
+  --z-nav:       50;
+  --z-overlay:   90;
+  --z-preloader: 100;
 }
 
 [data-theme="udna"] {
-  --accent:        #ff2244;
-  --accent-rgb:    255, 34, 68;
-  --accent-dim:    rgba(255, 34, 68, 0.1);
-  --accent-glow:   0 0 40px rgba(255,34,68,0.28), 0 0 100px rgba(255,34,68,0.09);
-  --border-accent: rgba(255, 34, 68, 0.25);
+  --accent:        #ff3d52;             /* lifted from #ff2244 → meets AA against #000 button text */
+  --accent-rgb:    255, 61, 82;
+  --accent-dim:    rgba(255, 61, 82, 0.1);
+  --accent-glow:   0 0 40px rgba(255,61,82,0.28), 0 0 100px rgba(255,61,82,0.09);
+  --border-accent: rgba(255, 61, 82, 0.25);
   --lava-bubble:   #00e87a;
 }
 
@@ -66,6 +83,50 @@ body {
 
 ::selection { background: var(--accent); color: #000; }
 
+/* ── Universal focus ring (was missing site-wide) ────────────── */
+*:focus { outline: none; }
+
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+  transition: outline-color 250ms var(--ease-quart-out);
+}
+
+/* ── Skip-to-content (keyboard a11y) ─────────────────────────── */
+.skip-link {
+  position: fixed;
+  top: 0; left: 0;
+  padding: 0.75rem 1.25rem;
+  background: var(--accent);
+  color: #000;
+  font-family: var(--font-bebas), sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  z-index: 1000;
+  transform: translateY(-120%);
+  transition: transform 200ms var(--ease-quart-out);
+}
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* ── Reduced motion: kill decorative loops, snap transitions ── */
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body::after,
+  .lava-drive,
+  .text-shimmer,
+  .crt-text {
+    animation: none !important;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* ── Scrollbar ───────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
@@ -82,7 +143,7 @@ body::after {
   inset: 0;
   width: 100%; height: 100%;
   pointer-events: none;
-  z-index: 9998;
+  z-index: var(--z-fx);
   opacity: 0.038;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 160px 160px;
@@ -102,12 +163,12 @@ body::after {
   90%    { transform:translate(-6px,6px) }
 }
 
-/* ── Scanlines ───────────────────────────────────────────────────── */
+/* ── Scanlines (still used by preloader) ─────────────────────── */
 .scanlines {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 9997;
+  z-index: var(--z-fx);
   background: repeating-linear-gradient(
     to bottom,
     transparent 0px, transparent 3px,
@@ -115,19 +176,9 @@ body::after {
   );
 }
 
-/* ── Typography map utilities ────────────────────────────────────── */
-.font-signal    { font-family: var(--font-bebas);      letter-spacing: 0.04em; }
-.font-editorial { font-family: var(--font-playfair); }
-.font-systems   { font-family: var(--font-ibm-serif); }
-.font-gpu       { font-family: var(--font-jetbrains); }
-.font-code-cpp  { font-family: var(--font-fira); }
-.font-rdna      { font-family: var(--font-orbitron); }
-.font-craft     { font-family: var(--font-audiowide); }
-.font-abyssal   { font-family: var(--font-fraunces);   font-style: italic; }
-.font-rust      { font-family: var(--font-courier); }
-.font-ghidra    { font-family: var(--font-vt323); }
-.font-blender   { font-family: var(--font-space); }
-.font-physics   { font-family: var(--font-bodoni); }
+/* ── Typography decoration (font-family now via Tailwind config) ── */
+.font-signal    { letter-spacing: 0.04em; }
+.font-abyssal   { font-style: italic; }
 
 /* ── Accent utilities ────────────────────────────────────────────── */
 .text-accent   { color: var(--accent);            transition: var(--transition-theme); }
@@ -138,7 +189,7 @@ body::after {
 .outlined {
   -webkit-text-stroke: 1px var(--accent);
   -webkit-text-fill-color: transparent;
-  transition: -webkit-text-stroke-color 0.5s ease;
+  transition: -webkit-text-stroke-color 250ms var(--ease-quart-out);
 }
 .outlined-chalk {
   -webkit-text-stroke: 1px rgba(232,232,240,0.35);
@@ -158,7 +209,7 @@ body::after {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: shimmer 3s linear infinite;
-  transition: background 0.5s ease;
+  transition: background 250ms var(--ease-quart-out);
 }
 @keyframes shimmer {
   from { background-position: 0% center; }
@@ -206,8 +257,8 @@ body::after {
 
 /* ── Section label ───────────────────────────────────────────────── */
 .section-label {
-  font-family: var(--font-orbitron);
-  font-size: 0.58rem;
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 0.62rem;
   font-weight: 500;
   letter-spacing: 0.28em;
   text-transform: uppercase;
@@ -222,7 +273,7 @@ body::after {
   padding: 0.18rem 0.6rem;
   border-radius: 3px;
   border: 1px solid var(--border);
-  font-family: var(--font-mono);
+  font-family: var(--font-jetbrains), monospace;
   font-size: 0.62rem;
   color: var(--muted);
   background: var(--bg-surface);
@@ -230,7 +281,7 @@ body::after {
   transition: var(--transition-theme);
 }
 
-/* ── CRT flicker entrance ────────────────────────────────────────── */
+/* ── CRT flicker entrance (preserved for project name reveal) ── */
 @keyframes crt-flicker {
   0%   { opacity: 0.25; filter: brightness(1.4); }
   6%   { opacity: 1;    filter: brightness(0.9); }
@@ -244,8 +295,10 @@ body::after {
   animation: crt-flicker 0.65s ease-out forwards;
 }
 
-/* ── Footer lava text ────────────────────────────────────────────── */
-/* Registered properties let @keyframes interpolate blob positions   */
+/* ── Lava metaball — site-wide signature ─────────────────────── */
+/* Registered properties let @keyframes interpolate blob positions.
+   `inherits: true` lets one drive (html root) feed many readers
+   (hero name + footer name) so they stay in phase. */
 @property --lp1x { syntax: '<percentage>'; inherits: true; initial-value: 20%; }
 @property --lp1y { syntax: '<percentage>'; inherits: true; initial-value: 25%; }
 @property --lp2x { syntax: '<percentage>'; inherits: true; initial-value: 75%; }
@@ -291,10 +344,13 @@ body::after {
   }
 }
 
-/* Animation lives on a wrapper div — keeps it off the Framer Motion element */
-.lava-drive {
+/* Single drive at the root — every .lava-text descendant reads it. */
+html {
   animation: lava-bubble 10s ease-in-out infinite;
 }
+
+/* Legacy wrapper kept so existing footer markup still works. */
+.lava-drive { /* animation source now lives on <html> */ }
 
 .lava-text {
   background:
@@ -310,50 +366,25 @@ body::after {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  transition: background 0.5s ease;
+  transition: background 250ms var(--ease-quart-out);
 }
 
-/* ── CSS boot screen (removed on React mount) ────────────────────── */
-@keyframes css-boot-bar {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(0.85); }
-}
-
-#css-boot {
-  position: fixed;
-  inset: 0;
-  z-index: 99998;
-  background: #030304;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2rem;
-}
-
-#css-boot-label {
-  font-family: monospace;
-  font-size: clamp(2.5rem, 10vw, 7rem);
-  letter-spacing: 0.08em;
-  color: #00d4ff;
-  font-weight: 700;
-}
-
-#css-boot-track {
-  width: min(360px, 72vw);
-  height: 1px;
-  background: rgba(255,255,255,0.06);
-  position: relative;
-  overflow: hidden;
-}
-
-#css-boot-fill {
-  position: absolute;
-  inset: 0;
-  background: #00d4ff;
-  transform-origin: left;
-  transform: scaleX(0);
-  animation: css-boot-bar 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+/* Hero variant — smaller blob radii so the effect reads on the name strip. */
+.lava-text-sm {
+  background:
+    radial-gradient(circle 1.6vw at var(--lp1x) var(--lp1y), var(--lava-bubble) 0%, transparent 80%),
+    radial-gradient(circle 1.2vw at var(--lp2x) var(--lp2y), var(--lava-bubble) 0%, transparent 75%),
+    radial-gradient(circle 2vw   at var(--lp3x) var(--lp3y), var(--lava-bubble) 0%, transparent 80%),
+    radial-gradient(circle 1.4vw at var(--lp4x) var(--lp4y), var(--lava-bubble) 0%, transparent 75%),
+    radial-gradient(circle 1vw   at var(--lp5x) var(--lp5y), var(--lava-bubble) 0%, transparent 75%),
+    radial-gradient(circle 1.8vw at var(--lp6x) var(--lp6y), var(--lava-bubble) 0%, transparent 80%),
+    radial-gradient(circle 1.2vw at var(--lp7x) var(--lp7y), var(--lava-bubble) 0%, transparent 75%),
+    radial-gradient(circle 0.8vw at var(--lp8x) var(--lp8y), var(--lava-bubble) 0%, transparent 70%),
+    var(--accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: background 250ms var(--ease-quart-out);
 }
 
 /* ── Horizontal scroll section reset ────────────────────────────── */

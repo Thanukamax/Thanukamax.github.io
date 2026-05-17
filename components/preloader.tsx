@@ -1,35 +1,47 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 
-const TARGET  = 'THANUKA.DEV'
-const CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*·∆∑Ω≈§'
-const PHASES  = ['INIT SEQUENCE_', 'LOAD: GPU_ASSETS_', 'COMPILING GRIMOIRE_', 'READY_']
+const TARGET   = 'THANUKA.DEV'
+const CHARSET  = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*·∆∑Ω≈§'
+const DURATION = 600                 /* was 1500 — preloader is theatre, not a real load */
+const STORAGE_KEY = 'tsp-seen'
 
 export default function Preloader({ onComplete }: { onComplete: () => void }) {
+  const reduced = useReducedMotion()
   const [chars,    setChars]    = useState<string[]>(Array(TARGET.length).fill('·'))
   const [locked,   setLocked]   = useState<boolean[]>(Array(TARGET.length).fill(false))
   const [progress, setProgress] = useState(0)
-  const [phase,    setPhase]    = useState(0)
   const [exiting,  setExiting]  = useState(false)
+  const [enabled,  setEnabled]  = useState<boolean | null>(null)
   const rafRef = useRef<number>(0)
   const t0     = useRef(0)
-  const DURATION = 1500
+
+  /* Decide on mount: skip if reduced-motion OR returning visitor. */
+  useEffect(() => {
+    const seen = typeof window !== 'undefined' && sessionStorage.getItem(STORAGE_KEY) === '1'
+    if (reduced || seen) {
+      setEnabled(false)
+      onComplete()
+      return
+    }
+    setEnabled(true)
+  }, [reduced, onComplete])
 
   useEffect(() => {
-    document.getElementById('css-boot')?.remove()
+    if (enabled !== true) return
+
     t0.current = performance.now()
 
     const tick = (now: number) => {
       const t = Math.min((now - t0.current) / DURATION, 1)
       setProgress(Math.round(t * 100))
-      setPhase(Math.min(Math.floor(t * PHASES.length), PHASES.length - 1))
 
       setChars(TARGET.split('').map((ch, i) => {
         const lockAt = (i + 1) / TARGET.length
-        if (t >= lockAt)           return ch
-        if (t >= lockAt - 0.18)    return CHARSET[Math.floor(Math.random() * CHARSET.length)]
+        if (t >= lockAt)        return ch
+        if (t >= lockAt - 0.18) return CHARSET[Math.floor(Math.random() * CHARSET.length)]
         return '·'
       }))
 
@@ -40,42 +52,29 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       } else {
         setChars(TARGET.split(''))
         setLocked(Array(TARGET.length).fill(true))
-        // signal parent so content renders beneath, then slide away
-        setTimeout(() => { onComplete(); setExiting(true) }, 420)
+        try { sessionStorage.setItem(STORAGE_KEY, '1') } catch {}
+        /* Reveal content immediately, then slide the overlay away */
+        onComplete()
+        setTimeout(() => setExiting(true), 120)
       }
     }
 
     rafRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(rafRef.current)
-  }, [onComplete])
+  }, [enabled, onComplete])
+
+  if (enabled !== true) return null
 
   return (
     <AnimatePresence>
       {!exiting && (
         <motion.div
           key="pl"
-          className="fixed inset-0 z-[99999] flex flex-col items-center justify-center overflow-hidden"
-          style={{ background: '#030304' }}
-          exit={{ y: '-100vh', transition: { duration: 0.5, ease: [0.87, 0, 0.13, 1] } }}
+          className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden"
+          style={{ background: '#030304', zIndex: 'var(--z-preloader)' }}
+          exit={{ y: '-100vh', transition: { duration: 0.4, ease: [0.87, 0, 0.13, 1] } }}
         >
-          <div className="scanlines" aria-hidden="true" />
-
-          {/* Top-left: phase text */}
-          <div className="absolute top-7 left-8">
-            <p className="font-jetbrains text-[0.6rem] tracking-[0.3em] uppercase"
-               style={{ color: 'rgba(var(--accent-rgb),0.5)' }}>
-              {PHASES[phase]}
-            </p>
-          </div>
-
-          {/* Top-right: build id */}
-          <div className="absolute top-7 right-8">
-            <p className="font-rdna text-[0.5rem] tracking-[0.3em] uppercase text-white/20">
-              SILICON GRIMOIRE v0.1
-            </p>
-          </div>
-
-          {/* Main scramble text */}
+          {/* Scramble text — the one identity beat that stays */}
           <div className="select-none">
             <div className="font-signal leading-none tracking-[0.12em]"
                  style={{ fontSize: 'min(12vw,7.5rem)' }}>
@@ -91,35 +90,15 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
             </div>
           </div>
 
-          {/* Subline */}
-          <p className="mt-6 font-systems italic text-[0.7rem] tracking-[0.2em] text-white/30 uppercase">
-            Systems Engineer · Game Developer
-          </p>
-
-          {/* Progress bar */}
-          <div className="absolute bottom-14 left-8 right-8">
-            <div className="flex items-center justify-between mb-2.5">
-              <span className="font-jetbrains text-[0.55rem] tracking-widest text-white/30 uppercase">
-                Loading assets
-              </span>
-              <span className="font-jetbrains text-[0.55rem] tracking-widest"
-                    style={{ color: 'var(--accent)' }}>
-                {String(progress).padStart(3, '0')}%
-              </span>
-            </div>
-            <div className="h-px w-full bg-white/[0.06] relative overflow-hidden rounded-full">
+          {/* Hairline progress bar */}
+          <div className="absolute bottom-14 left-1/2 -translate-x-1/2 w-[min(280px,55vw)]">
+            <div className="h-px w-full bg-white/[0.08] relative overflow-hidden">
               <div
-                className="absolute inset-y-0 left-0 rounded-full transition-all duration-100"
-                style={{ width: `${progress}%`, background: 'var(--accent)' }}
+                className="absolute inset-y-0 left-0"
+                style={{ width: `${progress}%`, background: 'var(--accent)', transition: 'width 80ms linear' }}
               />
             </div>
           </div>
-
-          {/* Corner dots */}
-          <div className="absolute top-7  left-8  h-1 w-1 rounded-full bg-accent opacity-60" />
-          <div className="absolute top-7  right-8 h-1 w-1 rounded-full bg-white/20" />
-          <div className="absolute bottom-7 left-8  h-1 w-1 rounded-full bg-white/20" />
-          <div className="absolute bottom-7 right-8 h-1 w-1 rounded-full bg-accent opacity-40" />
         </motion.div>
       )}
     </AnimatePresence>

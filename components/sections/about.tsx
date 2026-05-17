@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion'
+import FieldNotes from '@/components/field-notes'
 
 const E: [number,number,number,number] = [0.16, 1, 0.3, 1]
 const SPRING = { type: 'spring' as const, duration: 0.5, bounce: 0 }
@@ -44,7 +45,7 @@ export default function About() {
         whileInView={reduced ? { opacity: 1 } : { opacity: 1, clipPath: 'inset(0 0% 0 0)' }}
         viewport={{ once: false, amount: 0.1, margin: '-80px' }}
         transition={{ duration: 0.75, ease: E }}>
-        <span className="section-label">01. Identity</span>
+        <span className="section-label">About</span>
         <h2 className="font-editorial font-bold italic mt-2 text-chalk leading-none"
             style={{ fontSize: 'clamp(2.4rem, 4.5vw, 4rem)' }}>
           Core Identity
@@ -53,10 +54,10 @@ export default function About() {
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
 
-        {/* Profile card — slide from left */}
+        {/* Profile card — slide from left with Jakub blur */}
         <motion.div className="md:col-span-4"
-          initial={reduced ? { opacity: 0 } : { opacity: 0, x: -36 }}
-          whileInView={reduced ? { opacity: 1 } : { opacity: 1, x: 0 }}
+          initial={reduced ? { opacity: 0 } : { opacity: 0, x: -36, filter: 'blur(4px)' }}
+          whileInView={reduced ? { opacity: 1 } : { opacity: 1, x: 0, filter: 'blur(0px)' }}
           viewport={{ once: false, amount: 0.1, margin: '-60px' }}
           transition={{ ...SPRING, delay: 0.1 }}>
           <div className="rounded-sm p-6 h-full"
@@ -86,10 +87,10 @@ export default function About() {
         </motion.div>
 
         <div className="md:col-span-8 flex flex-col gap-8">
-          {/* Body text — materialise up */}
+          {/* Body text — materialise up with blur */}
           <motion.div className="space-y-5"
-            initial={reduced ? { opacity: 0 } : { opacity: 0, y: 16 }}
-            whileInView={reduced ? { opacity: 1 } : { opacity: 1, y: 0 }}
+            initial={reduced ? { opacity: 0 } : { opacity: 0, y: 16, filter: 'blur(4px)' }}
+            whileInView={reduced ? { opacity: 1 } : { opacity: 1, y: 0, filter: 'blur(0px)' }}
             viewport={{ once: false, amount: 0.1, margin: '-60px' }}
             transition={{ ...SPRING, delay: 0.18 }}>
             <p className="font-systems text-base leading-relaxed text-white/65">
@@ -105,10 +106,10 @@ export default function About() {
             </p>
           </motion.div>
 
-          {/* Stats — slide from right */}
+          {/* Stats — slide from right with blur */}
           <motion.div className="grid grid-cols-2 sm:grid-cols-4 gap-4"
-            initial={reduced ? { opacity: 0 } : { opacity: 0, x: 32 }}
-            whileInView={reduced ? { opacity: 1 } : { opacity: 1, x: 0 }}
+            initial={reduced ? { opacity: 0 } : { opacity: 0, x: 32, filter: 'blur(4px)' }}
+            whileInView={reduced ? { opacity: 1 } : { opacity: 1, x: 0, filter: 'blur(0px)' }}
             viewport={{ once: false, amount: 0.1, margin: '-60px' }}
             transition={{ ...SPRING, delay: 0.28 }}>
             {stats.map((s) => (
@@ -117,11 +118,21 @@ export default function About() {
                 <p className="font-signal leading-none" style={{ fontSize: '2.2rem', color: s.color }}>
                   {s.value}
                 </p>
-                <p className="font-mono text-[0.6rem] text-white/40 mt-1.5 leading-snug tracking-wide">
+                <p className="font-mono text-[0.6rem] text-white/60 mt-1.5 leading-snug tracking-wide">
                   {s.label}
                 </p>
               </div>
             ))}
+          </motion.div>
+
+          {/* Theme-aware field notes — Intel / AMD / Nvidia */}
+          <motion.div
+            initial={reduced ? { opacity: 0 } : { opacity: 0, y: 16, filter: 'blur(4px)' }}
+            whileInView={reduced ? { opacity: 1 } : { opacity: 1, y: 0, filter: 'blur(0px)' }}
+            viewport={{ once: false, amount: 0.1, margin: '-60px' }}
+            transition={{ ...SPRING, delay: 0.36 }}
+          >
+            <FieldNotes />
           </motion.div>
         </div>
       </div>

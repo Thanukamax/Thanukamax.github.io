@@ -1,31 +1,14 @@
 import type { Metadata } from 'next'
-import {
-  Syne, Manrope, Fragment_Mono, Orbitron, Fraunces,
-  IBM_Plex_Serif, JetBrains_Mono, Fira_Code,
-  Space_Grotesk, Bodoni_Moda, VT323,
-  Courier_Prime, Bebas_Neue, Playfair_Display, Audiowide,
-} from 'next/font/google'
+import { Bebas_Neue, JetBrains_Mono } from 'next/font/google'
+import { Toaster } from 'sonner'
 import './globals.css'
 import SmoothScroll from '@/components/smooth-scroll'
+import KonamiEgg from '@/components/konami-egg'
+import CommandPalette from '@/components/command-palette'
+import BuiltWith from '@/components/built-with'
 
-/* ── Display / Editorial — critical, preloaded ── */
-const bebas       = Bebas_Neue({ subsets: ['latin'], weight: '400', variable: '--font-bebas', display: 'swap' })
-const playfair    = Playfair_Display({ subsets: ['latin'], weight: ['400', '700'], style: ['normal', 'italic'], variable: '--font-playfair', display: 'swap' })
-const orbitron    = Orbitron({ subsets: ['latin'], weight: ['500', '700'], variable: '--font-orbitron', display: 'swap' })
-const jetbrains   = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-jetbrains', display: 'swap' })
-const ibmSerif    = IBM_Plex_Serif({ subsets: ['latin'], weight: ['400', '600'], style: ['normal', 'italic'], variable: '--font-ibm-serif', display: 'swap' })
-
-/* ── Below-fold fonts — deferred ── */
-const syne        = Syne({ subsets: ['latin'], weight: ['700'], variable: '--font-syne', display: 'swap', preload: false })
-const bodoni      = Bodoni_Moda({ subsets: ['latin'], weight: ['400'], style: ['italic'], variable: '--font-bodoni', display: 'swap', preload: false })
-const manrope     = Manrope({ subsets: ['latin'], weight: ['400', '600'], variable: '--font-manrope', display: 'swap', preload: false })
-const spaceG      = Space_Grotesk({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-space', display: 'swap', preload: false })
-const fragmentMono = Fragment_Mono({ subsets: ['latin'], weight: '400', variable: '--font-mono', display: 'swap', preload: false })
-const firaCode    = Fira_Code({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-fira', display: 'swap', preload: false })
-const courier     = Courier_Prime({ subsets: ['latin'], weight: ['400'], style: ['normal', 'italic'], variable: '--font-courier', display: 'swap', preload: false })
-const vt323       = VT323({ subsets: ['latin'], weight: '400', variable: '--font-vt323', display: 'swap', preload: false })
-const fraunces    = Fraunces({ subsets: ['latin'], weight: ['400'], style: ['italic'], variable: '--font-fraunces', display: 'swap', preload: false })
-const audiowide   = Audiowide({ subsets: ['latin'], weight: '400', variable: '--font-audiowide', display: 'swap', preload: false })
+const bebas     = Bebas_Neue({ subsets: ['latin'], weight: '400', variable: '--font-bebas', display: 'swap' })
+const jetbrains = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-jetbrains', display: 'swap' })
 
 export const metadata: Metadata = {
   title: 'Thanuka Sehasna Perera',
@@ -37,27 +20,49 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const vars = [
-    syne.variable, playfair.variable, bebas.variable, bodoni.variable,
-    manrope.variable, ibmSerif.variable, spaceG.variable,
-    fragmentMono.variable, jetbrains.variable, firaCode.variable, courier.variable, vt323.variable,
-    orbitron.variable, fraunces.variable, audiowide.variable,
-  ].join(' ')
+/* Inline script: set initial theme BEFORE React hydrates so visitors at
+   different Colombo times don't flash through XE first. */
+const themeBootScript = `
+(function(){
+  try {
+    var saved = localStorage.getItem('tsp-theme');
+    var t = saved;
+    if (saved !== '' && saved !== 'udna' && saved !== 'cuda') {
+      var h = new Date().getHours();
+      t = (h >= 6 && h < 12) ? '' : (h >= 12 && h < 18) ? 'cuda' : 'udna';
+    }
+    document.documentElement.dataset.theme = t;
+  } catch(e) {}
+})();
+`
 
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${vars} font-body bg-void text-chalk antialiased overflow-x-hidden`}>
-        {/* Visible before JS — removed in Preloader useEffect */}
-        <div id="css-boot">
-          <div id="css-boot-label">THANUKA.DEV</div>
-          <div id="css-boot-track">
-            <div id="css-boot-fill" />
-          </div>
-        </div>
+      <body className={`${bebas.variable} ${jetbrains.variable} font-body bg-void text-chalk antialiased overflow-x-hidden`}>
+        {/* Pre-hydration theme boot — sets data-theme before React paints. */}
+        <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
+        <a href="#main" className="skip-link">Skip to content</a>
         <SmoothScroll>
           {children}
         </SmoothScroll>
+        <Toaster
+          theme="dark"
+          position="bottom-right"
+          toastOptions={{
+            style: {
+              background: 'rgba(3,3,4,0.95)',
+              border: '1px solid rgba(var(--accent-rgb),0.25)',
+              color: 'var(--chalk)',
+              fontFamily: 'var(--font-jetbrains), monospace',
+              fontSize: '0.75rem',
+              letterSpacing: '0.04em',
+            },
+          }}
+        />
+        <KonamiEgg />
+        <CommandPalette />
+        <BuiltWith />
       </body>
     </html>
   )

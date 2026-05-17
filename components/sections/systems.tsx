@@ -75,18 +75,18 @@ export default function Systems() {
       </div>
 
       <div className="max-w-7xl mx-auto">
-        {/* Label — slide from left */}
+        {/* Label — slide from left with Jakub blur */}
         <motion.div className="mb-16"
-          initial={reduced ? { opacity: 0 } : { opacity: 0, x: -32 }}
-          whileInView={reduced ? { opacity: 1 } : { opacity: 1, x: 0 }}
+          initial={reduced ? { opacity: 0 } : { opacity: 0, x: -32, filter: 'blur(4px)' }}
+          whileInView={reduced ? { opacity: 1 } : { opacity: 1, x: 0, filter: 'blur(0px)' }}
           viewport={{ once: false, amount: 0.1 }}
           transition={{ type: 'spring', duration: 0.5, bounce: 0 }}>
-          <span className="section-label">03. Subsystem Map</span>
+          <span className="section-label">Skills</span>
           <h2 className="font-signal mt-2 text-chalk leading-none tracking-[0.04em]"
               style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)' }}>
             Technical Stack
           </h2>
-          <p className="font-systems italic text-white/40 text-sm mt-2 hidden md:block">
+          <p className="font-systems italic text-white/60 text-sm mt-2 hidden md:block">
             Move your cursor through the field ↓
           </p>
         </motion.div>
