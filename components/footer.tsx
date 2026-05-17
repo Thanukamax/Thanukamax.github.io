@@ -125,7 +125,36 @@ export default function Footer() {
           <Receipt />
         </div>
 
-        {/* ── Copyright bar — Konami sequence as a visible hint for the curious ── */}
+        {/* ── Konami unlock — full-width row, right-aligned vertical character stack.
+              Mobile gets this as the canonical way to trigger the credits dialog. */}
+        <div className="w-full flex justify-end mt-10">
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new Event('konami-open'))}
+            aria-label="Open credits — Things made by hand"
+            className="flex flex-col items-center gap-1.5 group active:scale-[0.98] transition-transform duration-150 px-2"
+          >
+            <span className="font-rdna text-[0.5rem] tracking-[0.32em] uppercase text-white/35 group-hover:text-white/60 transition-colors duration-150 mb-1">
+              Konami ↓
+            </span>
+            {Array.from('↑↑↓↓←→←→BA').map((ch, i) => (
+              <span
+                key={i}
+                className="font-mono leading-none group-hover:text-white transition-colors duration-150"
+                style={{
+                  fontSize: 'clamp(1rem, 1.4vw, 1.25rem)',
+                  color: 'rgba(var(--accent-rgb), 0.6)',
+                  letterSpacing: '0.08em',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {ch}
+              </span>
+            ))}
+          </button>
+        </div>
+
+        {/* ── Copyright bar ── */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mt-10 pt-6"
              style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
           <p className="font-rdna text-[0.5rem] tracking-[0.22em] text-white/45">
@@ -139,17 +168,6 @@ export default function Footer() {
               aria-label="How was this built"
             >
               Silicon Grimoire v0.1 · Next.js · Framer Motion · Lenis
-            </button>
-            {/* Konami hint — visible on all viewports, tappable so touch devices
-                without a keyboard can still reach the credits */}
-            <button
-              type="button"
-              onClick={() => window.dispatchEvent(new Event('konami-open'))}
-              className="active:scale-[0.95] hover:text-white transition-all duration-150"
-              style={{ color: 'rgba(var(--accent-rgb), 0.4)' }}
-              aria-label="Open credits — Things made by hand"
-            >
-              ↑↑↓↓←→←→BA
             </button>
             <button
               type="button"
