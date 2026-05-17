@@ -67,7 +67,7 @@ export default function Footer() {
             Konami stack lives on the right, filling the empty space next to
             the name so the footer doesn't get any taller. */}
         <div
-          className="relative overflow-hidden mb-12 group"
+          className="relative mb-12 group"
           style={{ lineHeight: '0.88' }}
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
@@ -106,20 +106,27 @@ export default function Footer() {
             aria-label="Open credits — Things made by hand"
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden xl:flex flex-col items-center gap-[2px] group/konami active:scale-[0.98] transition-transform duration-150"
           >
-            {Array.from('↑↑↓↓←→←→BA').map((ch, i) => (
-              <span
-                key={i}
-                className="font-mono leading-none group-hover/konami:text-white transition-colors duration-150"
-                style={{
-                  fontSize: 'clamp(0.65rem, 0.8vw, 0.85rem)',
-                  color: 'rgba(var(--accent-rgb), 0.6)',
-                  letterSpacing: '0.08em',
-                  fontVariantNumeric: 'tabular-nums',
-                }}
-              >
-                {ch}
-              </span>
-            ))}
+            {Array.from('↑↑↓↓←→←→BA').map((ch, i) => {
+              /* Horizontal arrows have less vertical extent than ↑↓ at the
+                 same font-size, so bump them up to read at equal weight. */
+              const isHoriz = ch === '←' || ch === '→'
+              return (
+                <span
+                  key={i}
+                  className="font-mono leading-none group-hover/konami:text-white transition-colors duration-150"
+                  style={{
+                    fontSize: isHoriz
+                      ? 'clamp(0.95rem, 1.15vw, 1.2rem)'
+                      : 'clamp(0.7rem, 0.85vw, 0.9rem)',
+                    color: 'rgba(var(--accent-rgb), 0.6)',
+                    letterSpacing: '0.08em',
+                    fontVariantNumeric: 'tabular-nums',
+                  }}
+                >
+                  {ch}
+                </span>
+              )
+            })}
           </button>
         </div>
 
