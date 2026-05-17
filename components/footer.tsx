@@ -96,15 +96,14 @@ export default function Footer() {
             </motion.h2>
           </div>
 
-          {/* Konami unlock — vertical stack in the empty right space beside
-              THANUKA.DEV. Sized so all 10 characters fit within the giant
-              name's vertical bounds. Visible only at xl+ where the math works;
-              smaller viewports get the inline horizontal version below. */}
+          {/* Konami unlock — vertical stack inside a bordered "tap pad"
+              that visually invites click/press. Pulse animation respects
+              reduced-motion. Visible only at xl+ where the math fits. */}
           <button
             type="button"
             onClick={() => window.dispatchEvent(new Event('konami-open'))}
             aria-label="Open credits — Things made by hand"
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden xl:flex flex-col items-center gap-[2px] group/konami active:scale-[0.98] transition-transform duration-150"
+            className="konami-pad rounded-sm absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden xl:flex flex-col items-center gap-[2px] group/konami active:scale-[0.96] px-2.5 py-3"
           >
             {Array.from('↑↑↓↓←→←→BA').map((ch, i) => {
               /* Horizontal arrows have less vertical extent than ↑↓ at the
