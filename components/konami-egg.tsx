@@ -132,7 +132,7 @@ export default function KonamiEgg() {
               </button>
             </div>
 
-            <div className="max-h-[60vh] overflow-y-auto px-6 pb-6 pt-2 space-y-5">
+            <div data-lenis-prevent className="max-h-[60vh] overflow-y-auto overscroll-contain px-6 pb-6 pt-2 space-y-5">
               {credits.map(c => (
                 <div key={c.label} className="pl-3 border-l" style={{ borderColor: 'rgba(var(--accent-rgb),0.35)' }}>
                   <p className="font-signal text-base text-chalk" style={{ letterSpacing: '0.02em' }}>{c.label}</p>

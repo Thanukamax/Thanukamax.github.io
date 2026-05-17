@@ -119,7 +119,7 @@ export default function BuiltWith() {
               </button>
             </div>
 
-            <div className="max-h-[65vh] overflow-y-auto px-6 pb-6 pt-3">
+            <div data-lenis-prevent className="max-h-[65vh] overflow-y-auto overscroll-contain px-6 pb-6 pt-3">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                 {BLOCKS.map(block => (
                   <div key={block.label} className="pl-3 border-l" style={{ borderColor: 'rgba(var(--accent-rgb),0.35)' }}>

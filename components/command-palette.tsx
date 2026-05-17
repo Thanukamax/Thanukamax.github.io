@@ -200,7 +200,8 @@ export default function CommandPalette() {
 
             <div
               ref={listRef}
-              className="max-h-[60vh] overflow-y-auto py-1"
+              data-lenis-prevent
+              className="max-h-[60vh] overflow-y-auto py-1 overscroll-contain"
             >
               {results.length === 0 && (
                 <div className="px-4 py-6 font-mono text-xs text-white/45">No matches.</div>
