@@ -31,7 +31,7 @@ export default function Home() {
       >
         <Nav />
         <main id="main">
-          <Hero />
+          <Hero loaded={loaded} />
           <Projects />
           <Pipeline />
           <Systems />

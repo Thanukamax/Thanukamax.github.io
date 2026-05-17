@@ -5,23 +5,50 @@ import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion
 
 const E: [number,number,number,number] = [0.16, 1, 0.3, 1]
 
-export default function Hero() {
+/* Beats — each animation only starts once `loaded` flips true so the reveal
+   isn't half-obscured by the page's opacity fade-in. Slowed so the curtains
+   actually have time to read. */
+const T = {
+  game:    { delay: 0.20, duration: 1.40 },
+  dev:     { delay: 0.40, duration: 1.40 },
+  systems: { delay: 0.90, duration: 1.50 },
+  name:    { delay: 1.15, duration: 1.10 },
+  bottom:  { delay: 1.35, duration: 0.95 },
+} as const
+
+export default function Hero({ loaded }: { loaded: boolean }) {
   const reduced = useReducedMotion()
   const ref = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
 
   const y       = useTransform(scrollYProgress, [0, 1], ['0%', '28%'])
   const opacity = useTransform(scrollYProgress, [0, 0.55], [1, 0])
-  /* Scroll cue auto-disposes once the visitor has clearly scrolled. */
   const cueOpacity = useTransform(scrollYProgress, [0, 0.08, 0.18], [1, 0.6, 0])
 
-  /* Jakub enter recipe: opacity + y + blur, materialising rather than just fading. */
-  const enterFrom = reduced ? { opacity: 0 } : { opacity: 0, filter: 'blur(4px)' }
-  const enterTo   = reduced ? { opacity: 1 } : { opacity: 1, filter: 'blur(0px)' }
+  /* Variants — animate state flips when `loaded` becomes true.
+     With sessionStorage-skipped preloader, loaded is true within a tick of
+     mount; with the preloader running, loaded flips at handoff. Either way
+     the reveal starts when the page is actually visible. */
+  const state = loaded ? 'visible' : 'hidden'
+
+  const maskTitle = reduced
+    ? { hidden: { opacity: 0 }, visible: (b: typeof T.game) => ({ opacity: 1, transition: { delay: b.delay, duration: 0.3 } }) }
+    : { hidden: { y: '110%' },  visible: (b: typeof T.game) => ({ y: '0%',  transition: { delay: b.delay, duration: b.duration, ease: E } }) }
+
+  const wipeReveal = reduced
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { delay: T.systems.delay, duration: 0.3 } } }
+    : { hidden: { clipPath: 'inset(0 100% 0 0)' }, visible: { clipPath: 'inset(0 0% 0 0)', transition: { delay: T.systems.delay, duration: T.systems.duration, ease: E } } }
+
+  const nameSlide = reduced
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { delay: T.name.delay, duration: 0.3 } } }
+    : { hidden: { opacity: 0, x: 24, filter: 'blur(4px)' }, visible: { opacity: 1, x: 0, filter: 'blur(0px)', transition: { delay: T.name.delay, duration: T.name.duration, ease: E } } }
+
+  const bottomRise = reduced
+    ? { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { delay: T.bottom.delay, duration: 0.3 } } }
+    : { hidden: { opacity: 0, y: 16, filter: 'blur(4px)' }, visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { delay: T.bottom.delay, duration: T.bottom.duration, ease: E } } }
 
   return (
     <section ref={ref} id="hero" className="relative h-screen overflow-hidden">
-      {/* Grid + vignette */}
       <div className="hero-grid" aria-hidden="true" />
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true"
         style={{ background: 'radial-gradient(ellipse 140% 100% at 50% 0%, transparent 25%, #030304 100%)' }}
@@ -29,7 +56,7 @@ export default function Hero() {
 
       <motion.div style={{ y, opacity }} className="relative h-full flex flex-col justify-between py-8 px-6 md:px-12" >
 
-        {/* ── Status row ── time chip dropped; location is repeated in footer + Receipt */}
+        {/* ── Status row ── time chip dropped; location lives in footer + Receipt */}
         <div className="flex items-center">
           <div className="flex items-center gap-2.5">
             <span className="relative flex h-2 w-2">
@@ -48,7 +75,7 @@ export default function Hero() {
         {/* ── Giant title block ── */}
         <div className="relative -mt-4">
 
-          {/* Single h1 wrapping GAME + DEVELOPER as spans — was two competing h1s */}
+          {/* Single h1 wrapping GAME + DEVELOPER as spans */}
           <h1
             className="font-signal text-chalk leading-[0.87] tracking-[0.03em]"
             aria-label="Game Developer & Systems Engineer"
@@ -59,9 +86,10 @@ export default function Hero() {
                 className="block text-glitch"
                 data-text="GAME"
                 style={{ fontSize: 'clamp(4.5rem, 19vw, 19rem)' }}
-                initial={reduced ? { opacity: 0 } : { y: '110%' }}
-                animate={reduced ? { opacity: 1 } : { y: '0%' }}
-                transition={{ delay: 0.15, duration: reduced ? 0.2 : 0.95, ease: E }}
+                custom={T.game}
+                variants={maskTitle}
+                initial="hidden"
+                animate={state}
               >
                 GAME
               </motion.span>
@@ -72,14 +100,15 @@ export default function Hero() {
               <motion.span
                 className="block"
                 style={{ fontSize: 'clamp(3.2rem, 14.5vw, 14.5rem)' }}
-                initial={reduced ? { opacity: 0 } : { y: '110%' }}
-                animate={reduced ? { opacity: 1 } : { y: '0%' }}
-                transition={{ delay: 0.28, duration: reduced ? 0.2 : 0.95, ease: E }}
+                custom={T.dev}
+                variants={maskTitle}
+                initial="hidden"
+                animate={state}
               >
                 DEVELOPER
               </motion.span>
 
-              {/* SYSTEMS ENGINEER — blend overlay, wipes in from left (desktop) */}
+              {/* SYSTEMS ENGINEER — clip-path wipe overlay, desktop only */}
               <motion.span
                 aria-hidden="true"
                 className="absolute pointer-events-none select-none hidden sm:block font-systems"
@@ -92,9 +121,9 @@ export default function Hero() {
                   lineHeight: 1.08,
                   mixBlendMode: 'difference',
                 }}
-                initial={reduced ? { opacity: 0 } : { clipPath: 'inset(0 100% 0 0)' }}
-                animate={reduced ? { opacity: 1 } : { clipPath: 'inset(0 0% 0 0)' }}
-                transition={{ delay: 0.75, duration: reduced ? 0.2 : 1.05, ease: E }}
+                variants={wipeReveal}
+                initial="hidden"
+                animate={state}
               >
                 SYSTEMS<br />ENGINEER
               </motion.span>
@@ -105,9 +134,9 @@ export default function Hero() {
           <motion.div
             aria-hidden="true"
             className="sm:hidden mt-2"
-            initial={reduced ? { opacity: 0 } : { clipPath: 'inset(0 100% 0 0)' }}
-            animate={reduced ? { opacity: 1 } : { clipPath: 'inset(0 0% 0 0)' }}
-            transition={{ delay: 0.75, duration: reduced ? 0.2 : 0.9, ease: E }}
+            variants={wipeReveal}
+            initial="hidden"
+            animate={state}
           >
             <span
               className="font-systems font-semibold italic"
@@ -122,11 +151,11 @@ export default function Hero() {
             className="mt-3 sm:mt-0 sm:absolute sm:right-0 sm:top-1/2 sm:-translate-y-1/2 text-right font-editorial italic leading-[1.15]"
             style={{
               fontSize: 'clamp(0.9rem, 1.9vw, 1.7rem)',
-              color: 'rgba(232,232,240,0.6)', /* lifted from 0.45 */
+              color: 'rgba(232,232,240,0.6)',
             }}
-            initial={{ ...enterFrom, x: reduced ? 0 : 24 }}
-            animate={{ ...enterTo,   x: 0 }}
-            transition={{ delay: 0.95, duration: 0.85, ease: E }}
+            variants={nameSlide}
+            initial="hidden"
+            animate={state}
           >
             Thanuka Sehasna<br />
             <span
@@ -141,9 +170,9 @@ export default function Hero() {
         {/* ── Bottom row ── */}
         <motion.div
           className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-5"
-          initial={reduced ? { opacity: 0 } : { opacity: 0, y: 16, filter: 'blur(4px)' }}
-          animate={reduced ? { opacity: 1 } : { opacity: 1, y: 0,  filter: 'blur(0px)' }}
-          transition={{ delay: 1.1, duration: 0.7, ease: E }}
+          variants={bottomRise}
+          initial="hidden"
+          animate={state}
         >
           {/* Role chips */}
           <div className="flex flex-wrap gap-2">
@@ -152,7 +181,7 @@ export default function Hero() {
             <span className="tech-chip" style={{ color: '#34d399', borderColor: 'rgba(52,211,153,0.3)',  background: 'rgba(52,211,153,0.08)'  }}>Systems Engineering</span>
           </div>
 
-          {/* CTAs — :active scale, focus rings inherit from base */}
+          {/* CTAs */}
           <div className="flex items-center gap-3">
             <a href="#projects"
                className="font-signal tracking-[0.12em] text-sm px-5 py-2 rounded-sm text-black hover:opacity-90 active:scale-[0.97] transition-all duration-150"
