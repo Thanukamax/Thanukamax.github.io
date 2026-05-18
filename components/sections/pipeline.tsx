@@ -7,6 +7,16 @@ const E: [number,number,number,number] = [0.16, 1, 0.3, 1]
 
 const projects = [
   {
+    id: 'shrinkray',
+    name: 'shrinkray',
+    state: 'COMPILING',
+    statusLabel: 'In progress',
+    progress: 12,
+    url: 'https://github.com/Thanukamax/shrinkray',
+    stack: ['Rust', 'Tauri v2', 'Unreal Engine', 'repak'],
+    desc: 'Drop a UE game folder, get a smaller game folder. Target: 30–60% size reduction on most titles, 50–80% on asset-flips and RPG Maker UE ports. Phase 0 scaffold (folder census + savings estimate) shipped; Phase 1 wiring real pak repacking, BC1/7 texture recompression, and Opus audio re-encode.',
+  },
+  {
     id: 'vn2apk',
     name: 'vn2apk',
     state: 'SHIPPED',
@@ -44,6 +54,7 @@ const STACK_COLOR: Record<string, string> = {
   'Tauri v2': '#a78bfa', 'Rust': '#a78bfa', 'React': '#7dd3fc', 'TypeScript': '#7dd3fc',
   'C++': '#fb923c', 'Vulkan': '#fb923c', 'GLSL': '#fbbf24', 'VMA': '#fbbf24',
   'WGPU': '#34d399', 'WGSL': '#34d399',
+  'Unreal Engine': '#0090ff', 'repak': '#a78bfa',
 }
 
 const STATE_COLOR: Record<string, string> = {
