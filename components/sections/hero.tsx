@@ -54,6 +54,30 @@ export default function Hero({ loaded }: { loaded: boolean }) {
         style={{ background: 'radial-gradient(ellipse 140% 100% at 50% 0%, transparent 25%, #030304 100%)' }}
       />
 
+      {/* Boot scanline — accent hairline sweeps top→bottom once when the page
+          becomes interactive. Layers over the existing GAME/DEVELOPER reveal
+          so the whole hero reads as one synchronized power-on, not two intros.
+          Skipped under prefers-reduced-motion. z 40 sits under nav (50) and
+          HUD (60) so chrome stays on top; only the hero body is swept. */}
+      {!reduced && loaded && (
+        <motion.div
+          aria-hidden="true"
+          className="absolute left-0 right-0 top-0 h-px pointer-events-none"
+          style={{
+            zIndex: 40,
+            background: 'linear-gradient(90deg, transparent, var(--accent) 30%, var(--accent) 70%, transparent)',
+            boxShadow: '0 0 18px var(--accent), 0 0 48px rgba(var(--accent-rgb), 0.55)',
+          }}
+          initial={{ y: 0, opacity: 0 }}
+          animate={{ y: '100vh', opacity: [0, 1, 1, 0] }}
+          transition={{
+            duration: 0.95,
+            ease: [0.16, 1, 0.3, 1],
+            times: [0, 0.08, 0.78, 1],
+          }}
+        />
+      )}
+
       <motion.div style={{ y, opacity }} className="relative h-full flex flex-col justify-between py-8 px-6 md:px-12" >
 
         {/* ── Status row ── time chip dropped; location lives in footer + Receipt */}

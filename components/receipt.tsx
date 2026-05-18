@@ -26,6 +26,7 @@ export default function Receipt() {
   const [theme, setTheme]       = useState('')
   const [hash, setHash]         = useState('······')
   const [visible, setVisible]   = useState(false)
+  const [mem, setMem]           = useState(0)
   const t0Ref      = useRef(0)
   const elapsedRef = useRef(0)
 
@@ -90,6 +91,25 @@ export default function Receipt() {
     return () => window.clearInterval(tick)
   }, [visible])
 
+  /* Memory gauge — Chrome's performance.memory if available (heap %), else DOM
+     node count as a proxy. Either way the displayed range is 0–100, so the bar
+     reads the same. Hardware joke for an engineer audience: we are showing
+     how much "system" the page is using to render itself. */
+  useEffect(() => {
+    if (!visible) return
+    const compute = () => {
+      const perf = (performance as Performance & { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } }).memory
+      if (perf && perf.jsHeapSizeLimit > 0) {
+        setMem(Math.min(100, (perf.usedJSHeapSize / perf.jsHeapSizeLimit) * 100))
+      } else {
+        setMem(Math.min(100, (document.querySelectorAll('*').length / 2000) * 100))
+      }
+    }
+    compute()
+    const tick = window.setInterval(compute, 1500)
+    return () => window.clearInterval(tick)
+  }, [visible])
+
   const date = new Date()
   const dateStr = date.toISOString().slice(0, 10)
   const timeStr = date.toTimeString().slice(0, 8)
@@ -103,6 +123,7 @@ export default function Receipt() {
       `  sections viewed   ${String(viewed.size).padStart(2, '0')} of ${String(SECTIONS.length).padStart(2, '0')}`,
       `  time on page      ${fmtTime(elapsed)}`,
       `  theme             ${THEME_LABEL[theme] || 'XE'}`,
+      `  memory            ${String(Math.round(mem)).padStart(2, '0')}%`,
       `  session           #${hash}`,
       '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
       '',
@@ -147,10 +168,11 @@ export default function Receipt() {
       </div>
 
       <div className="px-4 py-3 space-y-1.5">
-        <Row label="sections viewed" value={`${String(viewed.size).padStart(2, '0')} / ${String(SECTIONS.length).padStart(2, '0')}`} />
-        <Row label="time on page"    value={fmtTime(elapsed)} />
-        <Row label="theme"           value={THEME_LABEL[theme] || 'XE'} />
-        <Row label="session"         value={`#${hash}`} />
+        <Row   label="sections viewed" value={`${String(viewed.size).padStart(2, '0')} / ${String(SECTIONS.length).padStart(2, '0')}`} />
+        <Row   label="time on page"    value={fmtTime(elapsed)} />
+        <Row   label="theme"           value={THEME_LABEL[theme] || 'XE'} />
+        <Gauge label="memory"          pct={mem} />
+        <Row   label="session"         value={`#${hash}`} />
       </div>
 
       <button
@@ -169,6 +191,21 @@ function Row({ label, value }: { label: string; value: string }) {
     <div className="flex justify-between gap-4">
       <span className="text-white/55 uppercase">{label}</span>
       <span style={{ color: 'var(--accent)', fontVariantNumeric: 'tabular-nums' }}>{value}</span>
+    </div>
+  )
+}
+
+function Gauge({ label, pct }: { label: string; pct: number }) {
+  const segments = 10
+  const filled = Math.round((pct / 100) * segments)
+  const bar = Array.from({ length: segments }, (_, i) => i < filled ? '▮' : '▯').join('')
+  return (
+    <div className="flex justify-between items-center gap-3">
+      <span className="text-white/55 uppercase">{label}</span>
+      <span className="flex items-center gap-2" style={{ color: 'var(--accent)', fontVariantNumeric: 'tabular-nums' }}>
+        <span style={{ letterSpacing: '0.05em' }}>{bar}</span>
+        <span>{String(Math.round(pct)).padStart(2, '0')}%</span>
+      </span>
     </div>
   )
 }

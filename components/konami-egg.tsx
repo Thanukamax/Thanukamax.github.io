@@ -114,34 +114,36 @@ export default function KonamiEgg() {
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             onClick={e => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between px-6 pt-6 pb-2">
-              <div>
-                <p className="font-rdna text-[0.55rem] tracking-[0.3em] uppercase mb-1.5" style={{ color: 'var(--accent)' }}>
-                  ↑↑↓↓←→←→BA
-                </p>
-                <h2 id="konami-title" className="font-signal leading-none" style={{ fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)', color: 'var(--chalk)' }}>
-                  Things made by hand
-                </h2>
-              </div>
-              <button
-                onClick={() => setOpen(false)}
-                aria-label="Close credits"
-                className="font-mono text-xs tracking-widest text-white/55 hover:text-white active:scale-90 transition-all duration-150 px-2 py-1"
-              >
-                ESC
-              </button>
-            </div>
-
-            <div data-lenis-prevent className="max-h-[60vh] overflow-y-auto overscroll-contain px-6 pb-6 pt-2 space-y-5">
-              {credits.map(c => (
-                <div key={c.label} className="pl-3 border-l" style={{ borderColor: 'rgba(var(--accent-rgb),0.35)' }}>
-                  <p className="font-signal text-base text-chalk" style={{ letterSpacing: '0.02em' }}>{c.label}</p>
-                  <p className="font-mono text-[0.6rem] tracking-[0.18em] uppercase mt-0.5" style={{ color: 'rgba(var(--accent-rgb),0.7)' }}>
-                    {c.where}
+            <div className="konami-boot">
+              <div className="flex items-start justify-between px-6 pt-6 pb-2">
+                <div>
+                  <p className="font-rdna text-[0.55rem] tracking-[0.3em] uppercase mb-1.5" style={{ color: 'var(--accent)' }}>
+                    ↑↑↓↓←→←→BA
                   </p>
-                  <p className="font-body text-xs leading-relaxed text-white/70 mt-1.5">{c.detail}</p>
+                  <h2 id="konami-title" className="font-signal leading-none" style={{ fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)', color: 'var(--chalk)' }}>
+                    Things made by hand
+                  </h2>
                 </div>
-              ))}
+                <button
+                  onClick={() => setOpen(false)}
+                  aria-label="Close credits"
+                  className="font-mono text-xs tracking-widest text-white/55 hover:text-white active:scale-90 transition-all duration-150 px-2 py-1"
+                >
+                  ESC
+                </button>
+              </div>
+
+              <div data-lenis-prevent className="max-h-[60vh] overflow-y-auto overscroll-contain px-6 pb-6 pt-2 space-y-5">
+                {credits.map(c => (
+                  <div key={c.label} className="pl-3 border-l" style={{ borderColor: 'rgba(var(--accent-rgb),0.35)' }}>
+                    <p className="font-signal text-base text-chalk" style={{ letterSpacing: '0.02em' }}>{c.label}</p>
+                    <p className="font-mono text-[0.6rem] tracking-[0.18em] uppercase mt-0.5" style={{ color: 'rgba(var(--accent-rgb),0.7)' }}>
+                      {c.where}
+                    </p>
+                    <p className="font-body text-xs leading-relaxed text-white/70 mt-1.5">{c.detail}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </motion.div>
         </motion.div>

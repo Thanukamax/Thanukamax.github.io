@@ -316,6 +316,36 @@ body::after {
   animation: crt-flicker 0.65s ease-out forwards;
 }
 
+/* ── Konami "override granted" — flicker + chromatic split, then settle.
+   0.2s delay so the modal blur-in completes first; otherwise the parent
+   blur swallows the chromatic split before the user can register it. ── */
+@keyframes crt-chromatic {
+  0%   { text-shadow:  5px 0 0 rgba(255, 64, 96, 0.90), -5px 0 0 rgba(64, 224, 255, 0.90); }
+  12%  { text-shadow: -4px 0 0 rgba(255, 64, 96, 0.85),  4px 0 0 rgba(64, 224, 255, 0.85); }
+  24%  { text-shadow:  4px 0 0 rgba(255, 64, 96, 0.75), -4px 0 0 rgba(64, 224, 255, 0.75); }
+  38%  { text-shadow: -3px 0 0 rgba(255, 64, 96, 0.60),  3px 0 0 rgba(64, 224, 255, 0.60); }
+  52%  { text-shadow:  3px 0 0 rgba(255, 64, 96, 0.45), -3px 0 0 rgba(64, 224, 255, 0.45); }
+  68%  { text-shadow: -2px 0 0 rgba(255, 64, 96, 0.30),  2px 0 0 rgba(64, 224, 255, 0.30); }
+  84%  { text-shadow:  1px 0 0 rgba(255, 64, 96, 0.15), -1px 0 0 rgba(64, 224, 255, 0.15); }
+  100% { text-shadow:  0   0 0 transparent,              0   0 0 transparent; }
+}
+.crt-text-glitch {
+  animation:
+    crt-flicker   0.75s var(--ease-quart-out) 0.2s both,
+    crt-chromatic 0.95s steps(14) 0.2s both;
+}
+
+/* ── Konami boot — entire modal "decodes": wrapper flickers, every text
+   descendant runs the chromatic split in sync. Lives on a plain div inside
+   the framer-motion dialog so the CRT flicker doesn't fight framer's
+   transform/filter inline styles. ── */
+.konami-boot {
+  animation: crt-flicker 0.85s var(--ease-quart-out) 0.2s both;
+}
+.konami-boot * {
+  animation: crt-chromatic 0.95s steps(14) 0.2s both;
+}
+
 /* ── Lava metaball — site-wide signature ─────────────────────── */
 /* Registered properties let @keyframes interpolate blob positions.
    `inherits: true` lets one drive (html root) feed many readers
@@ -438,3 +468,84 @@ html {
 
 .chip-pop  { animation: chip-pop 0.45s var(--ease-expo) both; }
 .scan-in   { animation: scan-in  0.7s  var(--ease-expo) both; }
+
+/* ── Theme motif intensification ────────────────────────────────────── */
+
+/* XE (Intel-like): denser hero grid, smaller cell — feels like a blueprint */
+html:not([data-theme="cuda"]):not([data-theme="udna"]) .hero-grid {
+  background-image:
+    linear-gradient(rgba(var(--accent-rgb), 0.13) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--accent-rgb), 0.13) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* CUDA: scanlines as true background. z-index -1 puts them behind every
+   section, so opaque section backgrounds (#030304 on Projects, Pipeline,
+   etc.) fully hide them, leaving the effect visible only where the hero
+   reveals the body background through its transparent grid. */
+[data-theme="cuda"] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0, transparent 3px,
+    rgba(var(--accent-rgb), 0.55) 3px, rgba(var(--accent-rgb), 0.55) 4px
+  );
+}
+
+/* UDNA: live infinity-fabric warmth — three radial cores breathing across the
+   viewport. Same @property + @keyframes mechanic as the lava metaball, so
+   the existing reduce-motion block snaps it to a single static frame. */
+@property --ur1x { syntax: '<percentage>'; inherits: true; initial-value: 82%; }
+@property --ur1y { syntax: '<percentage>'; inherits: true; initial-value: 14%; }
+@property --ur1a { syntax: '<number>';     inherits: true; initial-value: 0.45; }
+@property --ur2x { syntax: '<percentage>'; inherits: true; initial-value: 18%; }
+@property --ur2y { syntax: '<percentage>'; inherits: true; initial-value: 78%; }
+@property --ur2a { syntax: '<number>';     inherits: true; initial-value: 0.10; }
+@property --ur3x { syntax: '<percentage>'; inherits: true; initial-value: 52%; }
+@property --ur3y { syntax: '<percentage>'; inherits: true; initial-value: 38%; }
+@property --ur3a { syntax: '<number>';     inherits: true; initial-value: 0.06; }
+
+@keyframes udna-radials {
+  0% {
+    --ur1x: 82%; --ur1y: 14%; --ur1a: 0.45;
+    --ur2x: 18%; --ur2y: 78%; --ur2a: 0.10;
+    --ur3x: 52%; --ur3y: 38%; --ur3a: 0.06;
+  }
+  25% {
+    --ur1x: 62%; --ur1y: 32%; --ur1a: 0.22;
+    --ur2x: 28%; --ur2y: 62%; --ur2a: 0.42;
+    --ur3x: 78%; --ur3y: 82%; --ur3a: 0.18;
+  }
+  50% {
+    --ur1x: 28%; --ur1y: 48%; --ur1a: 0.12;
+    --ur2x: 72%; --ur2y: 22%; --ur2a: 0.20;
+    --ur3x: 48%; --ur3y: 85%; --ur3a: 0.45;
+  }
+  75% {
+    --ur1x: 50%; --ur1y: 75%; --ur1a: 0.30;
+    --ur2x: 88%; --ur2y: 42%; --ur2a: 0.28;
+    --ur3x: 12%; --ur3y: 20%; --ur3a: 0.32;
+  }
+  100% {
+    --ur1x: 82%; --ur1y: 14%; --ur1a: 0.45;
+    --ur2x: 18%; --ur2y: 78%; --ur2a: 0.10;
+    --ur3x: 52%; --ur3y: 38%; --ur3a: 0.06;
+  }
+}
+
+[data-theme="udna"] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(circle 45vw at var(--ur1x) var(--ur1y), rgba(var(--accent-rgb), var(--ur1a)), transparent 60%),
+    radial-gradient(circle 40vw at var(--ur2x) var(--ur2y), rgba(var(--accent-rgb), var(--ur2a)), transparent 60%),
+    radial-gradient(circle 35vw at var(--ur3x) var(--ur3y), rgba(var(--accent-rgb), var(--ur3a)), transparent 60%);
+  animation: udna-radials 14s ease-in-out infinite;
+}

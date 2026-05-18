@@ -6,6 +6,8 @@ import SmoothScroll from '@/components/smooth-scroll'
 import KonamiEgg from '@/components/konami-egg'
 import CommandPalette from '@/components/command-palette'
 import BuiltWith from '@/components/built-with'
+import HUD from '@/components/hud'
+import NvidiaGlow from '@/components/nvidia-glow'
 
 const bebas     = Bebas_Neue({ subsets: ['latin'], weight: '400', variable: '--font-bebas', display: 'swap' })
 const jetbrains = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-jetbrains', display: 'swap' })
@@ -60,6 +62,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             },
           }}
         />
+        <HUD />
+        <NvidiaGlow />
         <KonamiEgg />
         <CommandPalette />
         <BuiltWith />

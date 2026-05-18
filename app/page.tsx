@@ -32,12 +32,17 @@ export default function Home() {
         <Nav />
         <main id="main">
           <Hero loaded={loaded} />
-          <Projects />
-          <Pipeline />
-          <Systems />
-          <Notes />
-          <About />
-          <Contact />
+          {/* Opaque vault past the hero — covers body::before so theme atmosphere
+              (CUDA scanlines, UDNA radials) lives only behind the hero, never
+              bleeds through Pipeline / Systems / Notes / About / Contact cards. */}
+          <div className="relative" style={{ background: 'var(--bg)' }}>
+            <Projects />
+            <Pipeline />
+            <Systems />
+            <Notes />
+            <About />
+            <Contact />
+          </div>
         </main>
         <Footer />
       </motion.div>

@@ -42,6 +42,7 @@ interface Project {
   badge: string | null
   href: string
   Demo: React.ComponentType
+  telemetry: string[]
 }
 
 const PROJECTS: Project[] = [
@@ -56,6 +57,7 @@ const PROJECTS: Project[] = [
     badge: 'SDGP',
     href: 'https://github.com/Thanukamax',
     Demo: CrowDemo,
+    telemetry: ['4 streams', 'yolo-v8n', '23 fps', 'lat 84ms'],
   },
   {
     id: '002',
@@ -68,6 +70,7 @@ const PROJECTS: Project[] = [
     badge: null,
     href: 'https://github.com/Thanukamax',
     Demo: DonghuaDemo,
+    telemetry: ['mpv 0.38', 'cache 89%', '480p hevc', 'ttfb 2.1s'],
   },
   {
     id: '003',
@@ -80,6 +83,7 @@ const PROJECTS: Project[] = [
     badge: 'v1.0.0',
     href: 'https://github.com/Thanukamax/vn2apk/releases',
     Demo: Vn2apkDemo,
+    telemetry: ['build 02:14', 'apk 41mb', 'arm64-v8a', 'tauri 2.1'],
   },
 ]
 
@@ -182,13 +186,29 @@ function ProjectSlide({
               animate={reduced ? { opacity: 1 } : { opacity: 1, scale: 1,    filter: 'blur(0px)' }}
               exit={reduced    ? { opacity: 0 } : { opacity: 0, scale: 0.98, filter: 'blur(4px)' }}
               transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full h-full rounded-sm overflow-hidden"
-              style={{
-                border: `1px solid ${project.accent}33`,
-                boxShadow: `0 20px 60px rgba(0,0,0,0.5), 0 0 80px ${project.accent}1a`,
-              }}
+              className="absolute inset-0 flex flex-col gap-1.5"
             >
-              <Demo />
+              <div
+                className="relative flex-1 min-h-0 rounded-sm overflow-hidden"
+                style={{
+                  border: `1px solid ${project.accent}33`,
+                  boxShadow: `0 20px 60px rgba(0,0,0,0.5), 0 0 80px ${project.accent}1a`,
+                }}
+              >
+                <Demo />
+              </div>
+              {/* Telemetry strip — project-specific runtime metadata */}
+              <div
+                className="flex items-center gap-2.5 px-1 font-mono text-[8px] tracking-[0.22em] uppercase whitespace-nowrap overflow-hidden"
+                style={{ color: `${project.accent}b3` }}
+              >
+                {project.telemetry.map((item, i) => (
+                  <span key={item} className="flex items-center gap-2.5">
+                    {i > 0 && <span style={{ opacity: 0.32 }}>·</span>}
+                    <span>{item}</span>
+                  </span>
+                ))}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
