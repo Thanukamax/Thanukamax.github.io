@@ -68,7 +68,7 @@ const PROJECTS: Project[] = [
     tracks: ['graphics', 'systems'],
     tags: ['Python', 'Scraping', 'Streaming', 'MPV'],
     badge: null,
-    href: 'https://github.com/Thanukamax',
+    href: 'https://github.com/Thanukamax/donghua-cli',
     Demo: DonghuaDemo,
     telemetry: ['mpv 0.38', 'cache 89%', '480p hevc', 'ttfb 2.1s'],
   },
