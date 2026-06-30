@@ -12,7 +12,7 @@ const TICKER = [
 ]
 
 const links = [
-  { label: 'Email',    href: 'mailto:contact@thanukamax.dev' },
+  { label: 'Email',    href: 'mailto:thanukasehasnaperera@gmail.com' },
   { label: 'GitHub',   href: 'https://github.com/Thanukamax' },
   { label: 'LinkedIn', href: 'https://linkedin.com/in/thanukamax' },
 ]
