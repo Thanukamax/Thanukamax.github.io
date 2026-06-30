@@ -13,7 +13,7 @@ const T = {
   dev:     { delay: 0.40, duration: 1.40 },
   systems: { delay: 0.90, duration: 1.50 },
   name:    { delay: 1.15, duration: 1.10 },
-  bottom:  { delay: 1.35, duration: 0.95 },
+  bottom:  { delay: 1.35, duration: 1.45 },
 } as const
 
 export default function Hero({ loaded }: { loaded: boolean }) {
