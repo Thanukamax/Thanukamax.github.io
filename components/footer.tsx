@@ -14,7 +14,7 @@ const TICKER = [
 const links = [
   { label: 'Email',    href: 'mailto:thanukasehasnaperera@gmail.com' },
   { label: 'GitHub',   href: 'https://github.com/Thanukamax' },
-  { label: 'LinkedIn', href: 'https://linkedin.com/in/thanukamax' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/thanuka-perera-889240337' },
 ]
 
 export default function Footer() {

@@ -129,7 +129,7 @@ export default function Receipt() {
       '',
       '  send the hash back so I know',
       '  who I am talking to.',
-      '  contact@thanukamax.dev',
+      '  thanukasehasnaperera@gmail.com',
     ].join('\n')
     if (!navigator.clipboard) {
       toast.error('Clipboard unavailable')

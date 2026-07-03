@@ -4,7 +4,7 @@ import { useRef } from 'react'
 import { motion, useScroll, useTransform, useReducedMotion, type Variants } from 'framer-motion'
 import { toast } from 'sonner'
 
-const EMAIL = 'contact@thanukamax.dev'
+const EMAIL = 'thanukasehasnaperera@gmail.com'
 
 function copyEmail() {
   if (!navigator.clipboard) { toast.error('Clipboard unavailable'); return }
@@ -102,7 +102,7 @@ export default function Contact() {
            style={{ border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(232,232,240,0.7)' }}>
           GitHub ↗
         </a>
-        <a href="https://linkedin.com/in/thanukamax" target="_blank" rel="noopener noreferrer"
+        <a href="https://www.linkedin.com/in/thanuka-perera-889240337" target="_blank" rel="noopener noreferrer"
            className="inline-flex items-center gap-2 px-6 py-3 rounded-sm font-mono text-xs tracking-widest hover:bg-white/[0.04] active:scale-[0.97] transition-all duration-150"
            style={{ border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(232,232,240,0.7)' }}>
           LinkedIn ↗

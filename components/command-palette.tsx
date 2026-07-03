@@ -46,13 +46,13 @@ const COMMANDS: Cmd[] = [
   { id: 'theme-udna',   group: 'Theme', label: 'Switch theme: UDNA', hint: 'AMD · graphics',       keywords: 'udna amd graphics games', run: () => setTheme('udna') },
   { id: 'theme-cuda',   group: 'Theme', label: 'Switch theme: CUDA', hint: 'Nvidia · AI · compute', keywords: 'cuda nvidia ai compute', run: () => setTheme('cuda') },
 
-  { id: 'act-email',    group: 'Action', label: 'Copy email',        hint: 'contact@thanukamax.dev', keywords: 'copy email mail clipboard contact', run: () => copyText('contact@thanukamax.dev', 'Email copied') },
-  { id: 'act-mailto',   group: 'Action', label: 'Send email',        hint: 'open mailto link',       keywords: 'send email mail compose', run: () => { window.location.href = 'mailto:contact@thanukamax.dev' } },
+  { id: 'act-email',    group: 'Action', label: 'Copy email',        hint: 'thanukasehasnaperera@gmail.com', keywords: 'copy email mail clipboard contact', run: () => copyText('thanukasehasnaperera@gmail.com', 'Email copied') },
+  { id: 'act-mailto',   group: 'Action', label: 'Send email',        hint: 'open mailto link',       keywords: 'send email mail compose', run: () => { window.location.href = 'mailto:thanukasehasnaperera@gmail.com' } },
   { id: 'act-credits',  group: 'Action', label: 'Open credits',      hint: 'things made by hand',    keywords: 'credits konami easter egg hidden', run: () => window.dispatchEvent(new Event('konami-open')) },
   { id: 'act-built',    group: 'Action', label: 'How was this built',hint: 'stack + decisions',      keywords: 'built built-with stack tech how', run: () => window.dispatchEvent(new Event('built-open')) },
 
   { id: 'open-github',  group: 'Open', label: 'Open GitHub',   hint: '@Thanukamax',           keywords: 'github source code repo', run: () => window.open('https://github.com/Thanukamax', '_blank', 'noopener') },
-  { id: 'open-linked',  group: 'Open', label: 'Open LinkedIn', hint: 'professional',          keywords: 'linkedin work', run: () => window.open('https://linkedin.com/in/thanukamax', '_blank', 'noopener') },
+  { id: 'open-linked',  group: 'Open', label: 'Open LinkedIn', hint: 'professional',          keywords: 'linkedin work', run: () => window.open('https://www.linkedin.com/in/thanuka-perera-889240337', '_blank', 'noopener') },
   { id: 'open-vn2apk',  group: 'Open', label: 'Open vn2apk releases', hint: 'github · vn2apk', keywords: 'vn2apk releases download apk visual novel', run: () => window.open('https://github.com/Thanukamax/vn2apk/releases', '_blank', 'noopener') },
 ]
 
