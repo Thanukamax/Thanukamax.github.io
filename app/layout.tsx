@@ -12,14 +12,53 @@ import NvidiaGlow from '@/components/nvidia-glow'
 const bebas     = Bebas_Neue({ subsets: ['latin'], weight: '400', variable: '--font-bebas', display: 'swap' })
 const jetbrains = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-jetbrains', display: 'swap' })
 
+const SITE = 'https://thanukamax.github.io'
+const NAME = 'Thanuka Sehasna Perera'
+const DESCRIPTION =
+  'Game Developer, Computer Science undergraduate, and systems-focused builder working across GPU architecture, real-time rendering, and creative tooling.'
+
 export const metadata: Metadata = {
-  title: 'Thanuka Sehasna Perera',
-  description: 'Game Developer · GPU Architecture · Systems Builder',
+  metadataBase: new URL(SITE),
+  title: { default: `${NAME} | Game Developer & Systems Builder`, template: `%s | ${NAME}` },
+  description: DESCRIPTION,
+  applicationName: NAME,
+  authors: [{ name: NAME, url: SITE }],
+  creator: NAME,
+  alternates: { canonical: '/' },
+  robots: { index: true, follow: true },
   openGraph: {
-    title: 'Thanuka Sehasna Perera',
-    description: 'Game Developer · GPU Architecture · Systems Builder',
+    title: NAME,
+    description: DESCRIPTION,
+    url: SITE,
+    siteName: NAME,
     type: 'website',
+    locale: 'en_US',
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: `${NAME} — Game Developer · GPU Architecture · Systems Builder` }],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: NAME,
+    description: DESCRIPTION,
+    images: ['/og.png'],
+  },
+}
+
+/* Person schema: ties the portfolio, GitHub and LinkedIn together as one entity,
+   and covers the handle + the shorter spelling people actually search. */
+const personJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': `${SITE}/#person`,
+  name: NAME,
+  alternateName: ['Thanuka Perera', 'Thanukamax'],
+  url: SITE,
+  image: `${SITE}/og.png`,
+  description: DESCRIPTION,
+  knowsAbout: ['Game development', 'GPU architecture', 'Real-time rendering', 'Systems programming', 'Rust'],
+  sameAs: [
+    'https://github.com/Thanukamax',
+    'https://www.linkedin.com/in/thanuka-perera-889240337',
+  ],
 }
 
 /* Inline script: set initial theme BEFORE React hydrates so visitors at
@@ -44,6 +83,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${bebas.variable} ${jetbrains.variable} font-body bg-void text-chalk antialiased overflow-x-hidden`}>
         {/* Pre-hydration theme boot — sets data-theme before React paints. */}
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }} />
         <a href="#main" className="skip-link">Skip to content</a>
         <SmoothScroll>
           {children}

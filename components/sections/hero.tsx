@@ -102,8 +102,9 @@ export default function Hero({ loaded }: { loaded: boolean }) {
           {/* Single h1 wrapping GAME + DEVELOPER as spans */}
           <h1
             className="font-signal text-chalk leading-[0.87] tracking-[0.03em]"
-            aria-label="Game Developer & Systems Engineer"
+            aria-label="Thanuka Sehasna Perera — Game Developer & Systems Engineer"
           >
+            <span className="sr-only">Thanuka Sehasna Perera — </span>
             {/* GAME — mask reveal from below */}
             <span className="block overflow-hidden" style={{ lineHeight: '0.87' }}>
               <motion.span
